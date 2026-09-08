@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { api } from '../../api';
+import useBodyScrollLock from '../../hooks/useBodyScrollLock';
 
 export default function AIReviewModal({ caseItem, onClose, onReviewSuccess, smsUser }) {
+  useBodyScrollLock();
   const [decision, setDecision] = useState('APPROVED'); // 'APPROVED' | 'REVISION_NEEDED'
   const [finalFeedback, setFinalFeedback] = useState('');
   const [revisedPrompt, setRevisedPrompt] = useState('');

@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
+import useBodyScrollLock from '../../hooks/useBodyScrollLock';
 
 export default function AlertModal({ alert, unseenMessages = [], onClose, onNavigateToLexAI, onOpenTimeline }) {
+  useBodyScrollLock(Boolean(alert));
   const [copied, setCopied] = useState(false);
 
   const formatDateDMY = (dateStr) => {

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { api } from '../../api';
 import AlertModal from './AlertModal';
 import CaseTimelineModal from './CaseTimelineModal';
+import useBodyScrollLock from '../../hooks/useBodyScrollLock';
 
 const INDIA_DATA = {
   "Andaman and Nicobar Islands": ["Port Blair", "Other"],
@@ -45,6 +46,7 @@ const INDIA_DATA = {
 const INDIAN_STATES = Object.keys(INDIA_DATA).sort();
 
 export default function CMSDashboard({ user, onNavigateToLexAI, showMobileSmsReplies, onCloseMobileSmsReplies }) {
+  useBodyScrollLock(Boolean(showMobileSmsReplies));
   const [alerts, setAlerts] = useState([]);
   const [cases, setCases] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -725,7 +727,7 @@ export default function CMSDashboard({ user, onNavigateToLexAI, showMobileSmsRep
         <div
           className="modal-backdrop"
           onClick={onCloseMobileSmsReplies}
-          style={{ zIndex: 1100 }}
+          style={{ zIndex: 1100, overscrollBehavior: 'contain' }}
         >
           <div
             className="modal-window"
@@ -739,7 +741,8 @@ export default function CMSDashboard({ user, onNavigateToLexAI, showMobileSmsRep
               overflow: 'hidden',
               display: 'flex',
               flexDirection: 'column',
-              border: '2px solid black'
+              border: '2px solid black',
+              overscrollBehavior: 'contain'
             }}
           >
             {/* Header */}
@@ -792,7 +795,7 @@ export default function CMSDashboard({ user, onNavigateToLexAI, showMobileSmsRep
             </div>
 
             {/* Body */}
-            <div style={{ padding: '1rem 1.25rem', overflowY: 'auto', flex: 1, background: '#f8fafc' }}>
+            <div style={{ padding: '1rem 1.25rem', overflowY: 'auto', flex: 1, background: '#f8fafc', overscrollBehavior: 'contain', WebkitOverflowScrolling: 'touch' }}>
               <div style={{ fontSize: '0.8rem', color: 'var(--text-dim)', marginBottom: '1rem' }}>
                 Click any reply notification to open the <strong>structured review window</strong> with full details & Lex AI instructions.
               </div>

@@ -1,7 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { api, getApiBase } from '../../api';
+import useBodyScrollLock from '../../hooks/useBodyScrollLock';
 
 export default function CaseTimelineModal({ caseItem, role = 'cms', currentUser, onRefresh, onClose }) {
+  useBodyScrollLock(Boolean(caseItem));
   const [chatText, setChatText] = useState('');
   const [pendingFile, setPendingFile] = useState(null);
   const [isSending, setIsSending] = useState(false);
@@ -145,7 +147,8 @@ export default function CaseTimelineModal({ caseItem, role = 'cms', currentUser,
   return (
     <div className="modal-backdrop" onClick={onClose} style={{
       zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center',
-      padding: '1rem', backgroundColor: 'rgba(0, 0, 0, 0.65)', backdropFilter: 'blur(4px)'
+      padding: '1rem', backgroundColor: 'rgba(0, 0, 0, 0.65)', backdropFilter: 'blur(4px)',
+      overscrollBehavior: 'contain'
     }}>
       <div
         className="modal-window"
@@ -155,7 +158,8 @@ export default function CaseTimelineModal({ caseItem, role = 'cms', currentUser,
           padding: '0', borderRadius: '16px', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.4)',
           overflow: 'hidden', background: '#ffffff',
           border: '2px solid #000000',
-          display: 'flex', flexDirection: 'column'
+          display: 'flex', flexDirection: 'column',
+          overscrollBehavior: 'contain'
         }}
       >
         {/* Chat Header - Black and White Theme */}
@@ -230,7 +234,9 @@ export default function CaseTimelineModal({ caseItem, role = 'cms', currentUser,
         <div style={{
           padding: '1.5rem', overflowY: 'auto', flex: 1,
           display: 'flex', flexDirection: 'column', gap: '1rem',
-          background: '#f8fafc'
+          background: '#f8fafc',
+          overscrollBehavior: 'contain',
+          WebkitOverflowScrolling: 'touch'
         }}>
 
           {/* System Info: Case Initialized */}

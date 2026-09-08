@@ -1,7 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { api, getApiBase } from '../../api';
+import useBodyScrollLock from '../../hooks/useBodyScrollLock';
 
 export default function CaseTimelineModal({ caseItem, role = 'sms', currentUser, onRefresh, onClose }) {
+  useBodyScrollLock();
   const [chatText, setChatText] = useState('');
   const [pendingFile, setPendingFile] = useState(null);
   const [isSending, setIsSending] = useState(false);
@@ -125,7 +127,8 @@ export default function CaseTimelineModal({ caseItem, role = 'sms', currentUser,
       alignItems: 'center', 
       justifyContent: 'center', 
       padding: '1rem',
-      backgroundColor: 'rgba(0, 0, 0, 0.6)' 
+      backgroundColor: 'rgba(0, 0, 0, 0.6)',
+      overscrollBehavior: 'contain'
     }}>
       <div 
         className="modal-window" 
@@ -139,6 +142,7 @@ export default function CaseTimelineModal({ caseItem, role = 'sms', currentUser,
           borderRadius: '12px',
           boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
           overflow: 'hidden',
+          overscrollBehavior: 'contain',
           background: '#ffffff',
           display: 'flex',
           flexDirection: 'column'
@@ -216,6 +220,8 @@ export default function CaseTimelineModal({ caseItem, role = 'sms', currentUser,
           position: 'relative', 
           padding: 'clamp(1rem, 3vw, 2rem) clamp(1rem, 3vw, 1.5rem)', 
           overflowY: 'auto',
+          overscrollBehavior: 'contain',
+          WebkitOverflowScrolling: 'touch',
           background: '#f1f5f9',
           flex: 1,
           display: 'flex',

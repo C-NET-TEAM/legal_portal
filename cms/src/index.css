@@ -273,6 +273,8 @@ h1, h2, h3, h4, h5, h6 {
   z-index: 1000;
   padding: 1.5rem;
   animation: fadeIn 0.2s ease-out forwards;
+  overscroll-behavior: contain;
+  overflow-y: auto;
 }
 
 .modal-window {
@@ -284,6 +286,8 @@ h1, h2, h3, h4, h5, h6 {
   max-width: 680px;
   max-height: 90vh;
   overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
   position: relative;
   padding: 1.75rem;
   animation: scaleUp 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;

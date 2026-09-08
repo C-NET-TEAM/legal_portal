@@ -143,6 +143,8 @@ h1, h2, h3, h4, h5, h6 {
   z-index: 1000;
   padding: 1rem;
   animation: fadeIn 0.2s ease-out forwards;
+  overscroll-behavior: contain;
+  overflow-y: auto;
 }
 
 .modal-window {
@@ -154,6 +156,8 @@ h1, h2, h3, h4, h5, h6 {
   max-width: 680px;
   max-height: 90vh;
   overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
   position: relative;
   animation: scaleUp 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
@@ -242,6 +246,7 @@ h1, h2, h3, h4, h5, h6 {
   padding: 1rem;
   animation: fadeIn 0.2s ease-out forwards;
   overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
 .modal-window-formal {
@@ -254,6 +259,8 @@ h1, h2, h3, h4, h5, h6 {
   max-height: 92vh;
   max-width: 900px;
   overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
   position: relative;
   padding: clamp(1.25rem, 4vw, 3rem) clamp(1.25rem, 5vw, 4rem);
   animation: scaleUp 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;

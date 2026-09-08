@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { api } from '../../api';
+import useBodyScrollLock from '../../hooks/useBodyScrollLock';
 
 export default function AuthModal({ onLoginSuccess }) {
+  useBodyScrollLock();
   const [isRegister, setIsRegister] = useState(false);
   const [clientId, setClientId] = useState('');
   const [name, setName] = useState('');

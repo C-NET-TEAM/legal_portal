@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { api } from '../../api';
+import useBodyScrollLock from '../../hooks/useBodyScrollLock';
 
 export default function SMSProfileModal({ onClose, profileImage, setProfileImage, smsUser }) {
+  useBodyScrollLock();
   const [view, setView] = useState('profile'); // 'profile' | 'password'
 
   const [oldPassword, setOldPassword] = useState('');

@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { getApiBase, setApiBase } from '../../api';
+import useBodyScrollLock from '../../hooks/useBodyScrollLock';
 
 export default function ServerModal({ onClose }) {
+  useBodyScrollLock();
   const [serverUrl, setServerUrl] = useState(getApiBase().replace(/\/api$/, ''));
   const [msg, setMsg] = useState('');
 

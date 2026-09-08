@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { api } from '../../api';
+import useBodyScrollLock from '../../hooks/useBodyScrollLock';
 
 export default function ProfileModal({ user, onClose, onLogout }) {
+  useBodyScrollLock();
   const [activeTab, setActiveTab] = useState('details'); // 'details' | 'change'
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');

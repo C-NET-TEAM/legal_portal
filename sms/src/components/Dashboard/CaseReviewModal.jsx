@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { api, getApiBase } from '../../api';
+import useBodyScrollLock from '../../hooks/useBodyScrollLock';
 
 const CATEGORIES = [
   'Property Law / Real Estate Partition',
@@ -13,6 +14,7 @@ const CATEGORIES = [
 ];
 
 export default function CaseReviewModal({ caseItem, onClose, onReviewSuccess, smsUser }) {
+  useBodyScrollLock();
   // Initialize as empty so SMS MUST select an official classification
   const [category, setCategory] = useState('');
 
