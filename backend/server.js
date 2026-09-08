@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import path from 'path';
+import fs from 'fs';
 import { fileURLToPath } from 'url';
 import os from 'os';
 import dotenv from 'dotenv';
@@ -388,6 +389,38 @@ app.delete('/api/cases/:id', async (req, res) => {
     const result = await Case.deleteOne({ id });
     return res.json({ success: true, deletedCount: result.deletedCount });
   } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+});
+
+// Admin route: purge all inner data (cases, alerts, uploaded files) while keeping user and specialist login credentials
+app.post('/api/admin/clean-data', async (req, res) => {
+  try {
+    const deletedCases = await Case.deleteMany({});
+    const deletedAlerts = await Alert.deleteMany({});
+
+    let deletedFilesCount = 0;
+    if (fs.existsSync(UPLOAD_DIR)) {
+      const files = fs.readdirSync(UPLOAD_DIR);
+      for (const file of files) {
+        try {
+          fs.unlinkSync(path.join(UPLOAD_DIR, file));
+          deletedFilesCount++;
+        } catch (e) {
+          console.error('Failed to delete file from upload dir:', file, e);
+        }
+      }
+    }
+
+    return res.json({
+      success: true,
+      message: 'All case data, alerts, and uploaded files deleted successfully. User logins preserved.',
+      deletedCases: deletedCases.deletedCount,
+      deletedAlerts: deletedAlerts.deletedCount,
+      deletedFiles: deletedFilesCount
+    });
+  } catch (err) {
+    console.error('Clean data error:', err);
     return res.status(500).json({ error: err.message });
   }
 });
