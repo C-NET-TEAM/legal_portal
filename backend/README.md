@@ -11,7 +11,7 @@ npm start
 node server.js
 ```
 
-The server will listen on `http://localhost:5000` and automatically save data to `db.json`.
+The server will listen on `http://localhost:5000` (or behind SSL on AWS EC2) and persist data in **MongoDB** with media files on **AWS EBS**.
 
 ## Endpoints
 - `POST /api/auth/register` - Client registration
