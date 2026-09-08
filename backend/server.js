@@ -331,12 +331,26 @@ app.post('/api/cases', async (req, res) => {
     }
 
     if (!caseId) {
-      let isUnique = false;
-      while (!isUnique) {
-        const caseNumber = Math.floor(1000 + Math.random() * 9000);
-        caseId = `CASE-${caseNumber}`;
-        const existing = await Case.findOne({ id: caseId });
-        if (!existing) isUnique = true;
+      const allCases = await Case.find({}, { id: 1 }).lean();
+      let maxSeq = 0;
+      const existingIds = new Set();
+      for (const c of (allCases || [])) {
+        if (!c.id) continue;
+        existingIds.add(c.id);
+        const match = c.id.match(/^CASE-(\d+)$/i);
+        if (match) {
+          const num = parseInt(match[1], 10);
+          if (num < 1000 && num > maxSeq) {
+            maxSeq = num;
+          }
+        }
+      }
+
+      let nextNum = maxSeq + 1;
+      caseId = `CASE-${nextNum.toString().padStart(2, '0')}`;
+      while (existingIds.has(caseId)) {
+        nextNum++;
+        caseId = `CASE-${nextNum.toString().padStart(2, '0')}`;
       }
     }
 
@@ -364,6 +378,17 @@ app.post('/api/cases', async (req, res) => {
   } catch (err) {
     console.error('Create case error:', err);
     return res.status(500).json({ error: err.message || 'Failed to submit case.' });
+  }
+});
+
+// Delete Case
+app.delete('/api/cases/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await Case.deleteOne({ id });
+    return res.json({ success: true, deletedCount: result.deletedCount });
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
   }
 });
 

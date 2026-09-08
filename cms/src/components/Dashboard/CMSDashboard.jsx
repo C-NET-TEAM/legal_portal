@@ -136,12 +136,26 @@ export default function CMSDashboard({ user, onNavigateToLexAI, showMobileSmsRep
 
     try {
       const currentClientId = user?.clientId || 'GUEST-01';
-      // Generate a unique 4-digit case number that does not collide with any existing cases
+      // Generate ascending sequential Case ID e.g. CASE-08 -> CASE-09 -> CASE-10
       const allCases = await api.getCases().catch(() => []);
       const existingIds = new Set((allCases || []).map(c => c.id));
-      let generatedCaseId = '';
-      while (!generatedCaseId || existingIds.has(generatedCaseId)) {
-        generatedCaseId = `CASE-${Math.floor(1000 + Math.random() * 9000)}`;
+      let maxSeq = 0;
+      for (const c of (allCases || [])) {
+        if (!c.id) continue;
+        const match = c.id.match(/^CASE-(\d+)$/i);
+        if (match) {
+          const num = parseInt(match[1], 10);
+          if (num < 1000 && num > maxSeq) {
+            maxSeq = num;
+          }
+        }
+      }
+
+      let nextNum = maxSeq + 1;
+      let generatedCaseId = `CASE-${nextNum.toString().padStart(2, '0')}`;
+      while (existingIds.has(generatedCaseId)) {
+        nextNum++;
+        generatedCaseId = `CASE-${nextNum.toString().padStart(2, '0')}`;
       }
 
       const payload = {
@@ -308,23 +322,6 @@ export default function CMSDashboard({ user, onNavigateToLexAI, showMobileSmsRep
                 </div>
               </div>
             </div>
-
-            {submitSuccess && (
-              <div style={{
-                background: 'rgba(16, 185, 129, 0.15)',
-                border: '1px solid rgba(16, 185, 129, 0.35)',
-                color: '#34d399',
-                padding: '0.85rem 1.25rem',
-                borderRadius: 'var(--radius-md)',
-                fontSize: '0.9rem',
-                marginBottom: '1.5rem',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.5rem'
-              }}>
-                <span>✓</span> {submitSuccess}
-              </div>
-            )}
 
             <form onSubmit={handleCaseSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
 
@@ -565,6 +562,24 @@ export default function CMSDashboard({ user, onNavigateToLexAI, showMobileSmsRep
                   {submitting ? 'Submitting to SMS...' : 'Submit Case to SMS for Approval ➔'}
                 </button>
               </div>
+
+              {submitSuccess && (
+                <div style={{
+                  background: 'rgba(16, 185, 129, 0.12)',
+                  border: '1px solid rgba(16, 185, 129, 0.35)',
+                  color: '#059669',
+                  padding: '0.85rem 1.25rem',
+                  borderRadius: 'var(--radius-md)',
+                  fontSize: '0.9rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem',
+                  fontWeight: 500,
+                  marginTop: '0.25rem'
+                }}>
+                  <span style={{ fontWeight: 700 }}>✓</span> {submitSuccess}
+                </div>
+              )}
             </form>
           </div>
 
