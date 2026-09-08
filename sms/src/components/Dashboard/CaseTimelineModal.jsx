@@ -81,6 +81,12 @@ export default function CaseTimelineModal({ caseItem, role = 'sms', currentUser,
     const file = e.target.files[0];
     if (!file) return;
 
+    if (file.size > 100 * 1024 * 1024) {
+      alert(`File "${file.name}" exceeds the maximum allowed size.`);
+      e.target.value = null;
+      return;
+    }
+
     // Reset input
     e.target.value = null;
 

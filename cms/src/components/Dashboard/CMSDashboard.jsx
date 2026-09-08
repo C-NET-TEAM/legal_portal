@@ -102,6 +102,10 @@ export default function CMSDashboard({ user, onNavigateToLexAI, showMobileSmsRep
     const files = Array.from(e.target.files);
     if (files.length > 0) {
       files.forEach(f => {
+        if (f.size > 100 * 1024 * 1024) {
+          alert(`File "${f.name}" exceeds the maximum allowed size.`);
+          return;
+        }
         const reader = new FileReader();
         reader.onload = (event) => {
           setDocuments(prev => [...prev, {
@@ -132,11 +136,13 @@ export default function CMSDashboard({ user, onNavigateToLexAI, showMobileSmsRep
 
     try {
       const currentClientId = user?.clientId || 'GUEST-01';
-      // Fetch all cases to determine the next sequential ID for this specific client
-      const allCases = await api.getCases();
-      const clientCases = allCases.filter(c => c.clientId === currentClientId);
-      const nextNumber = clientCases.length + 1;
-      const generatedCaseId = `CASE-${nextNumber.toString().padStart(2, '0')}`;
+      // Generate a unique 4-digit case number that does not collide with any existing cases
+      const allCases = await api.getCases().catch(() => []);
+      const existingIds = new Set((allCases || []).map(c => c.id));
+      let generatedCaseId = '';
+      while (!generatedCaseId || existingIds.has(generatedCaseId)) {
+        generatedCaseId = `CASE-${Math.floor(1000 + Math.random() * 9000)}`;
+      }
 
       const payload = {
         id: generatedCaseId,
@@ -475,7 +481,7 @@ export default function CMSDashboard({ user, onNavigateToLexAI, showMobileSmsRep
                     Click or Drag & Drop Documents Here
                   </div>
                   <div style={{ fontSize: '0.75rem', color: 'var(--text-dim)', marginTop: '0.2rem' }}>
-                    PDF, DOCX, Scanned Legal Deeds, Evidence Papers (up to 25MB)
+                    PDF, DOCX, Scanned Legal Deeds, Evidence Papers
                   </div>
                 </div>
 

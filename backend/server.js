@@ -23,8 +23,8 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 
 // Parse JSON bodies (increased limit to accept legacy Base64 file payloads and convert to EBS storage)
-app.use(express.json({ limit: '50mb' }));
-app.use(express.urlencoded({ extended: true, limit: '50mb' }));
+app.use(express.json({ limit: '200mb' }));
+app.use(express.urlencoded({ extended: true, limit: '200mb' }));
 
 // Static file server for EBS uploaded media files
 app.use('/api/uploads', express.static(UPLOAD_DIR));
@@ -320,8 +320,25 @@ app.post('/api/cases', async (req, res) => {
     // Process documents: convert any Base64 strings to EBS disk files
     const processedDocs = processDocuments(documents || []);
 
-    const caseNumber = Math.floor(1000 + Math.random() * 9000);
-    const caseId = id || `CASE-${caseNumber}`;
+    // Ensure globally unique case ID
+    let caseId = id ? String(id).trim() : null;
+    if (caseId) {
+      const existing = await Case.findOne({ id: caseId });
+      if (existing) {
+        // ID is already taken, generate a unique ID to prevent duplicate key error
+        caseId = null;
+      }
+    }
+
+    if (!caseId) {
+      let isUnique = false;
+      while (!isUnique) {
+        const caseNumber = Math.floor(1000 + Math.random() * 9000);
+        caseId = `CASE-${caseNumber}`;
+        const existing = await Case.findOne({ id: caseId });
+        if (!existing) isUnique = true;
+      }
+    }
 
     const newCase = await Case.create({
       id: caseId,
@@ -346,7 +363,7 @@ app.post('/api/cases', async (req, res) => {
     return res.json({ success: true, case: newCase });
   } catch (err) {
     console.error('Create case error:', err);
-    return res.status(500).json({ error: 'Failed to submit case.' });
+    return res.status(500).json({ error: err.message || 'Failed to submit case.' });
   }
 });
 
