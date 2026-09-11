@@ -38,9 +38,9 @@ export default function App() {
     <div className="sms-layout-formal">
       <main className="sms-main-formal">
         <div className="sms-content-wrapper-formal">
-          <SMSDashboard 
-            activeTab={activeTab} 
-            setActiveTab={setActiveTab} 
+          <SMSDashboard
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
             onOpenServerModal={() => setShowServerModal(true)}
             smsUser={smsUser}
           />

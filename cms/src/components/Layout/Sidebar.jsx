@@ -26,29 +26,41 @@ export default function Sidebar({
         marginBottom: '1.5rem'
       }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: isCollapsed ? 'center' : 'space-between', gap: '0.75rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-            <div style={{
-              width: '40px',
-              height: '40px',
-              transition: 'all 0.3s ease',
-              borderRadius: '50%',
-              background: '#ffffff',
-              border: '1px solid var(--border-subtle)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              overflow: 'hidden',
-              flexShrink: 0,
-              boxShadow: '0 2px 6px rgba(0, 0, 0, 0.08)'
-            }}>
-              <img src="/Law-icon.jpg" alt="Logo" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
+            <div
+              className="cms-brand-logo"
+              style={{
+                width: '46px',
+                height: '46px',
+                transition: 'all 0.3s ease',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0,
+                border: 'none',
+                background: 'transparent',
+                overflow: 'hidden'
+              }}
+            >
+              <img
+                src="/Law-icon.jpg"
+                alt="Logo"
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'contain',
+                  transform: 'scale(1.35)',
+                  transformOrigin: 'center center',
+                  display: 'block'
+                }}
+              />
             </div>
             {!isCollapsed && (
               <div style={{ overflow: 'hidden', whiteSpace: 'nowrap' }}>
-                <h2 style={{ fontSize: '1.15rem', lineHeight: '1.1', fontWeight: 700 }}>
+                <h2 style={{ fontSize: '1.18rem', lineHeight: '1.15', fontWeight: 700 }}>
                   CMS PORTAL
                 </h2>
-                <span style={{ fontSize: '0.72rem', color: 'var(--accent-cyan)', fontWeight: 600, letterSpacing: '0.04em' }}>
+                <span style={{ fontSize: '0.74rem', color: 'var(--accent-cyan)', fontWeight: 600, letterSpacing: '0.04em' }}>
                   CASE MANAGEMENT
                 </span>
               </div>
@@ -146,7 +158,7 @@ export default function Sidebar({
       </div>
 
       {/* Bottom Profile Section */}
-      <div style={{
+      <div className="sidebar-bottom-profile" style={{
         marginTop: '0.25rem',
         paddingTop: '0.75rem',
         borderTop: '1px solid var(--border-subtle)'

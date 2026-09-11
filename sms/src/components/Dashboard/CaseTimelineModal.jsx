@@ -25,6 +25,18 @@ export default function CaseTimelineModal({ caseItem, role = 'sms', currentUser,
     }
   }, [caseItem.chats?.length]);
 
+  // Mark CMS messages read by SMS when timeline is opened
+  useEffect(() => {
+    if (caseItem?.id && role === 'sms') {
+      localStorage.setItem(`sms_read_${caseItem.id}`, new Date().toISOString());
+      api.markCaseReadBySms(caseItem.id)
+        .then(() => {
+          if (onRefresh) onRefresh();
+        })
+        .catch(() => {});
+    }
+  }, [caseItem?.id, caseItem?.chats?.length, role]);
+
   const handleOpenDocument = (e, url) => {
     e.preventDefault();
     if (!url || url === '#') return;
@@ -333,7 +345,21 @@ export default function CaseTimelineModal({ caseItem, role = 'sms', currentUser,
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
                       </div>
                       <div>
-                        <div style={{ fontSize: '0.85rem', color: '#1e293b', fontWeight: 700 }}>CMS Representative</div>
+                        <div style={{ fontSize: '0.85rem', color: '#1e293b', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                          <span>CMS Representative</span>
+                          {chat.readBySms === false && (
+                            <span style={{
+                              background: '#ef4444',
+                              color: '#fff',
+                              fontSize: '0.62rem',
+                              fontWeight: 800,
+                              padding: '1px 6px',
+                              borderRadius: '4px'
+                            }}>
+                              New
+                            </span>
+                          )}
+                        </div>
                         <div style={{ fontSize: '0.7rem', color: '#64748b' }}>{formatDate(chat.timestamp)}</div>
                       </div>
                     </div>

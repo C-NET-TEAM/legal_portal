@@ -117,5 +117,13 @@ export const api = {
     const res = await fetch(`${API_BASE}/alerts`);
     if (!res.ok) throw new Error('Failed to load alerts');
     return await res.json();
+  },
+
+  async markCaseReadBySms(caseId) {
+    const API_BASE = getApiBase();
+    const res = await fetch(`${API_BASE}/cases/${caseId}/mark-sms-read`, {
+      method: 'POST'
+    });
+    return await res.json();
   }
 };

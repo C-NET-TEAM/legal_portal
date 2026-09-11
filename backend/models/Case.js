@@ -42,6 +42,10 @@ const chatSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
+  readBySms: {
+    type: Boolean,
+    default: false
+  },
   timestamp: {
     type: String,
     default: () => new Date().toISOString()

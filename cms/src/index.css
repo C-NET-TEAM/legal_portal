@@ -38,7 +38,12 @@ body {
   overflow-x: hidden;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: 'Inter', 'Segoe UI', 'Roboto', sans-serif;
   font-weight: 600;
   color: var(--text-main);
@@ -49,6 +54,7 @@ h1, h2, h3, h4, h5, h6 {
 ::-webkit-scrollbar {
   display: none;
 }
+
 * {
   scrollbar-width: none;
   -ms-overflow-style: none;
@@ -129,7 +135,9 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--text-muted);
 }
 
-.input-control, .textarea-control, .select-control {
+.input-control,
+.textarea-control,
+.select-control {
   width: 100%;
   background: var(--bg-card);
   border: 1px solid var(--border-subtle);
@@ -142,7 +150,9 @@ h1, h2, h3, h4, h5, h6 {
   transition: all 0.2s ease;
 }
 
-.input-control:focus, .textarea-control:focus, .select-control:focus {
+.input-control:focus,
+.textarea-control:focus,
+.select-control:focus {
   border-color: var(--primary);
   background: var(--bg-dark);
   box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
@@ -299,18 +309,37 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes scaleUp {
-  from { opacity: 0; transform: scale(0.95) translateY(10px); }
-  to { opacity: 1; transform: scale(1) translateY(0); }
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
 }
 
 @keyframes pulseGlow {
-  0%, 100% { box-shadow: 0 0 10px rgba(59, 130, 246, 0.3); }
-  50% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.7); }
+
+  0%,
+  100% {
+    box-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
+  }
+
+  50% {
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.7);
+  }
 }
 
 .pulse-card {
@@ -383,7 +412,7 @@ h1, h2, h3, h4, h5, h6 {
   padding: 0.25rem 0.5rem;
   border-radius: var(--radius-sm);
   background-color: var(--bg-card);
-  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 /* Mobile Top Bar (Only visible <= 768px) */
@@ -398,6 +427,24 @@ h1, h2, h3, h4, h5, h6 {
   top: 0;
   z-index: 40;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+}
+
+/* Brand Logos - Clean, borderless & optimized */
+.cms-brand-logo,
+.navbar-brand-logo {
+  border: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  overflow: hidden;
+}
+
+.cms-brand-logo img,
+.navbar-brand-logo img {
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+  transform: scale(1.35);
+  transform-origin: center center;
 }
 
 /* Mobile Sidebar Backdrop */
@@ -463,6 +510,22 @@ h1, h2, h3, h4, h5, h6 {
   /* Hide the collapse toggle on tablet/mobile - sidebar always opens expanded */
   .sidebar-collapse-toggle {
     display: none !important;
+  }
+
+  /* Hide bottom profile section on tablet/mobile - already available on dashboard top navbar */
+  .sidebar-bottom-profile {
+    display: none !important;
+  }
+
+  /* Optimize logo sizes on tablet/mobile */
+  .cms-brand-logo {
+    width: 46px !important;
+    height: 46px !important;
+  }
+
+  .navbar-brand-logo {
+    width: 40px !important;
+    height: 40px !important;
   }
 }
 
@@ -588,5 +651,9 @@ h1, h2, h3, h4, h5, h6 {
     padding: 0.6rem 1rem;
     font-size: 0.85rem;
   }
-}
 
+  .navbar-brand-logo {
+    width: 36px !important;
+    height: 36px !important;
+  }
+}

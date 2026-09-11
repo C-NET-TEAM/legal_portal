@@ -31,7 +31,12 @@ body {
   overflow-x: hidden;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: 'Outfit', sans-serif;
   font-weight: 600;
   color: var(--text-main);
@@ -43,13 +48,16 @@ h1, h2, h3, h4, h5, h6 {
   width: 5px;
   height: 5px;
 }
+
 ::-webkit-scrollbar-track {
   background: #f1f5f9;
 }
+
 ::-webkit-scrollbar-thumb {
   background: #cbd5e1;
   border-radius: 4px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
 }
@@ -69,7 +77,9 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--text-muted);
 }
 
-.input-control, .textarea-control, .select-control {
+.input-control,
+.textarea-control,
+.select-control {
   width: 100%;
   background: #ffffff;
   border: 1px solid var(--border-subtle);
@@ -82,7 +92,9 @@ h1, h2, h3, h4, h5, h6 {
   transition: all 0.2s ease;
 }
 
-.input-control:focus, .textarea-control:focus, .select-control:focus {
+.input-control:focus,
+.textarea-control:focus,
+.select-control:focus {
   border-color: var(--border-focus);
   box-shadow: 0 0 0 2px rgba(51, 65, 85, 0.12);
 }
@@ -115,6 +127,7 @@ h1, h2, h3, h4, h5, h6 {
   color: #ffffff;
   box-shadow: 0 4px 15px rgba(16, 185, 129, 0.35);
 }
+
 .btn-primary:hover {
   background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
   transform: translateY(-1px);
@@ -125,6 +138,7 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--text-main);
   border: 1px solid var(--border-subtle);
 }
+
 .btn-secondary:hover {
   background: #f1f5f9;
   border-color: #cbd5e1;
@@ -163,13 +177,25 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes scaleUp {
-  from { opacity: 0; transform: scale(0.96) translateY(8px); }
-  to { opacity: 1; transform: scale(1) translateY(0); }
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
 }
 
 /* ─── Formal Legal UI ─────────────────────────────────── */
@@ -206,6 +232,7 @@ h1, h2, h3, h4, h5, h6 {
 .formal-case-card {
   transition: box-shadow 0.2s, transform 0.2s;
 }
+
 .formal-case-card:hover {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
   transform: translateY(-1px);
@@ -223,10 +250,12 @@ h1, h2, h3, h4, h5, h6 {
   background: var(--surface-light, #ffffff);
   cursor: pointer;
 }
+
 .filter-box:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.07);
 }
+
 .active-filter {
   background: #f8fafc;
   box-shadow: 0 0 0 1.5px #0f172a;
@@ -267,7 +296,8 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* Formal Inputs */
-.formal-input-control, .formal-textarea-control {
+.formal-input-control,
+.formal-textarea-control {
   width: 100%;
   background: #ffffff;
   border: 1px solid #cbd5e1;
@@ -279,7 +309,9 @@ h1, h2, h3, h4, h5, h6 {
   outline: none;
   transition: border-color 0.2s;
 }
-.formal-input-control:focus, .formal-textarea-control:focus {
+
+.formal-input-control:focus,
+.formal-textarea-control:focus {
   border-color: #334155;
   box-shadow: 0 0 0 2px rgba(51, 65, 85, 0.15);
 }
@@ -304,9 +336,11 @@ h1, h2, h3, h4, h5, h6 {
   letter-spacing: 0.04em;
   transition: background 0.2s;
 }
+
 .formal-btn:hover:not(:disabled) {
   background: #1e293b;
 }
+
 .formal-btn:disabled {
   opacity: 0.65;
   cursor: not-allowed;
@@ -317,6 +351,7 @@ h1, h2, h3, h4, h5, h6 {
   color: #0f172a;
   border: 1px solid #cbd5e1;
 }
+
 .formal-btn-alt:hover {
   background: #e2e8f0;
 }
@@ -334,6 +369,10 @@ h1, h2, h3, h4, h5, h6 {
 
 /* ─── Responsive: Mobile/Tablet ≤ 768px ─────────────── */
 @media (max-width: 768px) {
+  .sms-top-header-actions {
+    margin-left: auto !important;
+  }
+
   .sms-content-wrapper-formal {
     padding: 1rem 1rem 2rem 1rem;
   }
@@ -376,8 +415,33 @@ h1, h2, h3, h4, h5, h6 {
     font-size: 0.82rem;
   }
 
-  .formal-input-control, .formal-textarea-control {
+  .formal-input-control,
+  .formal-textarea-control {
     font-size: 0.9rem;
     padding: 0.7rem 0.85rem;
+  }
+}
+
+@keyframes pulseGlow {
+
+  0%,
+  100% {
+    box-shadow: 0 0 4px rgba(239, 68, 68, 0.3);
+  }
+
+  50% {
+    box-shadow: 0 0 12px rgba(239, 68, 68, 0.7);
+  }
+}
+
+/* ─── Desktop Header Actions: Align to bottom near horizontal line ─── */
+@media (min-width: 769px) {
+  .sms-top-header {
+    align-items: flex-end !important;
+  }
+
+  .sms-top-header-actions {
+    align-self: flex-end !important;
+    margin-bottom: 0.1rem;
   }
 }

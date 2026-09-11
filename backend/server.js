@@ -556,6 +556,7 @@ app.post('/api/cases/:id/chat', async (req, res) => {
       text: text || '',
       documents: processedDocs,
       readByCms: sender === 'cms',
+      readBySms: sender === 'sms',
       timestamp: new Date().toISOString()
     };
 
@@ -589,7 +590,7 @@ app.post('/api/cases/:id/chat', async (req, res) => {
   }
 });
 
-// Mark all alerts & chats for a case as read
+// Mark all alerts & chats for a case as read by CMS
 app.post('/api/cases/:id/mark-read', async (req, res) => {
   try {
     const { id } = req.params;
@@ -608,6 +609,26 @@ app.post('/api/cases/:id/mark-read', async (req, res) => {
   } catch (err) {
     console.error('Mark read error:', err);
     return res.status(500).json({ error: 'Failed to mark case read.' });
+  }
+});
+
+// Mark all chats for a case as read by SMS
+app.post('/api/cases/:id/mark-sms-read', async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const caseItem = await Case.findOne({ id });
+    if (caseItem && caseItem.chats) {
+      caseItem.chats.forEach(ch => {
+        ch.readBySms = true;
+      });
+      await caseItem.save();
+    }
+
+    return res.json({ success: true });
+  } catch (err) {
+    console.error('Mark SMS read error:', err);
+    return res.status(500).json({ error: 'Failed to mark case read by SMS.' });
   }
 });
 

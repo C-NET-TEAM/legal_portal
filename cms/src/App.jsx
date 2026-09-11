@@ -124,17 +124,46 @@ export default function App() {
             </svg>
           </button>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <div style={{ width: '28px', height: '28px', borderRadius: '50%', overflow: 'hidden', border: '1px solid var(--border-subtle)' }}>
-              <img src="/Law-icon.jpg" alt="Logo" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
+            <div
+              className="navbar-brand-logo"
+              style={{
+                width: '40px',
+                height: '40px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0,
+                border: 'none',
+                background: 'transparent',
+                overflow: 'hidden'
+              }}
+            >
+              <img
+                src="/Law-icon.jpg"
+                alt="Logo"
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'contain',
+                  transform: 'scale(1.35)',
+                  transformOrigin: 'center center',
+                  display: 'block'
+                }}
+              />
             </div>
-            <span style={{ fontWeight: 700, fontSize: '0.95rem' }}>CMS PORTAL</span>
+            <span style={{ fontWeight: 700, fontSize: '1.05rem', letterSpacing: '0.02em', color: 'var(--text-main)', lineHeight: 1 }}>
+              CMS PORTAL
+            </span>
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             {/* SMS Live Replies bell icon - mobile only */}
             <button
-              onClick={() => setShowMobileSmsReplies(true)}
+              onClick={() => {
+                setActiveTab('dashboard');
+                setShowMobileSmsReplies(true);
+              }}
               style={{
                 width: '32px',
                 height: '32px',
