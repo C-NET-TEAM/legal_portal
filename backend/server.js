@@ -56,22 +56,40 @@ const ALLOWED_ORIGINS = [
 	"http://127.0.0.1:5173",
 	"http://127.0.0.1:5174",
 	"http://127.0.0.1:3000",
+	"https://legal-portal-pi-seven.vercel.app",
 ];
 if (process.env.FRONTEND_URL) {
-	ALLOWED_ORIGINS.push(process.env.FRONTEND_URL.replace(/\/+$/, ""));
+	const extraOrigins = process.env.FRONTEND_URL.split(",")
+		.map((u) => u.trim().replace(/\/+$/, ""))
+		.filter(Boolean);
+	ALLOWED_ORIGINS.push(...extraOrigins);
+}
+
+function isOriginAllowed(origin) {
+	if (!origin) return true; // Allow non-browser requests (curl, server-to-server, mobile)
+	const cleanOrigin = origin.replace(/\/+$/, "");
+	if (ALLOWED_ORIGINS.includes(cleanOrigin)) return true;
+	// Allow all Vercel deployments (production & branch previews)
+	if (/^https:\/\/[a-zA-Z0-9_.-]+\.vercel\.app$/.test(cleanOrigin)) return true;
+	// Allow all sslip.io hostnames
+	if (/^https?:\/\/[a-zA-Z0-9_.-]+\.sslip\.io(:\d+)?$/.test(cleanOrigin)) return true;
+	// Allow any localhost / 127.0.0.1 on any port
+	if (/^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(cleanOrigin)) return true;
+	return false;
 }
 
 app.use(
 	cors({
 		origin: (origin, callback) => {
-			if (!origin || ALLOWED_ORIGINS.includes(origin)) {
+			if (isOriginAllowed(origin)) {
 				return callback(null, true);
 			}
-			return callback(
-				new Error(`CORS blocked for unauthorized origin: ${origin}`),
-			);
+			console.warn(`[CORS] Blocked request from unauthorized origin: ${origin}`);
+			return callback(null, false);
 		},
 		credentials: true,
+		methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+		allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "Accept"],
 	}),
 );
 
