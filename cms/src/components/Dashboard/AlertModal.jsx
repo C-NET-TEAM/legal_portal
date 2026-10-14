@@ -4,6 +4,7 @@ import useBodyScrollLock from "../../hooks/useBodyScrollLock";
 
 export default function AlertModal({
 	alert,
+	caseItem,
 	unseenMessages = [],
 	onClose,
 	onOpenTimeline,
@@ -65,9 +66,51 @@ export default function AlertModal({
 
 	if (!alert) return null;
 
-	const data = alert.structuredData || {};
+	const rawData = alert.structuredData || {};
+	const data = {
+		...(caseItem || {}),
+		...rawData,
+		caseVertical:
+			rawData.caseVertical ||
+			rawData.category ||
+			caseItem?.caseVertical ||
+			caseItem?.category ||
+			"MSME",
+		category:
+			rawData.category ||
+			rawData.caseVertical ||
+			caseItem?.category ||
+			caseItem?.caseVertical ||
+			"MSME",
+		caseCategory:
+			(rawData.caseCategory && rawData.caseCategory !== "N/A"
+				? rawData.caseCategory
+				: "") ||
+			(rawData.caseKeywords && rawData.caseKeywords !== "N/A"
+				? rawData.caseKeywords
+				: "") ||
+			caseItem?.caseCategory ||
+			caseItem?.caseKeywords ||
+			"Deputation Related",
+		caseKeywords:
+			(rawData.caseKeywords && rawData.caseKeywords !== "N/A"
+				? rawData.caseKeywords
+				: "") ||
+			(rawData.caseCategory && rawData.caseCategory !== "N/A"
+				? rawData.caseCategory
+				: "") ||
+			caseItem?.caseKeywords ||
+			caseItem?.caseCategory ||
+			"Deputation Related",
+		clientType: rawData.clientType || caseItem?.clientType || "Individual",
+		clientName: rawData.clientName || caseItem?.clientName || "Client",
+		title: rawData.title || caseItem?.title || "",
+	};
 	const smsNotes = data.smsNotes || alert.message || "";
-	const selectedDocs = data.selectedDocuments || [];
+	const selectedDocs =
+		data.selectedDocuments && data.selectedDocuments.length > 0
+			? data.selectedDocuments
+			: caseItem?.selectedDocuments || [];
 
 	const docsText =
 		selectedDocs.length > 0
@@ -230,7 +273,7 @@ export default function AlertModal({
 									color: "var(--text-main)",
 								}}
 							>
-								{data.title ? `${data.title} ` : ""}{data.clientName || "N/A"}
+								{data.title ? `${data.title} ` : ""}{data.clientName || "Client"}
 							</div>
 							<div style={{ fontSize: "0.8rem", color: "var(--text-dim)", marginTop: "0.2rem" }}>
 								Type: {data.clientType || "Individual"}
@@ -264,10 +307,10 @@ export default function AlertModal({
 									color: "var(--text-main)",
 								}}
 							>
-								{data.caseVertical || data.category || "Standard Legal Review"}
+								{data.caseVertical || data.category || "MSME"}
 							</div>
 							<div style={{ fontSize: "0.8rem", color: "var(--text-dim)", marginTop: "0.2rem" }}>
-								Category: {data.caseCategory || data.caseKeywords || "N/A"}
+								Category: {data.caseCategory || data.caseKeywords || "Deputation Related"}
 							</div>
 						</div>
 

@@ -539,9 +539,9 @@ app.post("/api/cases", async (req, res) => {
 		}
 
 		const resolvedType = clientType === "Institute" ? "Institute" : "Individual";
-		const resolvedTitle = resolvedType === "Individual" ? (title || "") : "";
-		const resolvedVertical = category || caseVertical || "";
-		const resolvedCategory = caseCategory || caseKeywords || "";
+		const resolvedTitle = resolvedType === "Individual" ? (title || "Mr.") : "";
+		const resolvedVertical = category || caseVertical || "MSME";
+		const resolvedCategory = caseCategory || caseKeywords || "Deputation Related";
 		const resolvedSummary = summary || "";
 
 		const newCase = await Case.create({
@@ -570,7 +570,7 @@ app.post("/api/cases", async (req, res) => {
 			chats: [],
 		});
 
-		return res.json({ success: true, case: newCase });
+		return res.json({ success: true, case: normalizeCase(newCase) });
 	} catch (err) {
 		console.error("Create case error:", err);
 		return res
@@ -686,9 +686,9 @@ app.post("/api/cases/:id/review", async (req, res) => {
 				title: caseItem.title || "",
 				clientType: caseItem.clientType || "Individual",
 				status: caseItem.status,
-				category: caseItem.category,
-				caseVertical: caseItem.caseVertical || caseItem.category,
-				caseCategory: caseItem.caseCategory || caseItem.caseKeywords,
+				category: caseItem.category || caseItem.caseVertical || "MSME",
+				caseVertical: caseItem.caseVertical || caseItem.category || "MSME",
+				caseCategory: caseItem.caseCategory || caseItem.caseKeywords || "Deputation Related",
 				summary: caseItem.summary || "",
 				details: caseItem.details || "",
 				selectedDocuments: caseItem.selectedDocuments || selectedDocuments || [],
@@ -721,7 +721,7 @@ app.post("/api/cases/:id/lex-output", async (req, res) => {
 		caseItem.status = "AI Output Submitted";
 		await caseItem.save();
 
-		return res.json({ success: true, case: caseItem });
+		return res.json({ success: true, case: normalizeCase(caseItem) });
 	} catch (err) {
 		console.error("Lex output submit error:", err);
 		return res.status(500).json({ error: "Failed to submit Lex AI output." });
@@ -766,7 +766,7 @@ app.post("/api/cases/:id/final-review", async (req, res) => {
 			read: false,
 		});
 
-		return res.json({ success: true, case: caseItem, alert: newAlert });
+		return res.json({ success: true, case: normalizeCase(caseItem), alert: newAlert });
 	} catch (err) {
 		console.error("Final review error:", err);
 		return res.status(500).json({ error: "Failed to submit final review." });
@@ -823,7 +823,7 @@ app.post("/api/cases/:id/chat", async (req, res) => {
 			});
 		}
 
-		return res.json({ success: true, case: caseItem, message: newMessage });
+		return res.json({ success: true, case: normalizeCase(caseItem), message: newMessage });
 	} catch (err) {
 		console.error("Send chat error:", err);
 		return res.status(500).json({ error: "Failed to send chat message." });

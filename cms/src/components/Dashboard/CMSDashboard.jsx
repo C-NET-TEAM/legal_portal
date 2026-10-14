@@ -733,7 +733,7 @@ export default function CMSDashboard({
 							<div className="responsive-form-row-2">
 								<div className="form-group">
 									<label className="form-label" htmlFor="caseVertical">
-										Case Vertical *
+										Case Vertical / Type *
 									</label>
 									<select
 										id="caseVertical"
@@ -1246,6 +1246,7 @@ export default function CMSDashboard({
 			{selectedAlert && (
 				<AlertModal
 					alert={selectedAlert}
+					caseItem={cases.find((c) => c.id === selectedAlert.caseId)}
 					unseenMessages={selectedAlertUnseen}
 					onClose={() => {
 						setSelectedAlert(null);

@@ -541,7 +541,7 @@ export default function CaseTimelineModal({
 										Type
 									</div>
 									<div style={{ fontWeight: 600, color: "#1e293b" }}>
-										{caseItem.clientType || (caseItem.age || caseItem.sex ? `${caseItem.age || "N/A"}/${caseItem.sex || "N/A"}` : "Individual")}
+										{caseItem.clientType || "Individual"}
 									</div>
 								</div>
 								<div>
@@ -549,7 +549,7 @@ export default function CaseTimelineModal({
 										Vertical
 									</div>
 									<div style={{ fontWeight: 600, color: "#1e293b" }}>
-										{caseItem.category || caseItem.caseVertical || "N/A"}
+										{caseItem.caseVertical || caseItem.category || "MSME"}
 									</div>
 								</div>
 								<div>
@@ -557,7 +557,7 @@ export default function CaseTimelineModal({
 										Category
 									</div>
 									<div style={{ fontWeight: 600, color: "#1e293b" }}>
-										{caseItem.caseCategory || caseItem.caseKeywords || "N/A"}
+										{caseItem.caseCategory || caseItem.caseKeywords || "Deputation Related"}
 									</div>
 								</div>
 							</div>
