@@ -17,13 +17,15 @@ dist/
 **/uploads/
 uploads/
 
-# Logs
+# Logs & Reports
 logs/
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
+biome-report.txt
+
 
 # Editor & OS files
 .vscode/

@@ -1,0 +1,21 @@
+{
+	"name": "legal-portal",
+	"version": "1.0.0",
+	"private": true,
+	"description": "Legal Portal Suite - CMS, SMS, and Backend",
+	"workspaces": [
+		"cms",
+		"sms",
+		"backend"
+	],
+	"scripts": {
+		"lint": "npm run lint --prefix cms && npm run lint --prefix sms",
+		"build": "npm run build --prefix cms && npm run build --prefix sms",
+		"dev:cms": "npm run dev --prefix cms",
+		"dev:sms": "npm run dev --prefix sms",
+		"dev:backend": "npm run dev --prefix backend"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "2.5.13"
+	}
+}
