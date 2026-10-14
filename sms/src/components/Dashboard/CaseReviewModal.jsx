@@ -277,7 +277,7 @@ export default function CaseReviewModal({
 								Applicant Type
 							</div>
 							<div style={{ fontWeight: 600, color: "var(--text-main)" }}>
-								{caseItem.clientType || (caseItem.age || caseItem.sex ? `${caseItem.age || "N/A"} / ${caseItem.sex || "N/A"}` : "Individual")}
+								{caseItem.clientType || "Individual"}
 							</div>
 						</div>
 						<div>
@@ -292,7 +292,7 @@ export default function CaseReviewModal({
 								City / State
 							</div>
 							<div style={{ fontWeight: 600, color: "var(--text-main)" }}>
-								{caseItem.city}, {caseItem.state}
+								{caseItem.city || "N/A"}, {caseItem.state || "N/A"}
 							</div>
 						</div>
 						<div>
@@ -304,10 +304,10 @@ export default function CaseReviewModal({
 									fontWeight: 700,
 								}}
 							>
-								Case Vertical
+								Case Type / Vertical
 							</div>
 							<div style={{ fontWeight: 600, color: "var(--text-main)" }}>
-								{caseItem.category || caseItem.caseVertical || "N/A"}
+								{caseItem.caseVertical || caseItem.category || "MSME"}
 							</div>
 						</div>
 						<div>
@@ -322,7 +322,7 @@ export default function CaseReviewModal({
 								Case Category
 							</div>
 							<div style={{ fontWeight: 600, color: "var(--text-main)" }}>
-								{caseItem.caseCategory || caseItem.caseKeywords || "N/A"}
+								{caseItem.caseCategory || caseItem.caseKeywords || "Deputation Related"}
 							</div>
 						</div>
 					</div>

@@ -32,5 +32,8 @@ pnpm-debug.log*
 Thumbs.db
 *.suo
 *.ntvs*
-*.njsproj
 *.sln
+
+# Reports & temp analysis
+biome-report.txt
+*-report.txt

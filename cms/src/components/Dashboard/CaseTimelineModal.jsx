@@ -397,10 +397,10 @@ export default function CaseTimelineModal({
 							{/* Vertical & Category badge */}
 							<div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap", marginBottom: "0.5rem" }}>
 								<span style={{ fontSize: "0.7rem", background: "rgba(255,255,255,0.12)", padding: "2px 6px", borderRadius: "4px", color: "#38bdf8" }}>
-									Vertical: {caseItem.category || caseItem.caseVertical || "N/A"}
+									Vertical: {caseItem.caseVertical || caseItem.category || "MSME"}
 								</span>
 								<span style={{ fontSize: "0.7rem", background: "rgba(255,255,255,0.12)", padding: "2px 6px", borderRadius: "4px", color: "#c084fc" }}>
-									Category: {caseItem.caseCategory || caseItem.caseKeywords || "N/A"}
+									Category: {caseItem.caseCategory || caseItem.caseKeywords || "Deputation Related"}
 								</span>
 							</div>
 
