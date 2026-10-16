@@ -2,6 +2,110 @@ import { useEffect, useRef, useState } from "react";
 import { api, getApiBase } from "../../api";
 import useBodyScrollLock from "../../hooks/useBodyScrollLock";
 
+// Clean SVG Icons matching SMS formal legal desk aesthetic
+const Icons = {
+	Folder: () => (
+		<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+			<path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
+		</svg>
+	),
+	File: () => (
+		<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+			<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+			<polyline points="14 2 14 8 20 8" />
+		</svg>
+	),
+	Paperclip: () => (
+		<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+			<path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48" />
+		</svg>
+	),
+	Send: () => (
+		<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+			<line x1="22" y1="2" x2="11" y2="13" />
+			<polygon points="22 2 15 22 11 13 2 9 22 2" />
+		</svg>
+	),
+	Edit: () => (
+		<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+			<path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+			<path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+		</svg>
+	),
+	ExternalLink: () => (
+		<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+			<path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+			<polyline points="15 3 21 3 21 9" />
+			<line x1="10" y1="14" x2="21" y2="3" />
+		</svg>
+	),
+	Check: () => (
+		<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+			<polyline points="20 6 9 17 4 12" />
+		</svg>
+	),
+	Clock: () => (
+		<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+			<circle cx="12" cy="12" r="10" />
+			<polyline points="12 6 12 12 16 14" />
+		</svg>
+	),
+	ChevronDown: () => (
+		<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+			<polyline points="6 9 12 15 18 9" />
+		</svg>
+	),
+	ChevronUp: () => (
+		<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+			<polyline points="18 15 12 9 6 15" />
+		</svg>
+	),
+	Close: () => (
+		<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+			<line x1="18" y1="6" x2="6" y2="18" />
+			<line x1="6" y1="6" x2="18" y2="18" />
+		</svg>
+	),
+	Lock: () => (
+		<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+			<rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+			<path d="M7 11V7a5 5 0 0 1 10 0v4" />
+		</svg>
+	),
+	Eye: () => (
+		<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+			<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+			<circle cx="12" cy="12" r="3" />
+		</svg>
+	),
+	EyeOff: () => (
+		<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+			<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
+			<line x1="1" y1="1" x2="23" y2="23" />
+		</svg>
+	),
+	ClipboardCheck: () => (
+		<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+			<path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+			<rect x="8" y="2" width="8" height="4" rx="1" ry="1" />
+			<polyline points="9 14 11 16 15 11" />
+		</svg>
+	),
+	Download: () => (
+		<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+			<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+			<polyline points="7 10 12 15 17 10" />
+			<line x1="12" y1="15" x2="12" y2="3" />
+		</svg>
+	),
+	Copy: () => (
+		<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+			<rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+			<path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+		</svg>
+	),
+};
+
 export default function CaseTimelineModal({
 	caseItem,
 	userRole = "sms",
@@ -12,25 +116,183 @@ export default function CaseTimelineModal({
 }) {
 	useBodyScrollLock();
 	const [chatText, setChatText] = useState("");
-	const [pendingFile, setPendingFile] = useState(null);
+	const [pendingFiles, setPendingFiles] = useState([]);
 	const [isSending, setIsSending] = useState(false);
+	const [isActing, setIsActing] = useState(false);
 
+	// Inline editing state
+	const [editingPhase, setEditingPhase] = useState(null); // 'review1' | 'review2' | null
+	const [editText, setEditText] = useState("");
+	const [editFiles, setEditFiles] = useState([]);
+	const [isSavingEdit, setIsSavingEdit] = useState(false);
+	const editFileInputRef = useRef(null);
+	const replaceFileIndexRef = useRef(null);
+	const editFormRef = useRef(null);
+
+	// Page-by-page Phase navigation: 'assign' | 'review1' | 'review2' | 'complete'
+	const [activePage, setActivePage] = useState(() => {
+		if (caseItem.status === "Completed") return "complete";
+		if (caseItem.reviewPhase === "review2" || (caseItem.chats || []).some((c) => c.phase === "review2")) return "review2";
+		if (caseItem.smsNotes || (caseItem.selectedDocuments && caseItem.selectedDocuments.length > 0) || (caseItem.chats && caseItem.chats.length > 0)) return "review1";
+		return "assign";
+	});
+
+	// Document table toggle (collapsed by default since table is inside Case Assign phase)
+	const [showDocTable, setShowDocTable] = useState(false);
+	const [showAllDocs, setShowAllDocs] = useState(false);
+
+	// Notification toast state for edits and updates
+	const [notification, setNotification] = useState(null);
+	const notifTimeoutRef = useRef(null);
+	const prevCaseRef = useRef(caseItem);
+
+	const showNotification = (text, type = "success") => {
+		if (notifTimeoutRef.current) clearTimeout(notifTimeoutRef.current);
+		setNotification({ text, type });
+		notifTimeoutRef.current = setTimeout(() => {
+			setNotification(null);
+		}, 3500);
+	};
+
+	useEffect(() => {
+		return () => {
+			if (notifTimeoutRef.current) clearTimeout(notifTimeoutRef.current);
+		};
+	}, []);
+
+	// Scroll edit form into view without triggering outer page scroll
+	useEffect(() => {
+		if (editingPhase && editFormRef.current) {
+			setTimeout(() => {
+				editFormRef.current?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+			}, 50);
+		}
+	}, [editingPhase]);
+
+	// Detect edits from remote/CMS party and show notifications
+	useEffect(() => {
+		const prev = prevCaseRef.current;
+		if (prev && prev.id === caseItem?.id) {
+			const prevChats = prev.chats || [];
+			const currChats = caseItem.chats || [];
+			if (prevChats.length === currChats.length && prevChats.length > 0) {
+				const hasEditedChat = currChats.some((cc, idx) => {
+					const pc = prevChats[idx];
+					if (!pc) return false;
+					const textChanged = pc.text !== cc.text || pc.message !== cc.message;
+					const editedChanged = pc.editedAt !== cc.editedAt || pc.updatedAt !== cc.updatedAt;
+					const docsChanged =
+						JSON.stringify(pc.documents || []) !==
+						JSON.stringify(cc.documents || []);
+					return textChanged || editedChanged || docsChanged;
+				});
+				if (hasEditedChat) {
+					showNotification("A review message or attachment was edited", "info");
+				}
+			}
+			if (prev.caseBrief !== undefined && prev.caseBrief !== caseItem.caseBrief) {
+				showNotification("Case Brief was updated", "info");
+			}
+		}
+		prevCaseRef.current = caseItem;
+	}, [caseItem]);
+
+	// Password prompt modal state for completing case
 	const [showPasswordPrompt, setShowPasswordPrompt] = useState(false);
 	const [smsPassword, setSmsPassword] = useState("");
 	const [showPassword, setShowPassword] = useState(false);
 	const [isCompleting, setIsCompleting] = useState(false);
 
+	// Document Assignment & Reconciliation in Phase 1 (Case Assign)
+	const [selectedDocIndices, setSelectedDocIndices] = useState(() => {
+		if (caseItem.selectedDocuments?.length && caseItem.documents?.length) {
+			const urls = new Set(
+				caseItem.selectedDocuments.map((d) => d.url || d.name),
+			);
+			return caseItem.documents
+				.map((d, i) => (urls.has(d.url || d.name) ? i : -1))
+				.filter((i) => i !== -1);
+		}
+		return (caseItem.documents || []).map((_, i) => i);
+	});
+	const [smsAssignmentNotes, setSmsAssignmentNotes] = useState(
+		caseItem.smsNotes || "",
+	);
+	const [isSavingAssign, setIsSavingAssign] = useState(false);
+	const [assignSavedSuccess, setAssignSavedSuccess] = useState(false);
+
+	useEffect(() => {
+		if (caseItem) {
+			if (caseItem.selectedDocuments?.length && caseItem.documents?.length) {
+				const urls = new Set(
+					caseItem.selectedDocuments.map((d) => d.url || d.name),
+				);
+				setSelectedDocIndices(
+					caseItem.documents
+						.map((d, i) => (urls.has(d.url || d.name) ? i : -1))
+						.filter((i) => i !== -1),
+				);
+			} else if (caseItem.documents?.length && !caseItem.selectedDocuments) {
+				setSelectedDocIndices(caseItem.documents.map((_, i) => i));
+			}
+			setSmsAssignmentNotes(caseItem.smsNotes || "");
+		}
+	}, [caseItem?.id, caseItem?.selectedDocuments, caseItem?.smsNotes]);
+
+	const handleToggleDoc = (idx) => {
+		setSelectedDocIndices((prev) =>
+			prev.includes(idx) ? prev.filter((i) => i !== idx) : [...prev, idx],
+		);
+	};
+
+	const handleSelectAllDocs = () => {
+		if (selectedDocIndices.length === (caseItem.documents || []).length) {
+			setSelectedDocIndices([]);
+		} else {
+			setSelectedDocIndices((caseItem.documents || []).map((_, idx) => idx));
+		}
+	};
+
+	const handleSaveDocumentAssignment = async () => {
+		setIsSavingAssign(true);
+		setAssignSavedSuccess(false);
+		try {
+			const selectedDocuments = (caseItem.documents || []).filter((_, idx) =>
+				selectedDocIndices.includes(idx),
+			);
+			await api.reviewCase(caseItem.id, {
+				status: caseItem.status === "Pending" ? "Approved" : caseItem.status,
+				smsNotes: smsAssignmentNotes,
+				selectedDocuments,
+				reviewerInfo: currentUser
+					? {
+						name: `${currentUser.firstName || ""} ${currentUser.lastName || ""}`.trim() || currentUser.username || "Specialist",
+						position: currentUser.position || "Legal Specialist",
+						smsId: currentUser.smsId || "SMS",
+						profileImage: currentUser.profileImage || null,
+					}
+					: caseItem.reviewerInfo || null,
+			});
+			setAssignSavedSuccess(true);
+			showNotification("SME Prompt & Document assignment saved", "success");
+			setTimeout(() => setAssignSavedSuccess(false), 3000);
+			if (onRefresh) onRefresh();
+		} catch (err) {
+			alert(`Error saving document assignment: ${err.message}`);
+		} finally {
+			setIsSavingAssign(false);
+		}
+	};
+
 	const chatEndRef = useRef(null);
 	const fileInputRef = useRef(null);
 
-	// Auto-scroll to bottom when new chats arrive
 	useEffect(() => {
-		if (chatEndRef.current && caseItem?.chats?.length) {
+		if (chatEndRef.current) {
 			chatEndRef.current.scrollIntoView({ behavior: "smooth" });
 		}
-	}, [caseItem?.chats?.length]);
+	}, [caseItem?.chats?.length, caseItem?.reviewPhase]);
 
-	// Mark CMS messages read by SMS when timeline is opened
 	useEffect(() => {
 		if (caseItem?.id && role === "sms") {
 			localStorage.setItem(`sms_read_${caseItem.id}`, new Date().toISOString());
@@ -39,7 +301,7 @@ export default function CaseTimelineModal({
 				.then(() => {
 					if (onRefresh) onRefresh();
 				})
-				.catch(() => { });
+				.catch(() => {});
 		}
 	}, [caseItem?.id, role, onRefresh]);
 
@@ -65,30 +327,359 @@ export default function CaseTimelineModal({
 			});
 	};
 
+	const handleDownloadDocument = async (e, url, filename) => {
+		if (e) {
+			e.preventDefault();
+			e.stopPropagation();
+		}
+		if (!url || url === "#") return;
+		let fullUrl = url;
+		if (url.startsWith("/")) {
+			const base = getApiBase().replace(/\/api\/?$/, "");
+			fullUrl = `${base}${url}`;
+		}
+		try {
+			const res = await fetch(fullUrl);
+			const blob = await res.blob();
+			const blobUrl = URL.createObjectURL(blob);
+			const a = document.createElement("a");
+			a.href = blobUrl;
+			a.download = filename || url.split("/").pop() || "document";
+			document.body.appendChild(a);
+			a.click();
+			document.body.removeChild(a);
+			setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
+		} catch (err) {
+			console.error("Error downloading document:", err);
+			window.open(fullUrl, "_blank");
+		}
+	};
+
+	const renderDocPill = (d, i, isMe) => {
+		const isSmsSpecialistMe = isMe;
+
+		return (
+			<div
+				key={d.url || d.name || i}
+				style={{
+					display: "inline-flex",
+					flexDirection: "column",
+					alignItems: "stretch",
+					background: "#ffffff",
+					border: "1px solid #e5e7eb",
+					borderRadius: "6px",
+					overflow: "hidden",
+					minWidth: "200px",
+					maxWidth: "280px",
+				}}
+			>
+				{/* Top Section: File info */}
+				<a
+					onClick={(e) => handleOpenDocument(e, d.url)}
+					href={d.url || "#"}
+					style={{
+						padding: "0.45rem 0.7rem",
+						color: "#374151",
+						textDecoration: "none",
+						display: "flex",
+						alignItems: "center",
+						gap: "0.4rem",
+						cursor: "pointer",
+					}}
+					title="Click to view document in new tab"
+				>
+					<Icons.File />
+					<div style={{ display: "flex", flexDirection: "column", minWidth: 0, overflow: "hidden" }}>
+						<span
+							style={{
+								fontSize: "0.8rem",
+								fontWeight: 500,
+								overflow: "hidden",
+								textOverflow: "ellipsis",
+								whiteSpace: "nowrap",
+								color: "#111827",
+							}}
+							title={d.name}
+						>
+							{d.name}
+						</span>
+						{d.size && (
+							<span style={{ fontSize: "0.68rem", color: "#9ca3af", lineHeight: 1.2, marginTop: "1px" }}>
+								{d.size}
+							</span>
+						)}
+					</div>
+				</a>
+
+				{/* Bottom Section: Download button */}
+				<button
+					type="button"
+					onClick={(e) => handleDownloadDocument(e, d.url, d.name)}
+					style={{
+						width: "100%",
+						background: "#f9fafb",
+						border: "none",
+						borderTop: "1px solid #e5e7eb",
+						color: "#6b7280",
+						padding: "0.35rem 0.7rem",
+						cursor: "pointer",
+						display: "flex",
+						alignItems: "center",
+						justifyContent: "center",
+						gap: "0.35rem",
+						fontSize: "0.75rem",
+						fontWeight: 500,
+					}}
+					onMouseEnter={(e) => { e.currentTarget.style.background = "#f3f4f6"; e.currentTarget.style.color = "#374151"; }}
+					onMouseLeave={(e) => { e.currentTarget.style.background = "#f9fafb"; e.currentTarget.style.color = "#6b7280"; }}
+					title="Download document"
+				>
+					<Icons.Download />
+					<span>Download</span>
+				</button>
+			</div>
+		);
+	};
+
 	const formatDate = (dateString) => {
-		if (!dateString) return "Unknown Date";
+		if (!dateString) return "";
 		const d = new Date(dateString);
 		const day = String(d.getDate()).padStart(2, "0");
 		const month = String(d.getMonth() + 1).padStart(2, "0");
 		const year = d.getFullYear();
-
 		let hours = d.getHours();
 		const minutes = String(d.getMinutes()).padStart(2, "0");
 		const ampm = hours >= 12 ? "pm" : "am";
-		hours = hours % 12;
-		hours = hours ? hours : 12;
-
+		hours = hours % 12 || 12;
 		return `${day}/${month}/${year}, ${hours}:${minutes} ${ampm}`;
 	};
 
-	const handleSendChat = async () => {
-		if (!chatText.trim() && !pendingFile) return;
+	const formatDateDMY = (dateStr) => {
+		if (!dateStr) return "";
+		const d = new Date(dateStr);
+		const day = String(d.getDate()).padStart(2, "0");
+		const month = String(d.getMonth() + 1).padStart(2, "0");
+		return `${day}/${month}/${d.getFullYear()}`;
+	};
+
+	const getFileExt = (filename) => {
+		if (!filename) return "FILE";
+		const parts = filename.split(".");
+		return parts.length > 1 ? parts.pop().toUpperCase() : "FILE";
+	};
+
+	const getExtBadgeStyle = (ext) => {
+		const upper = ext.toUpperCase();
+		if (upper === "PDF") {
+			return { bg: "rgba(239, 68, 68, 0.12)", color: "#ef4444", border: "1px solid rgba(239, 68, 68, 0.25)" };
+		}
+		if (upper === "DOC" || upper === "DOCX") {
+			return { bg: "rgba(59, 130, 246, 0.12)", color: "#3b82f6", border: "1px solid rgba(59, 130, 246, 0.25)" };
+		}
+		if (["JPG", "JPEG", "PNG", "WEBP"].includes(upper)) {
+			return { bg: "rgba(16, 185, 129, 0.12)", color: "#10b981", border: "1px solid rgba(16, 185, 129, 0.25)" };
+		}
+		return { bg: "rgba(245, 158, 11, 0.12)", color: "#f59e0b", border: "1px solid rgba(245, 158, 11, 0.25)" };
+	};
+
+	const categorizeReviewChats = (chats = []) => {
+		const r1Chats = chats.filter((c) => c.phase === "review1" && c.sender !== "system");
+		const r2Chats = chats.filter((c) => c.phase === "review2" && c.sender !== "system");
+
+		let r1Cms = null;
+		let r1Sms = null;
+		let r2Cms = null;
+		let r2Sms = null;
+
+		if (r1Chats.length > 0 || r2Chats.length > 0) {
+			r1Cms = r1Chats.find((c) => c.sender === "cms") || null;
+			r1Sms = r1Chats.find((c) => c.sender === "sms") || null;
+			r2Cms = r2Chats.find((c) => c.sender === "cms") || null;
+			r2Sms = r2Chats.find((c) => c.sender === "sms") || null;
+		} else {
+			const nonSystem = chats.filter((c) => c.sender !== "system");
+			const cmsChats = nonSystem.filter((c) => c.sender === "cms");
+			const smsChats = nonSystem.filter((c) => c.sender === "sms");
+			r1Cms = cmsChats[0] || null;
+			r1Sms = smsChats[0] || null;
+			r2Cms = cmsChats[1] || null;
+			r2Sms = smsChats[1] || null;
+		}
+
+		return { r1Cms, r1Sms, r2Cms, r2Sms };
+	};
+
+	const { r1Cms, r1Sms, r2Cms, r2Sms } = categorizeReviewChats(caseItem.chats || []);
+
+	const isCaseCompleted = caseItem.status === "Completed";
+	const isChatActive =
+		caseItem.status === "Approved" ||
+		caseItem.status === "AI Output Submitted" ||
+		caseItem.status === "Completed";
+
+	const isReview1Complete = Boolean(r1Cms && r1Sms);
+	const isReview2Started = caseItem.reviewPhase === "review2" || Boolean(r2Cms || r2Sms);
+	const isReview2Complete = Boolean(r2Cms && r2Sms);
+
+	const currentActivePhase = isReview2Started ? "review2" : "review1";
+
+	let currentTurn = null;
+	if (!isReview1Complete) {
+		currentTurn = !r1Cms ? "cms" : "sms";
+	} else if (!isReview2Started) {
+		currentTurn = "decision";
+	} else if (!isReview2Complete) {
+		currentTurn = !r2Cms ? "cms" : "sms";
+	} else {
+		currentTurn = "concluded";
+	}
+
+	const isMyTurn = !isCaseCompleted && currentTurn === role;
+
+	const isAssignPhaseDone =
+		caseItem.status !== "Pending" ||
+		Boolean(caseItem.smsNotes || caseItem.selectedDocuments?.length);
+
+	// Document breakdown for Document Reconciliation in Case Assign
+	const clientUploadedDocs = caseItem.documents || [];
+	const verifiedDocs = caseItem.selectedDocuments || [];
+	const excludedDocs = clientUploadedDocs.filter(
+		(d) =>
+			!verifiedDocs.some(
+				(vd) => (vd.url && vd.url === d.url) || vd.name === d.name,
+			),
+	);
+
+	// Progress tracker calculation: 4 Sequential Phases
+	// 1. Case Assign -> 2. Review 1 -> 3. Review 2 (Opt) -> 4. Complete Analysis
+	let progressPercent = 25;
+	let progressLabel = "Case Assignment Pending";
+	if (isCaseCompleted) {
+		progressPercent = 100;
+		progressLabel = "Case Analysis Completed";
+	} else if (isReview2Complete) {
+		progressPercent = 90;
+		progressLabel = "Review 2 Completed";
+	} else if (isReview2Started) {
+		progressPercent = r2Cms ? 85 : 75;
+		progressLabel = r2Cms ? "Review 2 Specialist Review" : "Review 2 Client Follow-up";
+	} else if (isReview1Complete) {
+		progressPercent = 75;
+		progressLabel = "Review 1 Concluded";
+	} else if (r1Cms) {
+		progressPercent = 55;
+		progressLabel = "Review 1 Specialist Review";
+	} else if (isAssignPhaseDone) {
+		progressPercent = 40;
+		progressLabel = "Review 1 Underway";
+	}
+
+	// Comprehensive case document aggregator
+	const getAllDocuments = () => {
+		const all = [];
+		const seenUrls = new Set();
+
+		const addDoc = (d, stage, badge, badgeColor) => {
+			if (!d || !d.name) return;
+			const key = d.url || d.name;
+			if (seenUrls.has(key)) return;
+			seenUrls.add(key);
+			all.push({
+				...d,
+				stage,
+				badge,
+				badgeColor,
+			});
+		};
+
+		(caseItem.documents || []).forEach((d) => {
+			const isVerified = (caseItem.selectedDocuments || []).some(
+				(sd) => sd.url === d.url || sd.name === d.name,
+			);
+			addDoc(
+				d,
+				"Initial Case",
+				isVerified ? "★ Verified" : "Initial",
+				isVerified ? "#059669" : "#64748b",
+			);
+		});
+
+		(caseItem.selectedDocuments || []).forEach((sd) => {
+			addDoc(sd, "Verified Evidence", "★ Verified", "#059669");
+		});
+
+		(r1Cms?.documents || []).forEach((d) => {
+			addDoc(d, "Review 1 (CMS)", "Review 1", "#2563eb");
+		});
+		(r1Sms?.documents || []).forEach((d) => {
+			addDoc(d, "Review 1 (SMS)", "Specialist R1", "#059669");
+		});
+		(r2Cms?.documents || []).forEach((d) => {
+			addDoc(d, "Review 2 (CMS)", "Review 2", "#7c3aed");
+		});
+		(r2Sms?.documents || []).forEach((d) => {
+			addDoc(d, "Review 2 (SMS)", "Specialist R2", "#059669");
+		});
+
+		(caseItem.chats || []).forEach((c) => {
+			if (Array.isArray(c.documents)) {
+				c.documents.forEach((d) => {
+					addDoc(
+						d,
+						c.phase === "review2" ? "Review 2" : "Review 1",
+						c.sender === "sms" ? "Specialist" : "Client",
+						c.sender === "sms" ? "#059669" : "#2563eb",
+					);
+				});
+			}
+		});
+
+		return all;
+	};
+
+	const allDocs = getAllDocuments();
+
+	const handleFileUpload = (e) => {
+		const files = Array.from(e.target.files || []);
+		if (!files.length) return;
+
+		for (const file of files) {
+			if (file.size > 100 * 1024 * 1024) {
+				alert(`File "${file.name}" exceeds 100MB.`);
+				continue;
+			}
+			const reader = new FileReader();
+			reader.onload = (event) => {
+				const base64Url = event.target.result;
+				const sizeMb = `${(file.size / (1024 * 1024)).toFixed(2)} MB`;
+				setPendingFiles((prev) => [
+					...prev,
+					{ name: file.name, size: sizeMb, url: base64Url },
+				]);
+			};
+			reader.readAsDataURL(file);
+		}
+		e.target.value = null;
+	};
+
+	const handleRemoveFile = (index) => {
+		setPendingFiles((prev) => prev.filter((_, i) => i !== index));
+	};
+
+	const handleSendReview = async () => {
+		if (!chatText.trim() && pendingFiles.length === 0) return;
+
 		setIsSending(true);
 		try {
-			const docs = pendingFile ? [pendingFile] : [];
-			await api.addChatMessage(caseItem.id, role, chatText, docs);
+			await api.addChatMessage(
+				caseItem.id,
+				role,
+				chatText.trim(),
+				pendingFiles,
+				currentActivePhase,
+			);
 			setChatText("");
-			setPendingFile(null);
+			setPendingFiles([]);
 			if (onRefresh) onRefresh();
 		} catch (err) {
 			alert(`Error sending message: ${err.message}`);
@@ -97,31 +688,318 @@ export default function CaseTimelineModal({
 		}
 	};
 
-	const handleFileUpload = (e) => {
-		const file = e.target.files[0];
-		if (!file) return;
+	// Start editing a sent message (supporting text and documents)
+	const handleStartEdit = (phase, currentText, currentFiles = []) => {
+		setEditingPhase(phase);
+		setEditText(currentText || "");
+		setEditFiles(Array.isArray(currentFiles) ? [...currentFiles] : []);
+		replaceFileIndexRef.current = null;
+	};
 
-		if (file.size > 100 * 1024 * 1024) {
-			alert(`File "${file.name}" exceeds the maximum allowed size.`);
-			e.target.value = null;
+	const handleCancelEdit = () => {
+		setEditingPhase(null);
+		setEditText("");
+		setEditFiles([]);
+		replaceFileIndexRef.current = null;
+	};
+
+	const handleEditFileUpload = (e) => {
+		const files = Array.from(e.target.files || []);
+		if (!files.length) return;
+
+		for (let idx = 0; idx < files.length; idx++) {
+			const file = files[idx];
+			if (file.size > 100 * 1024 * 1024) {
+				alert(`File "${file.name}" exceeds 100MB.`);
+				continue;
+			}
+			const reader = new FileReader();
+			const fileIdx = idx;
+			reader.onload = (event) => {
+				const base64Url = event.target.result;
+				const sizeMb = `${(file.size / (1024 * 1024)).toFixed(2)} MB`;
+				const newDoc = { name: file.name, size: sizeMb, url: base64Url };
+
+				setEditFiles((prev) => {
+					if (
+						replaceFileIndexRef.current !== null &&
+						replaceFileIndexRef.current >= 0 &&
+						replaceFileIndexRef.current < prev.length &&
+						fileIdx === 0
+					) {
+						const targetIdx = replaceFileIndexRef.current;
+						replaceFileIndexRef.current = null;
+						const updated = [...prev];
+						updated[targetIdx] = newDoc;
+						return updated;
+					}
+					return [...prev, newDoc];
+				});
+			};
+			reader.readAsDataURL(file);
+		}
+		e.target.value = null;
+	};
+
+	const handleRemoveEditFile = (index) => {
+		setEditFiles((prev) => prev.filter((_, i) => i !== index));
+	};
+
+	const handleTriggerReplaceFile = (index) => {
+		replaceFileIndexRef.current = index;
+		if (editFileInputRef.current) {
+			editFileInputRef.current.click();
+		}
+	};
+
+	const handleTriggerAddFile = () => {
+		replaceFileIndexRef.current = null;
+		if (editFileInputRef.current) {
+			editFileInputRef.current.click();
+		}
+	};
+
+	const handleSaveEdit = async (phase) => {
+		if (!editText.trim() && editFiles.length === 0) {
+			alert("Message text or at least one file attachment is required.");
 			return;
 		}
+		setIsSavingEdit(true);
+		try {
+			await api.editChatMessage(
+				caseItem.id,
+				phase,
+				role,
+				editText.trim(),
+				editFiles,
+			);
+			setEditingPhase(null);
+			setEditText("");
+			setEditFiles([]);
+			replaceFileIndexRef.current = null;
+			showNotification("Message and attachments updated successfully", "success");
+			if (onRefresh) onRefresh();
+		} catch (err) {
+			alert(`Error updating message: ${err.message}`);
+		} finally {
+			setIsSavingEdit(false);
+		}
+	};
 
-		// Reset input
-		e.target.value = null;
+	const renderEditForm = (phase, isDarkBubble = false) => {
+		return (
+			<div
+				ref={editFormRef}
+				style={{
+					display: "flex",
+					flexDirection: "column",
+					gap: "0.75rem",
+					marginTop: "0.4rem",
+					background: isDarkBubble ? "rgba(0,0,0,0.22)" : "#ffffff",
+					border: isDarkBubble ? "1px solid rgba(255,255,255,0.18)" : "1px solid #a7f3d0",
+					borderRadius: "8px",
+					padding: "0.95rem 1.15rem",
+					width: "100%",
+					minWidth: "min(100%, 750px)",
+					boxSizing: "border-box",
+				}}
+			>
+				<textarea
+					value={editText}
+					onChange={(e) => setEditText(e.target.value)}
+					placeholder="Edit reply text..."
+					style={{
+						width: "100%",
+						padding: "0.75rem 0.95rem",
+						borderRadius: "6px",
+						border: isDarkBubble ? "1px solid #475569" : "1px solid #10b981",
+						background: "#ffffff",
+						color: "#064e3b",
+						fontSize: "0.95rem",
+						lineHeight: 1.6,
+						fontFamily: "inherit",
+						resize: "vertical",
+						minHeight: "75px",
+						maxHeight: "140px",
+						outline: "none",
+						boxSizing: "border-box",
+					}}
+				/>
 
-		const reader = new FileReader();
-		reader.onload = async (event) => {
-			const base64Url = event.target.result;
-			const sizeMb = `${(file.size / (1024 * 1024)).toFixed(2)} MB`;
+				{/* Attached files management in edit mode */}
+				<div style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
+					<div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+						<span style={{ fontSize: "0.72rem", color: "#047857", fontWeight: 600 }}>
+							Attached Files ({editFiles.length})
+						</span>
+						<button
+							type="button"
+							onClick={handleTriggerAddFile}
+							style={{
+								background: "rgba(16, 185, 129, 0.12)",
+								border: "none",
+								color: "#047857",
+								padding: "3px 9px",
+								borderRadius: "4px",
+								fontSize: "0.72rem",
+								fontWeight: 600,
+								cursor: "pointer",
+								display: "inline-flex",
+								alignItems: "center",
+								gap: "0.3rem",
+							}}
+							title="Add another file"
+						>
+							<Icons.Paperclip />
+							<span>+ Add File</span>
+						</button>
+					</div>
 
-			setPendingFile({
-				name: file.name,
-				size: sizeMb,
-				url: base64Url,
-			});
-		};
-		reader.readAsDataURL(file);
+					{editFiles.length > 0 ? (
+						<div style={{ display: "flex", flexWrap: "wrap", gap: "0.4rem", marginTop: "2px" }}>
+							{editFiles.map((f, fi) => (
+								<div
+									key={`${f.name}-${fi}`}
+									style={{
+										display: "inline-flex",
+										alignItems: "center",
+										gap: "0.35rem",
+										background: "#f0fdf4",
+										border: "1px solid #a7f3d0",
+										padding: "0.22rem 0.5rem",
+										borderRadius: "4px",
+										fontSize: "0.72rem",
+										color: "#064e3b",
+									}}
+								>
+									<Icons.File />
+									<span
+										style={{ maxWidth: "150px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}
+										title={f.name}
+									>
+										{f.name} {f.size ? `(${f.size})` : ""}
+									</span>
+									<button
+										type="button"
+										onClick={() => handleTriggerReplaceFile(fi)}
+										style={{
+											background: "rgba(16, 185, 129, 0.18)",
+											border: "none",
+											color: "#047857",
+											padding: "2px 6px",
+											borderRadius: "3px",
+											fontSize: "0.68rem",
+											fontWeight: 600,
+											cursor: "pointer",
+										}}
+										title="Replace this file with another file"
+									>
+										Replace
+									</button>
+									<button
+										type="button"
+										onClick={() => handleRemoveEditFile(fi)}
+										style={{
+											background: "none",
+											border: "none",
+											color: "#ef4444",
+											padding: "0 2px",
+											fontSize: "0.85rem",
+											lineHeight: 1,
+											cursor: "pointer",
+											fontWeight: 700,
+										}}
+										title="Remove this file"
+									>
+										✕
+									</button>
+								</div>
+							))}
+						</div>
+					) : (
+						<span style={{ fontSize: "0.7rem", color: "#64748b", fontStyle: "italic" }}>
+							No files attached. Use "+ Add File" to attach documents.
+						</span>
+					)}
+				</div>
+
+				{/* Form action buttons */}
+				<div style={{ display: "flex", gap: "0.45rem", justifyContent: "flex-end", marginTop: "0.2rem" }}>
+					<button
+						type="button"
+						onClick={handleCancelEdit}
+						disabled={isSavingEdit}
+						style={{
+							background: "#f1f5f9",
+							border: "1px solid #cbd5e1",
+							color: "#475569",
+							borderRadius: "4px",
+							padding: "4px 10px",
+							fontSize: "0.74rem",
+							fontWeight: 500,
+							cursor: "pointer",
+						}}
+					>
+						Cancel
+					</button>
+					<button
+						type="button"
+						onClick={() => handleSaveEdit(phase)}
+						disabled={isSavingEdit}
+						style={{
+							background: "#10b981",
+							border: "none",
+							color: "#ffffff",
+							borderRadius: "4px",
+							padding: "4px 12px",
+							fontSize: "0.74rem",
+							fontWeight: 600,
+							cursor: "pointer",
+							boxShadow: "0 1px 2px rgba(16, 185, 129, 0.3)",
+						}}
+					>
+						{isSavingEdit ? "Saving..." : "Save Changes"}
+					</button>
+				</div>
+			</div>
+		);
+	};
+
+	const handleProceedToReview2 = async () => {
+		setIsActing(true);
+		try {
+			await api.handleReviewAction(
+				caseItem.id,
+				"proceed_review2",
+				role,
+				"Proceeded to Review 2",
+			);
+			setActivePage("review2");
+			if (onRefresh) onRefresh();
+		} catch (err) {
+			alert(`Error: ${err.message}`);
+		} finally {
+			setIsActing(false);
+		}
+	};
+
+	const handleEndCase = async () => {
+		if (!window.confirm("Conclude and mark this case as Completed?")) return;
+		setIsActing(true);
+		try {
+			await api.handleReviewAction(
+				caseItem.id,
+				"end_case",
+				role,
+				"Case completed after review",
+			);
+			setActivePage("complete");
+			if (onRefresh) onRefresh();
+		} catch (err) {
+			alert(`Error: ${err.message}`);
+		} finally {
+			setIsActing(false);
+		}
 	};
 
 	const handleCompleteCase = async () => {
@@ -134,11 +1012,9 @@ export default function CaseTimelineModal({
 			await api.completeCase(caseItem.id, currentUser?.smsId, smsPassword);
 			setSmsPassword("");
 			setShowPasswordPrompt(false);
+			setActivePage("complete");
 			if (onRefresh) onRefresh();
 			if (onClose) onClose();
-			alert(
-				"Case completed successfully. It has been moved to the Completed tab.",
-			);
 		} catch (err) {
 			alert(`Error: ${err.message}`);
 		} finally {
@@ -146,12 +1022,223 @@ export default function CaseTimelineModal({
 		}
 	};
 
-	const isChatActive =
-		caseItem.status === "Approved" || caseItem.status === "AI Output Submitted";
+	const renderInputBar = (placeholderText) => {
+		if (isCaseCompleted) {
+			return (
+				<div
+					style={{
+						textAlign: "center",
+						fontSize: "0.78rem",
+						color: "#059669",
+						fontWeight: 500,
+						padding: "0.35rem 0",
+						display: "flex",
+						alignItems: "center",
+						justifyContent: "center",
+						gap: "0.35rem",
+					}}
+				>
+					<Icons.Check /> Case analysis is completed. Communication history is closed.
+				</div>
+			);
+		}
+
+		if (!isChatActive) {
+			return (
+				<div
+					style={{
+						textAlign: "center",
+						fontSize: "0.78rem",
+						color: "#64748b",
+						padding: "0.35rem 0",
+					}}
+				>
+					Case is not open for active review messaging.
+				</div>
+			);
+		}
+
+		if (isMyTurn) {
+			return (
+				<div style={{ display: "flex", flexDirection: "column", gap: "0.4rem" }}>
+					{/* Pending files list */}
+					{pendingFiles.length > 0 && (
+						<div style={{ display: "flex", flexWrap: "wrap", gap: "0.35rem" }}>
+							{pendingFiles.map((f, i) => (
+								<div
+									key={`${f.name}-${f.size}-${i}`}
+									style={{
+										display: "inline-flex",
+										alignItems: "center",
+										gap: "0.35rem",
+										background: "#ecfdf5",
+										border: "1px solid #a7f3d0",
+										padding: "0.2rem 0.5rem",
+										borderRadius: "4px",
+										fontSize: "0.72rem",
+										color: "#064e3b",
+									}}
+								>
+									<Icons.File />
+									<span>{f.name}</span>
+									<button
+										type="button"
+										onClick={() => handleRemoveFile(i)}
+										style={{
+											background: "none",
+											border: "none",
+											color: "#dc2626",
+											cursor: "pointer",
+											fontSize: "0.9rem",
+											lineHeight: 1,
+											display: "inline-flex",
+											padding: 0,
+											marginLeft: "2px",
+										}}
+										title="Remove file"
+									>
+										&times;
+									</button>
+								</div>
+							))}
+						</div>
+					)}
+
+					<div style={{ display: "flex", gap: "0.45rem", alignItems: "flex-end" }}>
+						<input
+							type="file"
+							ref={fileInputRef}
+							style={{ display: "none" }}
+							multiple
+							onChange={handleFileUpload}
+						/>
+						<button
+							type="button"
+							onClick={() => fileInputRef.current?.click()}
+							style={{
+								background: "#f8fafc",
+								border: "1px solid #cbd5e1",
+								borderRadius: "6px",
+								width: "44px",
+								height: "44px",
+								cursor: "pointer",
+								display: "flex",
+								alignItems: "center",
+								justifyContent: "center",
+								color: "#475569",
+								transition: "all 0.15s ease",
+								flexShrink: 0,
+							}}
+							title="Attach document / file"
+							onMouseEnter={(e) => {
+								e.currentTarget.style.background = "#e2e8f0";
+								e.currentTarget.style.color = "#0f172a";
+							}}
+							onMouseLeave={(e) => {
+								e.currentTarget.style.background = "#f8fafc";
+								e.currentTarget.style.color = "#475569";
+							}}
+						>
+							<Icons.Paperclip />
+						</button>
+
+						<textarea
+							value={chatText}
+							onChange={(e) => setChatText(e.target.value)}
+							placeholder={placeholderText}
+							style={{
+								flex: 1,
+								padding: "0.7rem 0.95rem",
+								border: "1px solid #cbd5e1",
+								borderRadius: "6px",
+								resize: "vertical",
+								outline: "none",
+								fontSize: "0.92rem",
+								fontFamily: "inherit",
+								minHeight: "56px",
+								maxHeight: "130px",
+								background: "#ffffff",
+								color: "#0f172a",
+								lineHeight: 1.5,
+							}}
+							onFocus={(e) => {
+								e.target.style.border = "1px solid #10b981";
+								e.target.style.boxShadow = "0 0 0 2px rgba(16, 185, 129, 0.12)";
+							}}
+							onBlur={(e) => {
+								e.target.style.border = "1px solid #cbd5e1";
+								e.target.style.boxShadow = "none";
+							}}
+							onKeyDown={(e) => {
+								if (e.key === "Enter" && !e.shiftKey) {
+									e.preventDefault();
+									handleSendReview();
+								}
+							}}
+						/>
+
+						<button
+							type="button"
+							onClick={handleSendReview}
+							disabled={isSending || (!chatText.trim() && pendingFiles.length === 0)}
+							style={{
+								background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+								color: "#ffffff",
+								border: "none",
+								borderRadius: "6px",
+								padding: "0 1.5rem",
+								height: "44px",
+								fontWeight: 600,
+								fontFamily: "'Outfit', sans-serif",
+								fontSize: "0.88rem",
+								cursor:
+									isSending || (!chatText.trim() && pendingFiles.length === 0)
+										? "not-allowed"
+										: "pointer",
+								opacity:
+									isSending || (!chatText.trim() && pendingFiles.length === 0)
+										? 0.4
+										: 1,
+								flexShrink: 0,
+								display: "inline-flex",
+								alignItems: "center",
+								gap: "0.4rem",
+								boxShadow: "0 1px 3px rgba(16, 185, 129, 0.25)",
+							}}
+						>
+							<span>{isSending ? "Sending..." : "Send Reply"}</span>
+							{!isSending && <Icons.Send />}
+						</button>
+					</div>
+				</div>
+			);
+		}
+
+		return (
+			<div
+				style={{
+					textAlign: "center",
+					fontSize: "0.78rem",
+					color: "#64748b",
+					padding: "0.4rem 0",
+					background: "#f8fafc",
+					border: "1px dashed #cbd5e1",
+					borderRadius: "4px",
+					display: "flex",
+					alignItems: "center",
+					justifyContent: "center",
+					gap: "0.35rem",
+				}}
+			>
+				<Icons.Clock />
+				<span>Waiting for client details submission...</span>
+			</div>
+		);
+	};
 
 	return (
 		<div
-			className="modal-backdrop"
+			className="modal-backdrop-formal"
 			onClick={(e) => {
 				if (e.target === e.currentTarget) onClose();
 			}}
@@ -167,147 +1254,245 @@ export default function CaseTimelineModal({
 				alignItems: "center",
 				justifyContent: "center",
 				padding: "1rem",
-				backgroundColor: "rgba(0, 0, 0, 0.6)",
+				backgroundColor: "rgba(15, 23, 42, 0.45)",
+				backdropFilter: "blur(6px)",
 				overscrollBehavior: "contain",
+				fontFamily: '"Plus Jakarta Sans", "Inter", -apple-system, sans-serif',
 			}}
 		>
 			<div
-				className="modal-window"
+				className="modal-window-formal"
 				style={{
-					maxWidth: "650px",
-					width: "100%",
-					height: "auto",
-					maxHeight: "92vh",
+					position: "relative",
+					maxWidth: "1380px",
+					width: "98vw",
+					height: "95vh",
+					maxHeight: "960px",
 					padding: "0",
-					borderRadius: "12px",
-					boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
+					borderRadius: "8px",
+					boxShadow: "0 20px 30px -10px rgba(0, 0, 0, 0.12), 0 10px 15px -5px rgba(0, 0, 0, 0.05)",
 					overflow: "hidden",
-					overscrollBehavior: "contain",
 					background: "#ffffff",
+					border: "1px solid #e2e8f0",
 					display: "flex",
 					flexDirection: "column",
 				}}
 			>
-				{/* Header */}
+				{/* Floating Notification Toast */}
+				{notification && (
+					<div
+						style={{
+							position: "absolute",
+							top: "14px",
+							left: "50%",
+							transform: "translateX(-50%)",
+							zIndex: 1100,
+							background:
+								notification.type === "error"
+									? "#fee2e2"
+									: notification.type === "info"
+										? "#eff6ff"
+										: "#ecfdf5",
+							color:
+								notification.type === "error"
+									? "#991b1b"
+									: notification.type === "info"
+										? "#1d4ed8"
+										: "#065f46",
+							border:
+								notification.type === "error"
+									? "1px solid #f87171"
+									: notification.type === "info"
+										? "1px solid #93c5fd"
+										: "1px solid #6ee7b7",
+							padding: "0.45rem 1.1rem",
+							borderRadius: "6px",
+							fontSize: "0.82rem",
+							fontWeight: 600,
+							boxShadow: "0 4px 16px rgba(0, 0, 0, 0.15)",
+							display: "inline-flex",
+							alignItems: "center",
+							gap: "0.45rem",
+							pointerEvents: "none",
+						}}
+					>
+						<span>{notification.type === "error" ? "⚠️" : notification.type === "info" ? "ℹ️" : "✓"}</span>
+						<span>{notification.text}</span>
+					</div>
+				)}
+
+				{/* Top Header - Formal SMS Legal Desk Header */}
 				<div
 					style={{
 						display: "flex",
 						justifyContent: "space-between",
 						alignItems: "center",
-						background: "#f8fafc",
-						borderBottom: "1px solid #e2e8f0",
-						padding: "clamp(0.85rem, 3vw, 1.25rem) clamp(1rem, 3vw, 1.5rem)",
+						background: "#0f172a",
+						borderBottom: "1px solid #1e293b",
+						padding: "0.85rem 1.4rem",
+						color: "#ffffff",
 					}}
 				>
-					<div>
-						<h2
+					<div
+						style={{
+							display: "flex",
+							alignItems: "center",
+							gap: "0.85rem",
+							minWidth: 0,
+						}}
+					>
+						<img
+							src="/sms-icon-transparent.png"
+							alt="SMS Logo"
 							style={{
-								fontSize: "1.25rem",
-								margin: 0,
-								fontWeight: 700,
-								color: "#1e293b",
-								display: "flex",
-								alignItems: "center",
-								gap: "0.5rem",
-								fontFamily: "serif",
+								width: "36px",
+								height: "36px",
+								objectFit: "contain",
+								borderRadius: "4px",
+								flexShrink: 0,
+								background: "#ffffff",
+								padding: "2px",
 							}}
-						>
-							<svg
-								width="20"
-								height="20"
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="currentColor"
-								strokeWidth="2.5"
-								strokeLinecap="round"
-								strokeLinejoin="round"
-								style={{ color: "#3b82f6" }}
+						/>
+						<div style={{ minWidth: 0 }}>
+							<div
+								style={{
+									display: "flex",
+									alignItems: "center",
+									gap: "0.5rem",
+								}}
 							>
-								<title>Client Icon</title>
-								<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-								<circle cx="12" cy="7" r="4"></circle>
-							</svg>
-							{(caseItem.title ? `${caseItem.title} ` : "") + (caseItem.clientName || "Unknown Client")}
-						</h2>
-						<div
-							style={{
-								fontSize: "0.8rem",
-								color: "#64748b",
-								marginTop: "0.25rem",
-								fontWeight: 500,
-							}}
-						>
-							Client ID:{" "}
-							<strong style={{ color: "#334155" }}>
-								{caseItem.clientId || "N/A"}
-							</strong>{" "}
-							&nbsp;|&nbsp; Case ID:{" "}
-							<strong style={{ color: "#334155" }}>{caseItem.id}</strong>
-							&nbsp;|&nbsp; Type:{" "}
-							<strong style={{ color: "#334155" }}>{caseItem.clientType || "Individual"}</strong>
+								<h2
+									style={{
+										fontSize: "1.05rem",
+										fontFamily: "'Outfit', sans-serif",
+										margin: 0,
+										fontWeight: 700,
+										color: "#ffffff",
+										letterSpacing: "0.02em",
+									}}
+								>
+									CASE ANALYSIS TIMELINE
+								</h2>
+								<span
+									style={{
+										fontSize: "0.68rem",
+										fontWeight: 600,
+										padding: "2px 7px",
+										borderRadius: "4px",
+										color:
+											caseItem.status === "Completed"
+												? "#34d399"
+												: caseItem.status === "Approved"
+													? "#38bdf8"
+													: "#fbbf24",
+										background:
+											caseItem.status === "Completed"
+												? "rgba(16, 185, 129, 0.15)"
+												: caseItem.status === "Approved"
+													? "rgba(56, 189, 248, 0.15)"
+													: "rgba(245, 158, 11, 0.15)",
+										border:
+											caseItem.status === "Completed"
+												? "1px solid rgba(16, 185, 129, 0.3)"
+												: caseItem.status === "Approved"
+													? "1px solid rgba(56, 189, 248, 0.3)"
+													: "1px solid rgba(245, 158, 11, 0.25)",
+									}}
+								>
+									{caseItem.status === "Approved"
+										? "UNDER REVIEW"
+										: caseItem.status.toUpperCase()}
+								</span>
+							</div>
+							<div
+								style={{
+									fontSize: "0.74rem",
+									color: "#94a3b8",
+									marginTop: "2px",
+								}}
+							>
+								Case: <strong style={{ color: "#ffffff" }}>{caseItem.id}</strong> | Client ID:{" "}
+								<strong style={{ color: "#ffffff" }}>{caseItem.clientId || "N/A"}</strong> | (
+								{caseItem.title ? `${caseItem.title} ` : ""}
+								{caseItem.clientName})
+							</div>
 						</div>
 					</div>
-					<div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-						{isChatActive && role === "sms" && (
+
+					<div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
+						{isChatActive && role === "sms" && !isCaseCompleted && (
 							<div style={{ position: "relative" }}>
 								<button
 									type="button"
 									onClick={() => setShowPasswordPrompt(!showPasswordPrompt)}
 									style={{
-										background: "#10b981",
-										color: "#fff",
+										background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+										color: "#ffffff",
 										border: "none",
-										padding: "0.4rem 0.75rem",
-										borderRadius: "6px",
+										padding: "0.45rem 0.85rem",
+										borderRadius: "4px",
 										fontSize: "0.78rem",
 										fontWeight: 600,
+										fontFamily: "'Outfit', sans-serif",
 										cursor: "pointer",
-										whiteSpace: "nowrap",
+										display: "inline-flex",
+										alignItems: "center",
+										gap: "0.35rem",
+										boxShadow: "0 2px 4px rgba(16, 185, 129, 0.2)",
 									}}
 								>
-									Complete Case ✓
+									<Icons.Check />
+									<span>Complete Case</span>
 								</button>
+
+								{/* SMS Password Verification Popover */}
 								{showPasswordPrompt && (
 									<div
 										style={{
 											position: "absolute",
 											top: "120%",
 											right: "0",
-											background: "#fff",
+											background: "#ffffff",
 											border: "1px solid #e2e8f0",
-											borderRadius: "8px",
+											borderRadius: "6px",
 											padding: "1rem",
-											boxShadow: "0 10px 15px -3px rgba(0,0,0,0.1)",
-											zIndex: 10,
+											boxShadow: "0 10px 25px -5px rgba(0,0,0,0.2)",
+											zIndex: 50,
 											width: "250px",
 										}}
 									>
 										<div
 											style={{
-												fontSize: "0.8rem",
-												fontWeight: 600,
-												color: "#334155",
+												fontSize: "0.78rem",
+												fontWeight: 700,
+												color: "#0f172a",
 												marginBottom: "0.5rem",
+												display: "flex",
+												alignItems: "center",
+												gap: "0.35rem",
+												textTransform: "uppercase",
+												letterSpacing: "0.04em",
 											}}
 										>
-											Enter SMS Password
+											<Icons.Lock />
+											<span>Enter SMS Password</span>
 										</div>
-										<div
-											style={{ position: "relative", marginBottom: "0.75rem" }}
-										>
+										<div style={{ position: "relative", marginBottom: "0.6rem" }}>
 											<input
 												type={showPassword ? "text" : "password"}
 												value={smsPassword}
 												onChange={(e) => setSmsPassword(e.target.value)}
-												placeholder="Password"
+												placeholder="Specialist password"
 												style={{
 													width: "100%",
 													padding: "0.5rem",
-													paddingRight: "2rem",
+													paddingRight: "2.2rem",
 													border: "1px solid #cbd5e1",
-													borderRadius: "6px",
-													boxSizing: "border-box",
+													borderRadius: "4px",
+													fontSize: "0.85rem",
 													outline: "none",
+													fontFamily: "inherit",
 												}}
 												onKeyDown={(e) => {
 													if (e.key === "Enter") handleCompleteCase();
@@ -326,65 +1511,24 @@ export default function CaseTimelineModal({
 													cursor: "pointer",
 													color: "#64748b",
 													display: "flex",
-													alignItems: "center",
-													justifyContent: "center",
-													padding: "0.2rem",
+													padding: 0,
 												}}
-												title={showPassword ? "Hide password" : "Show password"}
 											>
-												{showPassword ? (
-													<svg
-														width="18"
-														height="18"
-														viewBox="0 0 24 24"
-														fill="none"
-														stroke="currentColor"
-														strokeWidth="2"
-														strokeLinecap="round"
-														strokeLinejoin="round"
-													>
-														<title>Hide password</title>
-														<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
-														<line x1="1" y1="1" x2="23" y2="23"></line>
-													</svg>
-												) : (
-													<svg
-														width="18"
-														height="18"
-														viewBox="0 0 24 24"
-														fill="none"
-														stroke="currentColor"
-														strokeWidth="2"
-														strokeLinecap="round"
-														strokeLinejoin="round"
-													>
-														<title>Show password</title>
-														<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-														<circle cx="12" cy="12" r="3"></circle>
-													</svg>
-												)}
+												{showPassword ? <Icons.EyeOff /> : <Icons.Eye />}
 											</button>
 										</div>
-										<div
-											style={{
-												display: "flex",
-												gap: "0.5rem",
-												justifyContent: "flex-end",
-											}}
-										>
+										<div style={{ display: "flex", gap: "0.4rem", justifyContent: "flex-end" }}>
 											<button
 												type="button"
-												onClick={() => {
-													setShowPasswordPrompt(false);
-													setSmsPassword("");
-												}}
+												onClick={() => setShowPasswordPrompt(false)}
 												style={{
 													background: "#f1f5f9",
 													color: "#475569",
-													border: "none",
-													padding: "0.35rem 0.75rem",
+													border: "1px solid #cbd5e1",
+													padding: "0.3rem 0.65rem",
 													borderRadius: "4px",
 													cursor: "pointer",
+													fontSize: "0.74rem",
 												}}
 											>
 												Cancel
@@ -394,847 +1538,1744 @@ export default function CaseTimelineModal({
 												onClick={handleCompleteCase}
 												disabled={isCompleting || !smsPassword}
 												style={{
-													background: "#3b82f6",
-													color: "#fff",
+													background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+													color: "#ffffff",
 													border: "none",
-													padding: "0.35rem 0.75rem",
+													padding: "0.3rem 0.75rem",
 													borderRadius: "4px",
 													cursor: "pointer",
-													opacity: isCompleting || !smsPassword ? 0.6 : 1,
+													fontSize: "0.74rem",
+													fontWeight: 600,
 												}}
 											>
-												{isCompleting ? "..." : "Submit"}
+												{isCompleting ? "Verifying..." : "Confirm"}
 											</button>
 										</div>
 									</div>
 								)}
 							</div>
 						)}
+
 						<button
 							type="button"
 							onClick={onClose}
 							style={{
-								background: "none",
-								border: "none",
-								color: "#94a3b8",
-								fontSize: "1.75rem",
+								background: "rgba(255, 255, 255, 0.08)",
+								border: "1px solid rgba(255, 255, 255, 0.18)",
+								color: "#cbd5e1",
 								cursor: "pointer",
-								lineHeight: 1,
-								padding: 0,
+								display: "flex",
+								alignItems: "center",
+								justifyContent: "center",
+								gap: "0.35rem",
+								padding: "0.45rem 0.95rem",
+								borderRadius: "6px",
+								fontSize: "0.82rem",
+								fontWeight: 600,
+								transition: "all 0.15s ease",
 							}}
-							onMouseOver={(e) => (e.target.style.color = "#ef4444")}
-							onMouseOut={(e) => (e.target.style.color = "#94a3b8")}
-							onFocus={(e) => (e.target.style.color = "#ef4444")}
-							onBlur={(e) => (e.target.style.color = "#94a3b8")}
+							title="Exit / Close Case Analysis (Esc)"
+							onMouseEnter={(e) => {
+								e.currentTarget.style.background = "rgba(239, 68, 68, 0.25)";
+								e.currentTarget.style.borderColor = "rgba(239, 68, 68, 0.5)";
+								e.currentTarget.style.color = "#ffffff";
+							}}
+							onMouseLeave={(e) => {
+								e.currentTarget.style.background = "rgba(255, 255, 255, 0.08)";
+								e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.18)";
+								e.currentTarget.style.color = "#cbd5e1";
+							}}
 						>
-							&times;
+							<Icons.Close />
+							<span>Exit</span>
 						</button>
 					</div>
 				</div>
 
-				{/* Timeline Body */}
+				{/* 4-Phase Stepper Top Bar: 1. Case Assign -> 2. Review 1 -> 3. Review 2 (Opt) -> 4. Complete Analysis */}
 				<div
 					style={{
-						position: "relative",
-						padding: "clamp(1rem, 3vw, 2rem) clamp(1rem, 3vw, 1.5rem)",
-						overflowY: "auto",
-						overscrollBehavior: "contain",
-						WebkitOverflowScrolling: "touch",
-						background: "#f1f5f9",
-						flex: 1,
-						display: "flex",
-						flexDirection: "column",
-						gap: "1.5rem",
+						background: "#f8fafc",
+						borderBottom: "1px solid #e2e8f0",
+						padding: "0.7rem 1.4rem",
 					}}
 				>
-					{/* CMS Request Bubble */}
 					<div
 						style={{
 							display: "flex",
-							flexDirection: "column",
-							alignItems: "flex-start",
+							justifyContent: "space-between",
+							alignItems: "center",
+							marginBottom: "0.45rem",
+							fontSize: "0.75rem",
+						}}
+					>
+						<span style={{ fontWeight: 600, color: "#475569", textTransform: "uppercase", letterSpacing: "0.04em", fontSize: "0.72rem" }}>
+							Case Analysis Process
+						</span>
+						<span
+							style={{
+								fontWeight: 600,
+								color: isCaseCompleted ? "#059669" : "#0f172a",
+								background: isCaseCompleted ? "#ecfdf5" : "#f1f5f9",
+								border: isCaseCompleted ? "1px solid #a7f3d0" : "1px solid #cbd5e1",
+								padding: "1px 8px",
+								borderRadius: "4px",
+								fontSize: "0.72rem",
+							}}
+						>
+							{progressLabel} • {progressPercent}%
+						</span>
+					</div>
+
+					{/* Visual Progress Bar Track */}
+					<div
+						style={{
+							width: "100%",
+							height: "6px",
+							background: "#e2e8f0",
+							borderRadius: "999px",
+							overflow: "hidden",
 						}}
 					>
 						<div
 							style={{
-								background: "#ffffff",
-								border: "1px solid #e2e8f0",
-								padding: "1.25rem",
-								borderRadius: "12px 12px 12px 0",
-								boxShadow: "0 2px 4px rgba(0,0,0,0.04)",
-								maxWidth: "90%",
+								width: `${progressPercent}%`,
+								height: "100%",
+								background: isCaseCompleted
+									? "#059669"
+									: "linear-gradient(90deg, #10b981 0%, #059669 100%)",
+								borderRadius: "999px",
+								transition: "width 0.4s ease",
 							}}
-						>
-							<div
-								style={{
-									display: "flex",
-									alignItems: "center",
-									gap: "0.5rem",
-									marginBottom: "0.5rem",
-								}}
-							>
-								<div
+						/>
+					</div>
+
+					{/* 4 Interactive Phase Tabs (Page-by-Page Navigation) */}
+					<div
+						style={{
+							display: "grid",
+							gridTemplateColumns: "repeat(4, 1fr)",
+							gap: "0.45rem",
+							marginTop: "0.55rem",
+						}}
+					>
+						{[
+							{ id: "assign", num: 1, label: "1. Assign", done: isAssignPhaseDone },
+							{ id: "review1", num: 2, label: "2. Review 1", done: isReview1Complete },
+							{ id: "review2", num: 3, label: "3. Review 2", done: isReview2Complete },
+							{ id: "complete", num: 4, label: "4. Complete", done: isCaseCompleted },
+						].map((tab) => {
+							const isActive = activePage === tab.id;
+							return (
+								<button
+									key={tab.id}
+									type="button"
+									onClick={() => setActivePage(tab.id)}
 									style={{
-										width: "28px",
-										height: "28px",
-										borderRadius: "50%",
-										background: "#eff6ff",
 										display: "flex",
 										alignItems: "center",
 										justifyContent: "center",
-										color: "#3b82f6",
+										gap: "0.45rem",
+										padding: "0.48rem 0.65rem",
+										borderRadius: "6px",
+										border: isActive
+											? "1.5px solid #059669"
+											: tab.done
+												? "1px solid #a7f3d0"
+												: "1px solid #e2e8f0",
+										background: isActive
+											? "#059669"
+											: tab.done
+												? "#f0fdf4"
+												: "#ffffff",
+										color: isActive
+											? "#ffffff"
+											: tab.done
+												? "#059669"
+												: "#64748b",
+										fontSize: "0.78rem",
+										fontWeight: isActive || tab.done ? 700 : 500,
+										cursor: "pointer",
+										transition: "all 0.15s ease",
+										boxShadow: isActive ? "0 2px 4px rgba(5, 150, 105, 0.2)" : "none",
 									}}
 								>
-									<svg
-										width="14"
-										height="14"
-										viewBox="0 0 24 24"
-										fill="none"
-										stroke="currentColor"
-										strokeWidth="2.5"
-									>
-										<title>CMS Icon</title>
-										<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-										<circle cx="12" cy="7" r="4"></circle>
-									</svg>
-								</div>
-								<div>
-									<div
+									<span
 										style={{
-											fontSize: "0.85rem",
-											color: "#1e293b",
+											width: "18px",
+											height: "18px",
+											borderRadius: "50%",
+											display: "inline-flex",
+											alignItems: "center",
+											justifyContent: "center",
+											fontSize: "0.66rem",
 											fontWeight: 700,
+											background: isActive
+												? "rgba(255,255,255,0.22)"
+												: tab.done
+													? "#10b981"
+													: "#e2e8f0",
+											color: isActive
+												? "#ffffff"
+												: tab.done
+													? "#ffffff"
+													: "#475569",
+											flexShrink: 0,
 										}}
 									>
-										CMS Registration
-									</div>
-									<div style={{ fontSize: "0.7rem", color: "#64748b" }}>
-										{formatDate(caseItem.createdAt)}
-									</div>
-								</div>
-							</div>
-
-							{/* Case Meta Box */}
-							<div
-								style={{
-									background: "#f8fafc",
-									border: "1px solid #e2e8f0",
-									borderRadius: "8px",
-									padding: "0.75rem",
-									marginBottom: "0.75rem",
-									display: "grid",
-									gridTemplateColumns: "repeat(auto-fit, minmax(130px, 1fr))",
-									gap: "0.5rem",
-									fontSize: "0.78rem",
-								}}
-							>
-								<div>
-									<div style={{ color: "#64748b", fontWeight: 700, fontSize: "0.7rem", textTransform: "uppercase" }}>
-										Applicant
-									</div>
-									<div style={{ fontWeight: 600, color: "#1e293b" }}>
-										{caseItem.title && !caseItem.clientName?.toLowerCase().startsWith(caseItem.title.toLowerCase()) ? `${caseItem.title} ` : ""}{caseItem.clientName}
-									</div>
-								</div>
-								<div>
-									<div style={{ color: "#64748b", fontWeight: 700, fontSize: "0.7rem", textTransform: "uppercase" }}>
-										Type
-									</div>
-									<div style={{ fontWeight: 600, color: "#1e293b" }}>
-										{caseItem.clientType || "Individual"}
-									</div>
-								</div>
-								<div>
-									<div style={{ color: "#64748b", fontWeight: 700, fontSize: "0.7rem", textTransform: "uppercase" }}>
-										Vertical
-									</div>
-									<div style={{ fontWeight: 600, color: "#1e293b" }}>
-										{caseItem.caseVertical || caseItem.category || "MSME"}
-									</div>
-								</div>
-								<div>
-									<div style={{ color: "#64748b", fontWeight: 700, fontSize: "0.7rem", textTransform: "uppercase" }}>
-										Category
-									</div>
-									<div style={{ fontWeight: 600, color: "#1e293b" }}>
-										{caseItem.caseCategory || caseItem.caseKeywords || "Deputation Related"}
-									</div>
-								</div>
-							</div>
-
-							<div>
-								<div
-									style={{
-										fontSize: "0.72rem",
-										color: "#64748b",
-										textTransform: "uppercase",
-										fontWeight: 700,
-										marginBottom: "0.25rem",
-									}}
-								>
-									Case Brief
-								</div>
-								<div
-									style={{
-										fontSize: "0.9rem",
-										color: "#334155",
-										lineHeight: 1.6,
-										whiteSpace: "pre-wrap",
-									}}
-								>
-									{caseItem.details}
-								</div>
-							</div>
-
-							{caseItem.summary && (
-								<div style={{ marginTop: "0.75rem", paddingTop: "0.6rem", borderTop: "1px dashed #e2e8f0" }}>
-									<div
-										style={{
-											fontSize: "0.72rem",
-											color: "#64748b",
-											textTransform: "uppercase",
-											fontWeight: 700,
-											marginBottom: "0.25rem",
-										}}
-									>
-										Case Summary
-									</div>
-									<div
-										style={{
-											fontSize: "0.88rem",
-											color: "#334155",
-											lineHeight: 1.6,
-											whiteSpace: "pre-wrap",
-										}}
-									>
-										{caseItem.summary}
-									</div>
-								</div>
-							)}
-
-							{caseItem.documents && caseItem.documents.length > 0 && (
-								<div
-									style={{
-										marginTop: "0.75rem",
-										paddingTop: "0.75rem",
-										borderTop: "1px dashed #e2e8f0",
-									}}
-								>
-									<div
-										style={{
-											fontSize: "0.7rem",
-											textTransform: "uppercase",
-											color: "#94a3b8",
-											fontWeight: 700,
-											marginBottom: "0.5rem",
-										}}
-									>
-										Attached Documents ({caseItem.documents.length})
-									</div>
-									<div
-										style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}
-									>
-										{caseItem.documents.map((d, idx) => {
-											const isSelectedForAi = (caseItem.selectedDocuments || []).some(
-												(sd) => (sd.url && sd.url === d.url) || sd.name === d.name,
-											);
-											return (
-												<a
-													key={d.url || d.name || `doc-${idx}`}
-													onClick={(e) => handleOpenDocument(e, d.url)}
-													href={d.url || "#"}
-													style={{
-														display: "inline-flex",
-														alignItems: "center",
-														gap: "0.4rem",
-														background: isSelectedForAi ? "#ecfdf5" : "#f8fafc",
-														border: isSelectedForAi
-															? "1.5px solid #10b981"
-															: "1px solid #cbd5e1",
-														color: isSelectedForAi ? "#047857" : "#334155",
-														padding: "0.35rem 0.65rem",
-														borderRadius: "6px",
-														fontSize: "0.75rem",
-														fontWeight: 600,
-														textDecoration: "none",
-														cursor: "pointer",
-													}}
-												>
-													<svg
-														width="14"
-														height="14"
-														viewBox="0 0 24 24"
-														fill="none"
-														stroke="currentColor"
-														strokeWidth="2"
-														strokeLinecap="round"
-														strokeLinejoin="round"
-													>
-														<title>Attached Document</title>
-														<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-														<polyline points="14 2 14 8 20 8"></polyline>
-														<line x1="16" y1="13" x2="8" y2="13"></line>
-														<line x1="16" y1="17" x2="8" y2="17"></line>
-														<polyline points="10 9 9 9 8 9"></polyline>
-													</svg>
-													{d.name}
-													{isSelectedForAi && (
-														<span
-															style={{
-																background: "#10b981",
-																color: "#ffffff",
-																fontSize: "0.62rem",
-																fontWeight: 700,
-																padding: "1px 5px",
-																borderRadius: "3px",
-																marginLeft: "0.2rem",
-															}}
-														>
-															★ For Lex AI
-														</span>
-													)}
-												</a>
-											);
-										})}
-									</div>
-								</div>
-							)}
-						</div>
+										{tab.done ? "✓" : tab.num}
+									</span>
+									<span style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+										{tab.label}
+									</span>
+								</button>
+							);
+						})}
 					</div>
-
-					{/* Node 2: SMS Response (If any) */}
-					{(caseItem.status !== "Pending" || caseItem.smsNotes) && (
+				</div>
+				{/* Main Content Area - Page-by-Page Phase Views (No outer scroll) */}
+				<div
+					style={{
+						padding: "1rem 1.4rem",
+						overflow: "hidden",
+						flex: 1,
+						display: "flex",
+						flexDirection: "column",
+						background: "#f8fafc",
+					}}
+				>
+					{/* ─── PAGE 1: CASE ASSIGN & DOCUMENT RECONCILIATION ─── */}
+					{activePage === "assign" && (
 						<div
 							style={{
+								flex: 1,
 								display: "flex",
 								flexDirection: "column",
-								alignItems: "flex-end",
+								justifyContent: "space-between",
+								gap: "0.55rem",
+								overflowY: showAllDocs ? "auto" : "hidden",
+								paddingRight: "2px",
 							}}
 						>
 							<div
 								style={{
-									background: "#ecfdf5",
-									border: "1px solid #10b981",
-									padding: "1.25rem",
-									borderRadius: "12px 12px 0 12px",
-									boxShadow: "0 2px 4px rgba(0,0,0,0.04)",
-									maxWidth: "90%",
+									background: "#ffffff",
+									border: "1px solid #e2e8f0",
+									borderRadius: "8px",
+									padding: "0.75rem 1rem",
+									boxShadow: "0 1px 3px rgba(0,0,0,0.03)",
+									display: "flex",
+									flexDirection: "column",
+									gap: "0.55rem",
 								}}
 							>
+								{/* Phase 1 Header */}
 								<div
 									style={{
 										display: "flex",
+										justifyContent: "space-between",
 										alignItems: "center",
-										justifyContent: "flex-end",
-										gap: "0.5rem",
-										marginBottom: "0.5rem",
+										borderBottom: "1px solid #f1f5f9",
+										paddingBottom: "0.55rem",
+										marginBottom: "0.1rem",
 									}}
 								>
-									<div style={{ textAlign: "right" }}>
-										<div
+									<div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+										<span
 											style={{
-												fontSize: "0.85rem",
-												color: "#065f46",
-												fontWeight: 700,
-											}}
-										>
-											You(SMS){" "}
-											{caseItem.reviewerInfo?.smsId || currentUser?.smsId || ""}
-										</div>
-										<div style={{ fontSize: "0.7rem", color: "#047857" }}>
-											{formatDate(caseItem.updatedAt)}
-										</div>
-									</div>
-								</div>
-
-								{caseItem.smsNotes && (
-									<div
-										style={{
-											fontSize: "0.9rem",
-											color: "#064e3b",
-											lineHeight: 1.6,
-											whiteSpace: "pre-wrap",
-										}}
-									>
-										{caseItem.smsNotes}
-									</div>
-								)}
-
-								{caseItem.selectedDocuments && caseItem.selectedDocuments.length > 0 && (
-									<div
-										style={{
-											marginTop: "0.75rem",
-											paddingTop: "0.6rem",
-											borderTop: "1px dashed #6ee7b7",
-										}}
-									>
-										<div
-											style={{
+												display: "inline-flex",
+												alignItems: "center",
+												justifyContent: "center",
+												width: "22px",
+												height: "22px",
+												borderRadius: "50%",
+												background: "#059669",
+												color: "#ffffff",
 												fontSize: "0.72rem",
 												fontWeight: 700,
-												color: "#047857",
-												textTransform: "uppercase",
-												marginBottom: "0.4rem",
 											}}
 										>
-											📎 Selected Documents for Lex AI ({caseItem.selectedDocuments.length})
+											1
+										</span>
+										<span
+											style={{
+												fontSize: "0.82rem",
+												fontWeight: 700,
+												color: "#0f172a",
+												textTransform: "uppercase",
+												letterSpacing: "0.04em",
+											}}
+										>
+											Phase 1: Assignment
+										</span>
+									</div>
+									<span style={{ fontSize: "0.74rem", color: "#64748b" }}>
+										Filed: {formatDate(caseItem.createdAt)}
+									</span>
+								</div>
+
+								{/* 1. Case Brief */}
+								<div
+									style={{
+										background: "#f8fafc",
+										border: "1px solid #e2e8f0",
+										borderRadius: "6px",
+										padding: "0.6rem 0.85rem",
+									}}
+								>
+									<div
+										style={{
+											display: "flex",
+											justifyContent: "space-between",
+											alignItems: "center",
+											marginBottom: "0.3rem",
+											flexWrap: "wrap",
+											gap: "0.4rem",
+										}}
+									>
+										<span style={{ fontSize: "0.72rem", fontWeight: 700, color: "#334155", textTransform: "uppercase", letterSpacing: "0.03em" }}>
+											Case Brief
+										</span>
+										<div style={{ display: "flex", gap: "0.75rem", fontSize: "0.68rem", color: "#64748b", flexWrap: "wrap" }}>
+											<span>ID: <strong style={{ color: "#334155" }}>{caseItem.clientId || "N/A"}</strong></span>
+											{caseItem.category && <span>Category: <strong style={{ color: "#334155" }}>{caseItem.category}</strong></span>}
+											{caseItem.city && <span>City: <strong style={{ color: "#334155" }}>{caseItem.city}</strong></span>}
 										</div>
-										<div style={{ display: "flex", flexWrap: "wrap", gap: "0.4rem" }}>
-											{caseItem.selectedDocuments.map((d, i) => (
-												<a
-													key={d.url || d.name || i}
-													onClick={(e) => handleOpenDocument(e, d.url)}
-													href={d.url || "#"}
+									</div>
+
+									<div style={{ fontSize: "0.82rem", color: "#1e293b", lineHeight: 1.5, whiteSpace: "pre-wrap" }}>
+										{caseItem.details}
+									</div>
+
+									{caseItem.summary && (
+										<div style={{ marginTop: "0.35rem", paddingTop: "0.35rem", borderTop: "1px dashed #cbd5e1", fontSize: "0.75rem", color: "#64748b", lineHeight: 1.4 }}>
+											{caseItem.summary}
+										</div>
+									)}
+								</div>
+
+								{/* 2. Document Table */}
+								<div>
+									<div
+										style={{
+											display: "flex",
+											justifyContent: "space-between",
+											alignItems: "center",
+											marginBottom: "0.45rem",
+											flexWrap: "wrap",
+											gap: "0.4rem",
+										}}
+									>
+										<div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+											<span style={{ fontSize: "0.76rem", fontWeight: 700, color: "#0f172a", textTransform: "uppercase", letterSpacing: "0.03em" }}>
+												Documents ({clientUploadedDocs.length})
+											</span>
+										</div>
+
+										{/* Counter Pills & Select All Button */}
+										<div style={{ display: "flex", gap: "0.4rem", alignItems: "center", flexWrap: "wrap" }}>
+											<span style={{ fontSize: "0.68rem", padding: "1px 7px", borderRadius: "4px", background: "#ecfdf5", color: "#059669", border: "1px solid #a7f3d0", fontWeight: 600 }}>
+												✓ Retained: {selectedDocIndices.length}
+											</span>
+											{clientUploadedDocs.length - selectedDocIndices.length > 0 && (
+												<span style={{ fontSize: "0.68rem", padding: "1px 7px", borderRadius: "4px", background: "#fef2f2", color: "#b91c1c", border: "1px solid #fecaca", fontWeight: 600 }}>
+													⊖ Excluded: {clientUploadedDocs.length - selectedDocIndices.length}
+												</span>
+											)}
+											{!isCaseCompleted && clientUploadedDocs.length > 0 && (
+												<button
+													type="button"
+													onClick={handleSelectAllDocs}
 													style={{
-														display: "inline-flex",
-														alignItems: "center",
-														gap: "0.35rem",
-														background: "#ffffff",
-														border: "1px solid #10b981",
-														color: "#065f46",
-														padding: "0.3rem 0.6rem",
-														borderRadius: "6px",
-														fontSize: "0.74rem",
+														background: "#f1f5f9",
+														border: "1px solid #cbd5e1",
+														borderRadius: "4px",
+														padding: "1px 7px",
+														fontSize: "0.68rem",
+														color: "#059669",
 														fontWeight: 600,
-														textDecoration: "none",
 														cursor: "pointer",
 													}}
 												>
-													📄 {d.name} {d.size ? `(${d.size})` : ""}
-												</a>
-											))}
+													{selectedDocIndices.length === clientUploadedDocs.length ? "Deselect All" : "Select All"}
+												</button>
+											)}
 										</div>
 									</div>
-								)}
+
+									{/* Document Table */}
+									<div
+										style={{
+											border: "1px solid #e2e8f0",
+											borderRadius: "6px",
+											overflow: "hidden",
+											background: "#ffffff",
+										}}
+									>
+										{clientUploadedDocs.length === 0 ? (
+											<div style={{ padding: "0.75rem", textAlign: "center", color: "#94a3b8", fontSize: "0.76rem" }}>
+												No documents uploaded by client.
+											</div>
+										) : (
+											<table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.76rem", textAlign: "left" }}>
+												<thead>
+													<tr style={{ background: "#f8fafc", borderBottom: "1px solid #e2e8f0", color: "#475569", fontSize: "0.71rem", textTransform: "uppercase", letterSpacing: "0.04em" }}>
+														<th style={{ padding: "0.4rem 0.75rem", width: "45px", textAlign: "center" }}>Select</th>
+														<th style={{ padding: "0.4rem 0.75rem", width: "40px" }}>#</th>
+														<th style={{ padding: "0.4rem 0.75rem" }}>Document Name</th>
+														<th style={{ padding: "0.4rem 0.75rem", width: "85px" }}>Size</th>
+														<th style={{ padding: "0.4rem 0.75rem", width: "160px" }}>Status</th>
+														<th style={{ padding: "0.4rem 0.75rem", width: "80px", textAlign: "right" }}>Action</th>
+													</tr>
+												</thead>
+												<tbody>
+													{clientUploadedDocs.map((doc, idx) => {
+														if (!showAllDocs && idx >= 2) return null;
+														const ext = getFileExt(doc.name);
+														const extStyle = getExtBadgeStyle(ext);
+														const isSelected = selectedDocIndices.includes(idx);
+
+														return (
+															<tr
+																key={`${doc.name}-${idx}`}
+																onClick={() => !isCaseCompleted && handleToggleDoc(idx)}
+																style={{
+																	borderBottom: "1px solid #f1f5f9",
+																	background: isSelected ? "#ffffff" : "#fafafa",
+																	opacity: isSelected ? 1 : 0.42,
+																	cursor: isCaseCompleted ? "default" : "pointer",
+																	transition: "all 0.15s ease",
+																}}
+															>
+																<td style={{ padding: "0.4rem 0.75rem", textAlign: "center" }} onClick={(e) => e.stopPropagation()}>
+																	<input
+																		type="checkbox"
+																		checked={isSelected}
+																		disabled={isCaseCompleted}
+																		onChange={() => handleToggleDoc(idx)}
+																		style={{ accentColor: "#059669", cursor: isCaseCompleted ? "default" : "pointer" }}
+																	/>
+																</td>
+																<td style={{ padding: "0.4rem 0.75rem", color: isSelected ? "#64748b" : "#94a3b8" }}>
+																	{idx + 1}
+																</td>
+																<td style={{ padding: "0.4rem 0.75rem", fontWeight: isSelected ? 600 : 400, color: isSelected ? "#0f172a" : "#64748b" }}>
+																	<span
+																		style={{
+																			fontSize: "0.62rem",
+																			padding: "1px 5px",
+																			borderRadius: "4px",
+																			marginRight: "6px",
+																			fontWeight: 700,
+																			background: isSelected ? extStyle.bg : "#f1f5f9",
+																			color: isSelected ? extStyle.color : "#94a3b8",
+																			border: isSelected ? extStyle.border : "1px solid #e2e8f0",
+																		}}
+																	>
+																		{ext}
+																	</span>
+																	<span style={{ textDecoration: isSelected ? "none" : "line-through" }}>
+																		{doc.name}
+																	</span>
+																</td>
+																<td style={{ padding: "0.4rem 0.75rem", color: isSelected ? "#64748b" : "#94a3b8" }}>
+																	{doc.size || "-"}
+																</td>
+																<td style={{ padding: "0.4rem 0.75rem" }}>
+																	{isSelected ? (
+																		<span style={{ fontSize: "0.66rem", fontWeight: 600, padding: "2px 7px", borderRadius: "4px", background: "#ecfdf5", color: "#059669", border: "1px solid #a7f3d0" }}>
+																			✓ Retained
+																		</span>
+																	) : (
+																		<span style={{ fontSize: "0.66rem", fontWeight: 600, padding: "2px 7px", borderRadius: "4px", background: "#fef2f2", color: "#b91c1c", border: "1px solid #fecaca" }}>
+																			⊖ Excluded
+																		</span>
+																	)}
+																</td>
+																<td style={{ padding: "0.4rem 0.75rem", textAlign: "right" }} onClick={(e) => e.stopPropagation()}>
+																	<div style={{ display: "inline-flex", alignItems: "center", justifyContent: "flex-end", gap: "0.55rem" }}>
+																		<a
+																			onClick={(e) => handleOpenDocument(e, doc.url)}
+																			href={doc.url || "#"}
+																			style={{
+																				fontSize: "0.74rem",
+																				color: "#059669",
+																				fontWeight: 600,
+																				textDecoration: "none",
+																				cursor: "pointer",
+																				display: "inline-flex",
+																				alignItems: "center",
+																				gap: "0.2rem",
+																			}}
+																			title="View document in new tab"
+																		>
+																			<span>View</span>
+																			<Icons.ExternalLink />
+																		</a>
+																		<button
+																			type="button"
+																			onClick={(e) => handleDownloadDocument(e, doc.url, doc.name)}
+																			style={{
+																				background: "#f1f5f9",
+																				border: "1px solid #cbd5e1",
+																				color: "#0f172a",
+																				padding: "2px 7px",
+																				borderRadius: "4px",
+																				fontSize: "0.72rem",
+																				fontWeight: 600,
+																				cursor: "pointer",
+																				display: "inline-flex",
+																				alignItems: "center",
+																				gap: "0.25rem",
+																				transition: "all 0.15s ease",
+																			}}
+																			title="Download document"
+																		>
+																			<Icons.Download />
+																			<span>Download</span>
+																		</button>
+																	</div>
+																</td>
+															</tr>
+														);
+													})}
+												</tbody>
+											</table>
+										)}
+										{clientUploadedDocs.length > 2 && (
+											<div
+												style={{
+													display: "flex",
+													justifyContent: "center",
+													alignItems: "center",
+													padding: "0.35rem 0.6rem",
+													background: "#f8fafc",
+													borderTop: "1px solid #e2e8f0",
+												}}
+											>
+												<button
+													type="button"
+													onClick={() => setShowAllDocs(!showAllDocs)}
+													style={{
+														background: "#ffffff",
+														border: "1px solid #cbd5e1",
+														borderRadius: "4px",
+														padding: "2px 10px",
+														fontSize: "0.72rem",
+														fontWeight: 600,
+														color: "#059669",
+														cursor: "pointer",
+														display: "inline-flex",
+														alignItems: "center",
+														gap: "0.3rem",
+														transition: "all 0.15s ease",
+													}}
+												>
+													<span>
+														{showAllDocs
+															? `▲ Show Less (2 of ${clientUploadedDocs.length})`
+															: `▼ Show More (${clientUploadedDocs.length - 2} more)`}
+													</span>
+												</button>
+											</div>
+										)}
+									</div>
+								</div>
+
+								{/* 3. SME Prompt: Box */}
+								<div
+									style={{
+										background: "#ffffff",
+										border: "1.5px solid #10b981",
+										borderLeft: "5px solid #059669",
+										borderRadius: "6px",
+										padding: "0.75rem 1rem",
+										boxShadow: "0 1px 4px rgba(16, 185, 129, 0.08)",
+										display: "flex",
+										flexDirection: "column",
+										gap: "0.5rem",
+									}}
+								>
+									<div
+										style={{
+											display: "flex",
+											justifyContent: "space-between",
+											alignItems: "center",
+										}}
+									>
+										<span
+											style={{
+												fontSize: "0.82rem",
+												fontWeight: 700,
+												color: "#065f46",
+												textTransform: "uppercase",
+												letterSpacing: "0.04em",
+												display: "inline-flex",
+												alignItems: "center",
+												gap: "0.35rem",
+											}}
+										>
+											<Icons.ClipboardCheck /> SME Prompt:
+										</span>
+									</div>
+
+									<textarea
+										value={smsAssignmentNotes}
+										onChange={(e) => setSmsAssignmentNotes(e.target.value)}
+										disabled={isCaseCompleted}
+										placeholder="Enter SME prompt here... e.g. Please add bank statement for Q2 and subtract duplicate invoice #12."
+										rows={3}
+										style={{
+											width: "100%",
+											padding: "0.45rem 0.75rem",
+											borderRadius: "6px",
+											border: "1px solid #cbd5e1",
+											background: "#f8fafc",
+											color: "#0f172a",
+											fontSize: "0.86rem",
+											fontFamily: "inherit",
+											resize: "none",
+											height: "4.5em",
+											maxHeight: "4.5em",
+											lineHeight: 1.5,
+											overflowY: "auto",
+											outline: "none",
+											boxSizing: "border-box",
+										}}
+									/>
+
+									{/* Save Button & Status */}
+									{!isCaseCompleted && (
+										<div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+											<div>
+												{assignSavedSuccess && (
+													<span style={{ fontSize: "0.72rem", color: "#059669", fontWeight: 600, display: "inline-flex", alignItems: "center", gap: "0.3rem" }}>
+														<Icons.Check /> Saved successfully
+													</span>
+												)}
+											</div>
+											<button
+												type="button"
+												onClick={handleSaveDocumentAssignment}
+												disabled={isSavingAssign}
+												style={{
+													background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+													color: "#ffffff",
+													border: "none",
+													borderRadius: "5px",
+													padding: "0.4rem 1rem",
+													fontSize: "0.76rem",
+													fontWeight: 600,
+													cursor: isSavingAssign ? "not-allowed" : "pointer",
+													display: "inline-flex",
+													alignItems: "center",
+													gap: "0.35rem",
+													boxShadow: "0 1px 3px rgba(16, 185, 129, 0.25)",
+												}}
+											>
+												<Icons.Check />
+												<span>{isSavingAssign ? "Saving..." : "Save Prompt"}</span>
+											</button>
+										</div>
+									)}
+								</div>
+							</div>
+
+							{/* Page 1 Bottom Navigation Bar */}
+							<div
+								style={{
+									display: "flex",
+									justifyContent: "space-between",
+									alignItems: "center",
+									padding: "0.55rem 0.2rem 0",
+									borderTop: "1px solid #e2e8f0",
+								}}
+							>
+								<span style={{ fontSize: "0.74rem", color: "#64748b" }}>
+									Step 1 of 4
+								</span>
+								<button
+									type="button"
+									onClick={() => setActivePage("review1")}
+									style={{
+										background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+										color: "#ffffff",
+										border: "none",
+										padding: "0.45rem 1rem",
+										borderRadius: "5px",
+										fontSize: "0.78rem",
+										fontWeight: 600,
+										cursor: "pointer",
+										display: "inline-flex",
+										alignItems: "center",
+										gap: "0.4rem",
+										boxShadow: "0 1px 3px rgba(16, 185, 129, 0.25)",
+									}}
+								>
+									<span>Next</span>
+									<span>→</span>
+								</button>
 							</div>
 						</div>
 					)}
 
-					{/* Chat History */}
-					{caseItem.chats &&
-						caseItem.chats.length > 0 &&
-						caseItem.chats.map((chat, idx) => {
-							const isCMS = chat.sender === "cms";
-							return (
-								<div
-									key={
-										chat._id || chat.id || `${chat.timestamp || "chat"}-${idx}`
-									}
-									style={{
-										display: "flex",
-										flexDirection: "column",
-										alignItems: isCMS ? "flex-start" : "flex-end",
-									}}
-								>
-									<div
-										style={{
-											background: isCMS ? "#ffffff" : "#ecfdf5",
-											border: `1px solid ${isCMS ? "#e2e8f0" : "#10b981"}`,
-											padding: "1.25rem",
-											borderRadius: isCMS
-												? "12px 12px 12px 0"
-												: "12px 12px 0 12px",
-											boxShadow: "0 2px 4px rgba(0,0,0,0.04)",
-											maxWidth: "90%",
-										}}
-									>
-										{isCMS ? (
-											<div
-												style={{
-													display: "flex",
-													alignItems: "center",
-													gap: "0.5rem",
-													marginBottom: "0.5rem",
-												}}
-											>
-												<div
-													style={{
-														width: "28px",
-														height: "28px",
-														borderRadius: "50%",
-														background: "#eff6ff",
-														display: "flex",
-														alignItems: "center",
-														justifyContent: "center",
-														color: "#3b82f6",
-													}}
-												>
-													<svg
-														width="14"
-														height="14"
-														viewBox="0 0 24 24"
-														fill="none"
-														stroke="currentColor"
-														strokeWidth="2.5"
-													>
-														<title>CMS Message</title>
-														<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-														<circle cx="12" cy="7" r="4"></circle>
-													</svg>
-												</div>
-												<div>
-													<div
-														style={{
-															fontSize: "0.85rem",
-															color: "#1e293b",
-															fontWeight: 700,
-														}}
-													>
-														{caseItem.clientName || "Client"}
-													</div>
-													<div style={{ fontSize: "0.7rem", color: "#64748b" }}>
-														{formatDate(chat.timestamp)}
-													</div>
-												</div>
-											</div>
-										) : (
-											<div
-												style={{
-													display: "flex",
-													alignItems: "center",
-													gap: "0.5rem",
-													marginBottom: "0.5rem",
-													justifyContent: "flex-end",
-												}}
-											>
-												<div style={{ textAlign: "right" }}>
-													<div
-														style={{
-															fontSize: "0.85rem",
-															color: "#065f46",
-															fontWeight: 700,
-														}}
-													>
-														Specialist Response
-													</div>
-													<div style={{ fontSize: "0.7rem", color: "#64748b" }}>
-														{formatDate(chat.timestamp)}
-													</div>
-												</div>
-												<div
-													style={{
-														width: "28px",
-														height: "28px",
-														borderRadius: "50%",
-														background: "#10b981",
-														display: "flex",
-														alignItems: "center",
-														justifyContent: "center",
-														color: "#fff",
-														fontSize: "0.8rem",
-														fontWeight: 700,
-													}}
-												>
-													✓
-												</div>
-											</div>
-										)}
-
-										{chat.text && (
-											<div
-												style={{
-													fontSize: "0.9rem",
-													color: "#1e293b",
-													lineHeight: 1.6,
-													whiteSpace: "pre-wrap",
-												}}
-											>
-												{chat.text}
-											</div>
-										)}
-										{chat.documents && chat.documents.length > 0 && (
-											<div
-												style={{
-													marginTop: "0.75rem",
-													paddingTop: "0.75rem",
-													borderTop: `1px dashed ${isCMS ? "#e2e8f0" : "#6ee7b7"}`,
-												}}
-											>
-												<div
-													style={{
-														fontSize: "0.7rem",
-														textTransform: "uppercase",
-														color: "#94a3b8",
-														fontWeight: 700,
-														marginBottom: "0.5rem",
-														textAlign: isCMS ? "left" : "right",
-													}}
-												>
-													Attachments ({chat.documents.length})
-												</div>
-												<div
-													style={{
-														display: "flex",
-														flexWrap: "wrap",
-														gap: "0.5rem",
-														justifyContent: isCMS ? "flex-start" : "flex-end",
-													}}
-												>
-													{chat.documents.map((d, i) => (
-														<a
-															key={d.url || d.name || `chat-doc-${i}`}
-															href={d.url}
-															onClick={(e) => handleOpenDocument(e, d.url)}
-															style={{
-																display: "inline-flex",
-																alignItems: "center",
-																gap: "0.4rem",
-																background: isCMS ? "#f8fafc" : "#34d399",
-																border: `1px solid ${isCMS ? "#cbd5e1" : "#10b981"}`,
-																color: isCMS ? "#334155" : "#fff",
-																padding: "0.35rem 0.65rem",
-																borderRadius: "6px",
-																fontSize: "0.75rem",
-																fontWeight: 600,
-																textDecoration: "none",
-																cursor: "pointer",
-															}}
-														>
-															<svg
-																width="14"
-																height="14"
-																viewBox="0 0 24 24"
-																fill="none"
-																stroke="currentColor"
-																strokeWidth="2"
-																strokeLinecap="round"
-																strokeLinejoin="round"
-															>
-																<title>Document</title>
-																<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-																<polyline points="14 2 14 8 20 8"></polyline>
-																<line x1="16" y1="13" x2="8" y2="13"></line>
-																<line x1="16" y1="17" x2="8" y2="17"></line>
-																<polyline points="10 9 9 9 8 9"></polyline>
-															</svg>
-															{d.name}
-														</a>
-													))}
-												</div>
-											</div>
-										)}
-									</div>
-								</div>
-							);
-						})}
-
-					<div ref={chatEndRef} />
-				</div>
-
-				{/* Chat Input Box */}
-				{isChatActive && (
-					<div
-						style={{
-							padding: "1rem 1.5rem",
-							background: "#ffffff",
-							borderTop: "1px solid #e2e8f0",
-							display: "flex",
-							flexDirection: "column",
-							gap: "0.75rem",
-						}}
-					>
-						<div style={{ display: "flex", gap: "0.5rem" }}>
-							<textarea
-								value={chatText}
-								onChange={(e) => setChatText(e.target.value)}
-								placeholder="Type a message to reply..."
-								style={{
-									flex: 1,
-									padding: "0.75rem",
-									border: "1px solid #cbd5e1",
-									borderRadius: "8px",
-									resize: "none",
-									outline: "none",
-									fontSize: "0.9rem",
-									fontFamily: "inherit",
-									minHeight: "40px",
-									maxHeight: "100px",
-								}}
-								onKeyDown={(e) => {
-									if (e.key === "Enter" && !e.shiftKey) {
-										e.preventDefault();
-										handleSendChat();
-									}
-								}}
-							/>
-						</div>
-						{pendingFile && (
+					{/* ─── PAGE 2: REVIEW 1 ─── */}
+					{activePage === "review1" && (
+						<div
+							style={{
+								flex: 1,
+								display: "flex",
+								flexDirection: "column",
+								justifyContent: "space-between",
+								gap: "0.75rem",
+								overflow: "hidden",
+							}}
+						>
+							{/* Page 2 Top Header */}
 							<div
 								style={{
 									display: "flex",
+									justifyContent: "space-between",
 									alignItems: "center",
-									gap: "0.5rem",
-									padding: "0.5rem",
-									background: "#f8fafc",
-									border: "1px solid #e2e8f0",
-									borderRadius: "6px",
-									fontSize: "0.8rem",
-									color: "#334155",
+									paddingBottom: "0.4rem",
+									borderBottom: "1px solid #e2e8f0",
 								}}
 							>
+								<div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+									<span
+										style={{
+											display: "inline-flex",
+											alignItems: "center",
+											justifyContent: "center",
+											width: "22px",
+											height: "22px",
+											borderRadius: "50%",
+											background: "#059669",
+											color: "#ffffff",
+											fontSize: "0.72rem",
+											fontWeight: 700,
+										}}
+									>
+										2
+									</span>
+									<span
+										style={{
+											fontSize: "0.82rem",
+											fontWeight: 700,
+											color: "#0f172a",
+											textTransform: "uppercase",
+											letterSpacing: "0.04em",
+										}}
+									>
+										Phase 2: Review 1
+									</span>
+								</div>
 								<span
 									style={{
-										display: "flex",
-										alignItems: "center",
-										gap: "0.4rem",
+										fontSize: "0.7rem",
+										fontWeight: 600,
+										padding: "2px 8px",
+										borderRadius: "4px",
+										background: isReview1Complete ? "#ecfdf5" : r1Cms ? "#eff6ff" : "#f1f5f9",
+										color: isReview1Complete ? "#059669" : r1Cms ? "#2563eb" : "#64748b",
+										border: isReview1Complete ? "1px solid #a7f3d0" : r1Cms ? "1px solid #bfdbfe" : "1px solid #e2e8f0",
 									}}
 								>
-									<svg
-										width="14"
-										height="14"
-										viewBox="0 0 24 24"
-										fill="none"
-										stroke="currentColor"
-										strokeWidth="2"
-										strokeLinecap="round"
-										strokeLinejoin="round"
-									>
-										<title>Attached File</title>
-										<path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"></path>
-									</svg>
-									{pendingFile.name} ({pendingFile.size})
+									{isReview1Complete ? "✓ Completed" : r1Cms ? "Reply Required" : "Awaiting Client"}
 								</span>
+							</div>
+
+							{/* Messages Area for Review 1 */}
+							<div
+								style={{
+									display: "flex",
+									flexDirection: "column",
+									gap: "0.75rem",
+								}}
+							>
+								{!r1Cms && (
+									<div
+										style={{
+											background: "#ffffff",
+											border: "1px dashed #cbd5e1",
+											borderRadius: "6px",
+											padding: "1.25rem",
+											textAlign: "center",
+											color: "#64748b",
+											fontSize: "0.82rem",
+										}}
+									>
+										<div style={{ fontWeight: 600, color: "#0f172a", marginBottom: "0.25rem" }}>
+											Review 1 Submission
+										</div>
+										<div>
+											Awaiting client's Review 1 details and file submissions.
+										</div>
+									</div>
+								)}
+
+								{/* REVIEW 1: CMS SUBMISSION */}
+								{r1Cms && (
+									<div style={{ display: "flex", justifyContent: "flex-start" }}>
+										<div
+											style={{
+												background: "#ffffff",
+												color: "#374151",
+												border: "1px solid #e5e7eb",
+												padding: "0.85rem 1.1rem",
+												borderRadius: "2px 8px 8px 8px",
+												minWidth: "300px",
+												maxWidth: "85%",
+											}}
+										>
+											<div
+												style={{
+													display: "flex",
+													justifyContent: "space-between",
+													alignItems: "center",
+													gap: "0.75rem",
+													fontSize: "0.74rem",
+													color: "#9ca3af",
+													marginBottom: "0.4rem",
+												}}
+											>
+												<span style={{ display: "flex", alignItems: "center", gap: "0.3rem", fontWeight: 600, color: "#6b7280" }}>
+													<span>Client</span>
+													{r1Cms.editedAt && (
+														<span style={{ fontSize: "0.7rem", color: "#93c5fd" }}>(edited)</span>
+													)}
+												</span>
+												<span>{formatDate(r1Cms.timestamp)}</span>
+											</div>
+
+											<div
+												style={{
+													fontSize: "0.875rem",
+													lineHeight: 1.55,
+													whiteSpace: "pre-wrap",
+													color: "#374151",
+												}}
+											>
+												{r1Cms.text}
+											</div>
+
+											{r1Cms.documents && r1Cms.documents.length > 0 && (
+												<div
+													style={{
+														marginTop: "0.65rem",
+														display: "flex",
+														flexWrap: "wrap",
+														gap: "0.45rem",
+													}}
+												>
+													{r1Cms.documents.map((d, i) => renderDocPill(d, i, false))}
+												</div>
+											)}
+										</div>
+									</div>
+								)}
+
+								{/* REVIEW 1: SMS REPLY */}
+								{r1Sms && (
+									<div style={{ display: "flex", justifyContent: "flex-end", width: "100%" }}>
+										<div
+											style={{
+												background: "#f0fdf8",
+												color: "#374151",
+												border: "1px solid #d1fae5",
+												padding: "0.85rem 1.1rem",
+												borderRadius: "8px 2px 8px 8px",
+												width: editingPhase === "review1" ? "min(100%, 820px)" : "auto",
+												minWidth: editingPhase === "review1" ? "min(100%, 750px)" : "280px",
+												maxWidth: editingPhase === "review1" ? "95%" : "85%",
+												transition: "all 0.2s ease",
+											}}
+										>
+											<div
+												style={{
+													display: "flex",
+													justifyContent: "space-between",
+													alignItems: "center",
+													gap: "0.75rem",
+													fontSize: "0.74rem",
+													color: "#6ee7b7",
+													marginBottom: "0.4rem",
+												}}
+											>
+												<span style={{ display: "flex", alignItems: "center", gap: "0.3rem", fontWeight: 600, color: "#059669" }}>
+													<span>You</span>
+													{r1Sms.editedAt && (
+														<span style={{ fontSize: "0.7rem", color: "#6ee7b7" }}>(edited)</span>
+													)}
+												</span>
+												<div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+													<span>{formatDate(r1Sms.timestamp)}</span>
+													{!isCaseCompleted && editingPhase !== "review1" && (
+														<button
+															type="button"
+															onClick={() => handleStartEdit("review1", r1Sms.text, r1Sms.documents)}
+															style={{
+																background: "rgba(16, 185, 129, 0.15)",
+																border: "none",
+																color: "#047857",
+																borderRadius: "var(--radius-sm)",
+																padding: "2px 8px",
+																fontSize: "0.72rem",
+																cursor: "pointer",
+																fontWeight: 600,
+																display: "inline-flex",
+																alignItems: "center",
+																gap: "0.25rem",
+															}}
+															title="Edit reply & files"
+														>
+															<Icons.Edit /> Edit
+														</button>
+													)}
+												</div>
+											</div>
+
+											{/* Inline Edit Form for Review 1 SMS reply */}
+											{editingPhase === "review1" ? (
+												renderEditForm("review1", false)
+											) : (
+												<>
+													<div
+														style={{
+															fontSize: "0.875rem",
+															lineHeight: 1.55,
+															whiteSpace: "pre-wrap",
+														}}
+													>
+														{r1Sms.text}
+													</div>
+
+													{r1Sms.documents && r1Sms.documents.length > 0 && (
+														<div
+															style={{
+																marginTop: "0.5rem",
+																display: "flex",
+																flexWrap: "wrap",
+																gap: "0.35rem",
+															}}
+														>
+															{r1Sms.documents.map((d, i) => renderDocPill(d, i, true))}
+														</div>
+													)}
+												</>
+											)}
+										</div>
+									</div>
+								)}
+
+								{/* REVIEW 1 DECISION BAR */}
+								{isReview1Complete && !isReview2Started && !isCaseCompleted && (
+									<div
+										style={{
+											background: "#ffffff",
+											border: "1px solid var(--border-subtle)",
+											borderRadius: "var(--radius-md)",
+											padding: "0.65rem 0.95rem",
+											display: "flex",
+											alignItems: "center",
+											justifyContent: "space-between",
+											gap: "0.75rem",
+											flexWrap: "wrap",
+											boxShadow: "0 1px 3px rgba(0,0,0,0.03)",
+										}}
+									>
+										<span
+											style={{
+												fontSize: "0.8rem",
+												color: "var(--text-main)",
+												fontWeight: 500,
+											}}
+										>
+											Review 1 complete.
+										</span>
+										<div style={{ display: "flex", gap: "0.5rem" }}>
+											<button
+												type="button"
+												onClick={() => setShowPasswordPrompt(true)}
+												style={{
+													background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+													color: "#ffffff",
+													border: "none",
+													padding: "0.4rem 0.85rem",
+													borderRadius: "var(--radius-sm)",
+													fontSize: "0.76rem",
+													fontWeight: 600,
+													cursor: "pointer",
+													display: "inline-flex",
+													alignItems: "center",
+													gap: "0.3rem",
+												}}
+											>
+												<Icons.Check /> Complete Case
+											</button>
+											<button
+												type="button"
+												onClick={handleProceedToReview2}
+												disabled={isActing}
+												style={{
+													background: "#0f172a",
+													color: "#ffffff",
+													border: "none",
+													padding: "0.4rem 0.85rem",
+													borderRadius: "var(--radius-sm)",
+													fontSize: "0.76rem",
+													fontWeight: 600,
+													cursor: "pointer",
+													display: "inline-flex",
+													alignItems: "center",
+													gap: "0.3rem",
+												}}
+											>
+												<span>Review 2</span> →
+											</button>
+										</div>
+									</div>
+								)}
+							</div>
+
+							{/* Review 1 Input Form (if user turn and not actively editing) */}
+							{!isReview1Complete && !editingPhase && (
+								<div style={{ marginTop: "0.2rem" }}>
+									{renderInputBar("Type Review 1 reply for client...")}
+								</div>
+							)}
+
+							{/* Page 2 Bottom Navigation */}
+							<div
+								style={{
+									display: "flex",
+									justifyContent: "space-between",
+									alignItems: "center",
+									padding: "0.55rem 0.2rem 0",
+									borderTop: "1px solid #e2e8f0",
+								}}
+							>
 								<button
 									type="button"
-									onClick={() => setPendingFile(null)}
+									onClick={() => setActivePage("assign")}
 									style={{
-										background: "none",
-										border: "none",
-										color: "#ef4444",
+										background: "#f1f5f9",
+										color: "#334155",
+										border: "1px solid #cbd5e1",
+										padding: "0.4rem 0.9rem",
+										borderRadius: "5px",
+										fontSize: "0.76rem",
+										fontWeight: 600,
 										cursor: "pointer",
-										padding: "0 0.25rem",
-										fontWeight: "bold",
+										display: "inline-flex",
+										alignItems: "center",
+										gap: "0.35rem",
 									}}
 								>
-									&times;
+									<span>← Back</span>
+								</button>
+
+								<span style={{ fontSize: "0.74rem", color: "#64748b" }}>
+									Step 2 of 4
+								</span>
+
+								<button
+									type="button"
+									onClick={() => setActivePage("review2")}
+									style={{
+										background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+										color: "#ffffff",
+										border: "none",
+										padding: "0.45rem 1rem",
+										borderRadius: "5px",
+										fontSize: "0.78rem",
+										fontWeight: 600,
+										cursor: "pointer",
+										display: "inline-flex",
+										alignItems: "center",
+										gap: "0.4rem",
+										boxShadow: "0 1px 3px rgba(16, 185, 129, 0.25)",
+									}}
+								>
+									<span>Next</span>
+									<span>→</span>
 								</button>
 							</div>
-						)}
+						</div>
+					)}
+
+					{/* ─── PAGE 3: REVIEW 2 (OPTIONAL) ─── */}
+					{activePage === "review2" && (
 						<div
 							style={{
+								flex: 1,
 								display: "flex",
+								flexDirection: "column",
 								justifyContent: "space-between",
-								alignItems: "center",
+								gap: "0.75rem",
+								overflow: "hidden",
 							}}
 						>
-							<input
-								type="file"
-								ref={fileInputRef}
-								style={{ display: "none" }}
-								onChange={handleFileUpload}
-							/>
-							<button
-								type="button"
-								onClick={() => fileInputRef.current?.click()}
-								disabled={isSending}
+							{/* Page 3 Top Header */}
+							<div
 								style={{
-									background: "none",
-									border: "1px dashed #cbd5e1",
-									padding: "0.4rem 0.8rem",
-									borderRadius: "6px",
-									fontSize: "0.8rem",
-									color: "#64748b",
-									cursor: "pointer",
 									display: "flex",
+									justifyContent: "space-between",
 									alignItems: "center",
-									gap: "0.4rem",
-									transition: "all 0.2s ease",
-								}}
-								onMouseOver={(e) => {
-									e.currentTarget.style.borderColor = "#3b82f6";
-									e.currentTarget.style.color = "#3b82f6";
-								}}
-								onMouseOut={(e) => {
-									e.currentTarget.style.borderColor = "#cbd5e1";
-									e.currentTarget.style.color = "#64748b";
-								}}
-								onFocus={(e) => {
-									e.currentTarget.style.borderColor = "#3b82f6";
-									e.currentTarget.style.color = "#3b82f6";
-								}}
-								onBlur={(e) => {
-									e.currentTarget.style.borderColor = "#cbd5e1";
-									e.currentTarget.style.color = "#64748b";
+									paddingBottom: "0.4rem",
+									borderBottom: "1px solid #e2e8f0",
 								}}
 							>
-								<svg
-									width="16"
-									height="16"
-									viewBox="0 0 24 24"
-									fill="none"
-									stroke="currentColor"
-									strokeWidth="2"
-									strokeLinecap="round"
-									strokeLinejoin="round"
+								<div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+									<span
+										style={{
+											display: "inline-flex",
+											alignItems: "center",
+											justifyContent: "center",
+											width: "22px",
+											height: "22px",
+											borderRadius: "50%",
+											background: "#059669",
+											color: "#ffffff",
+											fontSize: "0.72rem",
+											fontWeight: 700,
+										}}
+									>
+										3
+									</span>
+									<span
+										style={{
+											fontSize: "0.82rem",
+											fontWeight: 700,
+											color: "#0f172a",
+											textTransform: "uppercase",
+											letterSpacing: "0.04em",
+										}}
+									>
+										Phase 3: Review 2 (Optional)
+									</span>
+								</div>
+								<span
+									style={{
+										fontSize: "0.7rem",
+										fontWeight: 600,
+										padding: "2px 8px",
+										borderRadius: "4px",
+										background: isReview2Complete ? "#ecfdf5" : isReview2Started ? "#eff6ff" : "#f1f5f9",
+										color: isReview2Complete ? "#059669" : isReview2Started ? "#2563eb" : "#64748b",
+										border: isReview2Complete ? "1px solid #a7f3d0" : isReview2Started ? "1px solid #bfdbfe" : "1px solid #e2e8f0",
+									}}
 								>
-									<title>Attach File</title>
-									<path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"></path>
-								</svg>
-								Attach File
-							</button>
-							<button
-								type="button"
-								onClick={handleSendChat}
-								disabled={isSending || (!chatText.trim() && !pendingFile)}
+									{isReview2Complete ? "✓ Completed" : isReview2Started ? "In Progress" : "Optional"}
+								</span>
+							</div>
+
+							{/* Messages Area for Review 2 */}
+							<div
 								style={{
-									background: "#3b82f6",
-									color: "#fff",
-									border: "none",
-									padding: "0.5rem 1.25rem",
-									borderRadius: "6px",
-									fontSize: "0.85rem",
-									fontWeight: 600,
-									cursor:
-										isSending || (!chatText.trim() && !pendingFile)
-											? "not-allowed"
-											: "pointer",
-									opacity:
-										isSending || (!chatText.trim() && !pendingFile) ? 0.6 : 1,
 									display: "flex",
-									alignItems: "center",
-									gap: "0.4rem",
+									flexDirection: "column",
+									gap: "0.75rem",
 								}}
 							>
-								{isSending ? "Sending..." : "Send Message"}
-							</button>
-						</div>
-					</div>
-				)}
+								{!isReview2Started ? (
+									<div
+										style={{
+											background: "#ffffff",
+											border: "1px dashed #cbd5e1",
+											borderRadius: "6px",
+											padding: "1.5rem",
+											textAlign: "center",
+											color: "#64748b",
+											fontSize: "0.82rem",
+										}}
+									>
+										<div style={{ fontWeight: 600, color: "#0f172a", marginBottom: "0.35rem", fontSize: "0.9rem" }}>
+											Optional Review 2
+										</div>
+										<p style={{ margin: "0 0 0.85rem", lineHeight: 1.5 }}>
+											Review 2 is available if client submits supplemental queries after Review 1.
+										</p>
+										{isReview1Complete ? (
+											<div style={{ display: "flex", gap: "0.6rem", justifyContent: "center", flexWrap: "wrap" }}>
+												<button
+													type="button"
+													onClick={handleProceedToReview2}
+													disabled={isActing}
+													style={{
+														background: "#0f172a",
+														color: "#ffffff",
+														border: "none",
+														padding: "0.45rem 1rem",
+														borderRadius: "5px",
+														fontSize: "0.78rem",
+														fontWeight: 600,
+														cursor: "pointer",
+														display: "inline-flex",
+														alignItems: "center",
+														gap: "0.3rem",
+													}}
+												>
+													<span>Initiate Review 2</span> →
+												</button>
+												<button
+													type="button"
+													onClick={() => setShowPasswordPrompt(true)}
+													disabled={isActing}
+													style={{
+														background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+														color: "#ffffff",
+														border: "none",
+														padding: "0.45rem 1rem",
+														borderRadius: "5px",
+														fontSize: "0.78rem",
+														fontWeight: 600,
+														cursor: "pointer",
+														display: "inline-flex",
+														alignItems: "center",
+														gap: "0.3rem",
+													}}
+												>
+													<Icons.Check /> Complete Case Now
+												</button>
+											</div>
+										) : (
+											<div style={{ color: "#94a3b8", fontStyle: "italic", fontSize: "0.78rem" }}>
+												Please conclude Review 1 before initiating Review 2.
+											</div>
+										)}
+									</div>
+								) : (
+									<>
+										{/* REVIEW 2: CMS SUBMISSION */}
+										{r2Cms && (
+											<div style={{ display: "flex", justifyContent: "flex-start" }}>
+												<div
+													style={{
+														background: "#ffffff",
+														color: "#374151",
+														border: "1px solid #e5e7eb",
+														padding: "0.85rem 1.1rem",
+														borderRadius: "2px 8px 8px 8px",
+														minWidth: "300px",
+														maxWidth: "85%",
+													}}
+												>
+													<div
+														style={{
+															display: "flex",
+															justifyContent: "space-between",
+															alignItems: "center",
+															gap: "0.75rem",
+															fontSize: "0.74rem",
+															color: "#9ca3af",
+															marginBottom: "0.4rem",
+														}}
+													>
+														<span style={{ display: "flex", alignItems: "center", gap: "0.3rem", fontWeight: 600, color: "#6b7280" }}>
+															<span>Client</span>
+															{r2Cms.editedAt && (
+																<span style={{ fontSize: "0.7rem", color: "#93c5fd" }}>(edited)</span>
+															)}
+														</span>
+														<span>{formatDate(r2Cms.timestamp)}</span>
+													</div>
 
-				{!isChatActive && caseItem.status === "Completed" && (
-					<div
-						style={{
-							padding: "1rem 1.5rem",
-							background: "#f8fafc",
-							borderTop: "1px solid #e2e8f0",
-							textAlign: "center",
-							color: "#64748b",
-							fontSize: "0.85rem",
-							fontWeight: 500,
-							display: "flex",
-							alignItems: "center",
-							justifyContent: "center",
-							gap: "0.5rem",
-						}}
-					>
-						<svg
-							width="16"
-							height="16"
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="currentColor"
-							strokeWidth="2"
-							strokeLinecap="round"
-							strokeLinejoin="round"
+													<div
+														style={{
+															fontSize: "0.875rem",
+															lineHeight: 1.55,
+															whiteSpace: "pre-wrap",
+															color: "#374151",
+														}}
+													>
+														{r2Cms.text}
+													</div>
+
+													{r2Cms.documents && r2Cms.documents.length > 0 && (
+														<div
+															style={{
+																marginTop: "0.65rem",
+																display: "flex",
+																flexWrap: "wrap",
+																gap: "0.45rem",
+															}}
+														>
+															{r2Cms.documents.map((d, i) => renderDocPill(d, i, false))}
+														</div>
+													)}
+												</div>
+											</div>
+										)}
+
+										{/* REVIEW 2: SMS REPLY */}
+										{r2Sms && (
+											<div style={{ display: "flex", justifyContent: "flex-end", width: "100%" }}>
+												<div
+													style={{
+														background: "#f0fdf8",
+														color: "#374151",
+														border: "1px solid #d1fae5",
+														padding: "0.85rem 1.1rem",
+														borderRadius: "8px 2px 8px 8px",
+														width: editingPhase === "review2" ? "min(100%, 820px)" : "auto",
+														minWidth: editingPhase === "review2" ? "min(100%, 750px)" : "280px",
+														maxWidth: editingPhase === "review2" ? "95%" : "85%",
+														transition: "all 0.2s ease",
+													}}
+												>
+													<div
+														style={{
+															display: "flex",
+															justifyContent: "space-between",
+															alignItems: "center",
+															gap: "0.75rem",
+															fontSize: "0.74rem",
+															color: "#6b7280",
+															marginBottom: "0.4rem",
+														}}
+													>
+														<span style={{ display: "flex", alignItems: "center", gap: "0.3rem", fontWeight: 600, color: "#059669" }}>
+															<span>You</span>
+															{r2Sms.editedAt && (
+																<span style={{ fontSize: "0.7rem", color: "#059669" }}>(edited)</span>
+															)}
+														</span>
+														<div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+															<span>{formatDate(r2Sms.timestamp)}</span>
+															{!isCaseCompleted && editingPhase !== "review2" && (
+																<button
+																	type="button"
+																	onClick={() => handleStartEdit("review2", r2Sms.text, r2Sms.documents)}
+																	style={{
+																		background: "rgba(16, 185, 129, 0.15)",
+																		border: "none",
+																		color: "#047857",
+																		borderRadius: "var(--radius-sm)",
+																		padding: "2px 8px",
+																		fontSize: "0.72rem",
+																		cursor: "pointer",
+																		fontWeight: 600,
+																		display: "inline-flex",
+																		alignItems: "center",
+																		gap: "0.25rem",
+																	}}
+																	title="Edit reply & files"
+																>
+																	<Icons.Edit /> Edit
+																</button>
+															)}
+														</div>
+													</div>
+
+													{/* Inline Edit Form for Review 2 SMS reply */}
+													{editingPhase === "review2" ? (
+														renderEditForm("review2", false)
+													) : (
+														<>
+															<div
+																style={{
+																	fontSize: "0.875rem",
+																	lineHeight: 1.55,
+																	whiteSpace: "pre-wrap",
+																}}
+															>
+																{r2Sms.text}
+															</div>
+
+															{r2Sms.documents && r2Sms.documents.length > 0 && (
+																<div
+																	style={{
+																		marginTop: "0.5rem",
+																		display: "flex",
+																		flexWrap: "wrap",
+																		gap: "0.35rem",
+																	}}
+																>
+																	{r2Sms.documents.map((d, i) => renderDocPill(d, i, true))}
+																</div>
+															)}
+														</>
+													)}
+												</div>
+											</div>
+										)}
+
+										{/* REVIEW 2 CONCLUDED BAR */}
+										{isReview2Complete && !isCaseCompleted && (
+											<div
+												style={{
+													background: "#ffffff",
+													border: "1px solid var(--border-subtle)",
+													borderRadius: "var(--radius-md)",
+													padding: "0.65rem 0.95rem",
+													display: "flex",
+													alignItems: "center",
+													justifyContent: "space-between",
+													gap: "0.75rem",
+													flexWrap: "wrap",
+													boxShadow: "0 1px 3px rgba(0,0,0,0.03)",
+												}}
+											>
+												<span
+													style={{
+														fontSize: "0.8rem",
+														color: "#059669",
+														fontWeight: 600,
+														display: "inline-flex",
+														alignItems: "center",
+														gap: "0.3rem",
+													}}
+												>
+													<Icons.Check /> Review 2 completed.
+												</span>
+												<button
+													type="button"
+													onClick={() => setShowPasswordPrompt(true)}
+													style={{
+														background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+														color: "#ffffff",
+														border: "none",
+														padding: "0.4rem 0.95rem",
+														borderRadius: "var(--radius-sm)",
+														fontSize: "0.76rem",
+														fontWeight: 600,
+														cursor: "pointer",
+														display: "inline-flex",
+														alignItems: "center",
+														gap: "0.3rem",
+													}}
+												>
+													<Icons.Check /> Finish Case
+												</button>
+											</div>
+										)}
+									</>
+								)}
+							</div>
+
+							{/* Review 2 Input Form (if Review 2 is active and not complete and not editing) */}
+							{isReview2Started && !isReview2Complete && !editingPhase && (
+								<div style={{ marginTop: "0.2rem" }}>
+									{renderInputBar("Type final Review 2 reply...")}
+								</div>
+							)}
+
+							{/* Page 3 Bottom Navigation */}
+							<div
+								style={{
+									display: "flex",
+									justifyContent: "space-between",
+									alignItems: "center",
+									padding: "0.55rem 0.2rem 0",
+									borderTop: "1px solid #e2e8f0",
+								}}
+							>
+								<button
+									type="button"
+									onClick={() => setActivePage("review1")}
+									style={{
+										background: "#f1f5f9",
+										color: "#334155",
+										border: "1px solid #cbd5e1",
+										padding: "0.4rem 0.9rem",
+										borderRadius: "5px",
+										fontSize: "0.76rem",
+										fontWeight: 600,
+										cursor: "pointer",
+										display: "inline-flex",
+										alignItems: "center",
+										gap: "0.35rem",
+									}}
+								>
+									<span>← Back</span>
+								</button>
+
+								<span style={{ fontSize: "0.74rem", color: "#64748b" }}>
+									Step 3 of 4
+								</span>
+
+								<button
+									type="button"
+									onClick={() => setActivePage("complete")}
+									style={{
+										background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+										color: "#ffffff",
+										border: "none",
+										padding: "0.45rem 1rem",
+										borderRadius: "5px",
+										fontSize: "0.78rem",
+										fontWeight: 600,
+										cursor: "pointer",
+										display: "inline-flex",
+										alignItems: "center",
+										gap: "0.4rem",
+										boxShadow: "0 1px 3px rgba(16, 185, 129, 0.25)",
+									}}
+								>
+									<span>Next</span>
+									<span>→</span>
+								</button>
+							</div>
+						</div>
+					)}
+
+					{/* ─── PAGE 4: CASE ANALYSIS COMPLETION DASHBOARD ─── */}
+					{activePage === "complete" && (
+						<div
+							style={{
+								flex: 1,
+								display: "flex",
+								flexDirection: "column",
+								justifyContent: "space-between",
+								gap: "0.75rem",
+								overflowY: "auto",
+								paddingRight: "2px",
+							}}
 						>
-							<title>Messaging Disabled</title>
-							<rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-							<path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-						</svg>
-						Messaging is disabled because this case is solved and closed from
-						your side
-					</div>
-				)}
+							<div
+								style={{
+									display: "flex",
+									flexDirection: "column",
+									gap: "0.85rem",
+								}}
+							>
+								{/* Page 4 Header */}
+								<div
+									style={{
+										display: "flex",
+										justifyContent: "space-between",
+										alignItems: "center",
+										paddingBottom: "0.45rem",
+										borderBottom: "1px solid #e2e8f0",
+									}}
+								>
+									<div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+										<span
+											style={{
+												display: "inline-flex",
+												alignItems: "center",
+												justifyContent: "center",
+												width: "22px",
+												height: "22px",
+												borderRadius: "50%",
+												background: isCaseCompleted ? "#059669" : "#0f172a",
+												color: "#ffffff",
+												fontSize: "0.72rem",
+												fontWeight: 700,
+											}}
+										>
+											4
+										</span>
+										<span
+											style={{
+												fontSize: "0.82rem",
+												fontWeight: 700,
+												color: "#0f172a",
+												textTransform: "uppercase",
+												letterSpacing: "0.04em",
+											}}
+										>
+											Phase 4: Completion
+										</span>
+									</div>
+									<span
+										style={{
+											fontSize: "0.7rem",
+											fontWeight: 600,
+											padding: "2px 8px",
+											borderRadius: "4px",
+											background: isCaseCompleted ? "#ecfdf5" : "#eff6ff",
+											color: isCaseCompleted ? "#059669" : "#2563eb",
+											border: isCaseCompleted ? "1px solid #a7f3d0" : "1px solid #bfdbfe",
+										}}
+									>
+										{isCaseCompleted ? "✓ Completed" : "In Progress"}
+									</span>
+								</div>
+
+								{/* Status Banner */}
+								<div
+									style={{
+										background: isCaseCompleted ? "#f0fdf4" : "#f8fafc",
+										border: isCaseCompleted ? "1.5px solid #a7f3d0" : "1px solid #e2e8f0",
+										borderRadius: "8px",
+										padding: "0.85rem 1.1rem",
+										display: "flex",
+										alignItems: "center",
+										justifyContent: "space-between",
+										gap: "1rem",
+										flexWrap: "wrap",
+									}}
+								>
+									<div>
+										<div
+											style={{
+												fontSize: "0.92rem",
+												fontWeight: 700,
+												color: isCaseCompleted ? "#065f46" : "#0f172a",
+												marginBottom: "0.2rem",
+												display: "flex",
+												alignItems: "center",
+												gap: "0.4rem",
+											}}
+										>
+											{isCaseCompleted ? <Icons.Check /> : "●"}
+											<span>{isCaseCompleted ? "Case Analysis Completed" : `Status: ${caseItem.status || "In Review"}`}</span>
+										</div>
+										<div style={{ fontSize: "0.76rem", color: "#64748b" }}>
+											{isCaseCompleted
+												? `Concluded on ${formatDate(caseItem.completedAt || caseItem.updatedAt)}.`
+												: `Progress: ${progressPercent}% complete`}
+										</div>
+									</div>
+
+									{!isCaseCompleted && (
+										<button
+											type="button"
+											onClick={() => setShowPasswordPrompt(true)}
+											style={{
+												background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+												color: "#ffffff",
+												border: "none",
+												padding: "0.4rem 0.95rem",
+												borderRadius: "5px",
+												fontSize: "0.76rem",
+												fontWeight: 600,
+												cursor: "pointer",
+												display: "inline-flex",
+												alignItems: "center",
+												gap: "0.35rem",
+												boxShadow: "0 1px 3px rgba(16, 185, 129, 0.25)",
+											}}
+										>
+											<Icons.Check />
+											<span>Complete Case</span>
+										</button>
+									)}
+								</div>
+
+								{/* Phase Breakdown Summary Cards */}
+								<div
+									style={{
+										display: "grid",
+										gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+										gap: "0.65rem",
+									}}
+								>
+									{/* Phase 1 Summary */}
+									<div style={{ background: "#ffffff", border: "1px solid #e2e8f0", borderRadius: "6px", padding: "0.65rem 0.85rem" }}>
+										<div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.25rem" }}>
+											<span style={{ fontSize: "0.74rem", fontWeight: 700, color: "#334155", textTransform: "uppercase" }}>
+												1. Assignment
+											</span>
+											<span style={{ fontSize: "0.68rem", color: isAssignPhaseDone ? "#059669" : "#64748b", fontWeight: 600 }}>
+												{isAssignPhaseDone ? "✓ Done" : "Pending"}
+											</span>
+										</div>
+										<div style={{ fontSize: "0.76rem", color: "#64748b", lineHeight: 1.4 }}>
+											{selectedDocIndices.length} of {clientUploadedDocs.length} files retained
+										</div>
+									</div>
+
+									{/* Phase 2 Summary */}
+									<div style={{ background: "#ffffff", border: "1px solid #e2e8f0", borderRadius: "6px", padding: "0.65rem 0.85rem" }}>
+										<div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.25rem" }}>
+											<span style={{ fontSize: "0.74rem", fontWeight: 700, color: "#334155", textTransform: "uppercase" }}>
+												2. Review 1
+											</span>
+											<span style={{ fontSize: "0.68rem", color: isReview1Complete ? "#059669" : r1Cms ? "#2563eb" : "#64748b", fontWeight: 600 }}>
+												{isReview1Complete ? "✓ Completed" : r1Cms ? "In Review" : "Pending"}
+											</span>
+										</div>
+										<div style={{ fontSize: "0.76rem", color: "#64748b", lineHeight: 1.4 }}>
+											{isReview1Complete ? "Client submission and specialist reply recorded" : "Pending review exchange"}
+										</div>
+									</div>
+
+									{/* Phase 3 Summary */}
+									<div style={{ background: "#ffffff", border: "1px solid #e2e8f0", borderRadius: "6px", padding: "0.65rem 0.85rem" }}>
+										<div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.25rem" }}>
+											<span style={{ fontSize: "0.74rem", fontWeight: 700, color: "#334155", textTransform: "uppercase" }}>
+												3. Review 2
+											</span>
+											<span style={{ fontSize: "0.68rem", color: isReview2Complete ? "#059669" : isReview2Started ? "#2563eb" : "#64748b", fontWeight: 600 }}>
+												{isReview2Complete ? "✓ Completed" : isReview2Started ? "In Progress" : "Optional"}
+											</span>
+										</div>
+										<div style={{ fontSize: "0.76rem", color: "#64748b", lineHeight: 1.4 }}>
+											{isReview2Complete ? "Follow-up completed" : isReview2Started ? "In progress" : "Not requested"}
+										</div>
+									</div>
+								</div>
+
+								{/* Specialist Final Guidance Notes */}
+								{caseItem.smsNotes && (
+									<div
+										style={{
+											background: "#ffffff",
+											border: "1px solid #e2e8f0",
+											borderLeft: "4px solid #059669",
+											borderRadius: "6px",
+											padding: "0.65rem 0.85rem",
+										}}
+									>
+										<div style={{ fontSize: "0.72rem", fontWeight: 700, color: "#065f46", textTransform: "uppercase", marginBottom: "0.2rem" }}>
+											SME Prompt:
+										</div>
+										<div style={{ fontSize: "0.82rem", color: "#0f172a", lineHeight: 1.5, whiteSpace: "pre-wrap" }}>
+											{caseItem.smsNotes}
+										</div>
+									</div>
+								)}
+							</div>
+
+							{/* Page 4 Bottom Navigation Bar */}
+							<div
+								style={{
+									display: "flex",
+									justifyContent: "space-between",
+									alignItems: "center",
+									padding: "0.6rem 0.2rem 0",
+									borderTop: "1px solid #e2e8f0",
+								}}
+							>
+								<button
+									type="button"
+									onClick={() => setActivePage(isReview2Started ? "review2" : "review1")}
+									style={{
+										background: "#f1f5f9",
+										color: "#334155",
+										border: "1px solid #cbd5e1",
+										padding: "0.4rem 0.9rem",
+										borderRadius: "5px",
+										fontSize: "0.76rem",
+										fontWeight: 600,
+										cursor: "pointer",
+										display: "inline-flex",
+										alignItems: "center",
+										gap: "0.35rem",
+									}}
+								>
+									<span>← Back</span>
+								</button>
+
+								<span style={{ fontSize: "0.74rem", color: "#059669", fontWeight: 600 }}>
+									Step 4 of 4
+								</span>
+							</div>
+						</div>
+					)}
+
+					<div ref={chatEndRef} />
+					<input
+						type="file"
+						ref={editFileInputRef}
+						onChange={handleEditFileUpload}
+						style={{ display: "none" }}
+						multiple
+					/>
+				</div>
 			</div>
 		</div>
 	);

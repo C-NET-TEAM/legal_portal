@@ -42,6 +42,11 @@ const chatSchema = new mongoose.Schema(
 			default: "",
 		},
 		documents: [documentSchema],
+		phase: {
+			type: String,
+			enum: ["review1", "review2", "system", "general"],
+			default: "review1",
+		},
 		readByCms: {
 			type: Boolean,
 			default: false,
@@ -49,6 +54,10 @@ const chatSchema = new mongoose.Schema(
 		readBySms: {
 			type: Boolean,
 			default: false,
+		},
+		editedAt: {
+			type: String,
+			default: "",
 		},
 		timestamp: {
 			type: String,
@@ -157,6 +166,11 @@ const caseSchema = new mongoose.Schema(
 		reviewerInfo: {
 			type: mongoose.Schema.Types.Mixed,
 			default: null,
+		},
+		reviewPhase: {
+			type: String,
+			enum: ["review1", "review2", "completed"],
+			default: "review1",
 		},
 		chats: [chatSchema],
 	},

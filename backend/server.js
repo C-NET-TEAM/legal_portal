@@ -457,10 +457,15 @@ const normalizeCase = (c) => {
 	doc.title = doc.title || (doc.clientType === "Individual" ? "Mr." : "");
 	doc.caseVertical = doc.caseVertical || doc.category || "MSME";
 	doc.category = doc.caseVertical || doc.category || "MSME";
-	doc.caseCategory = doc.caseCategory || doc.caseKeywords || "Deputation Related";
-	doc.caseKeywords = doc.caseCategory || doc.caseKeywords || "Deputation Related";
-	doc.summary = doc.summary || (doc.id === "CASE-04" ? "Case summary details for Yash." : "");
+	doc.caseCategory =
+		doc.caseCategory || doc.caseKeywords || "Deputation Related";
+	doc.caseKeywords =
+		doc.caseCategory || doc.caseKeywords || "Deputation Related";
+	doc.summary =
+		doc.summary ||
+		(doc.id === "CASE-04" ? "Case summary details for Yash." : "");
 	doc.selectedDocuments = doc.selectedDocuments || [];
+	doc.reviewPhase = doc.reviewPhase || "review1";
 	return doc;
 };
 
@@ -556,10 +561,12 @@ app.post("/api/cases", async (req, res) => {
 			}
 		}
 
-		const resolvedType = clientType === "Institute" ? "Institute" : "Individual";
-		const resolvedTitle = resolvedType === "Individual" ? (title || "Mr.") : "";
+		const resolvedType =
+			clientType === "Institute" ? "Institute" : "Individual";
+		const resolvedTitle = resolvedType === "Individual" ? title || "Mr." : "";
 		const resolvedVertical = category || caseVertical || "MSME";
-		const resolvedCategory = caseCategory || caseKeywords || "Deputation Related";
+		const resolvedCategory =
+			caseCategory || caseKeywords || "Deputation Related";
 		const resolvedSummary = summary || "";
 
 		const newCase = await Case.create({
@@ -675,7 +682,8 @@ app.post("/api/admin/clean-data", async (req, res) => {
 app.post("/api/cases/:id/review", async (req, res) => {
 	try {
 		const { id } = req.params;
-		const { status, smsNotes, lexPrompt, reviewerInfo, selectedDocuments } = req.body;
+		const { status, smsNotes, lexPrompt, reviewerInfo, selectedDocuments } =
+			req.body;
 
 		const caseItem = await Case.findOne({ id });
 		if (!caseItem) {
@@ -686,7 +694,8 @@ app.post("/api/cases/:id/review", async (req, res) => {
 		if (smsNotes !== undefined) caseItem.smsNotes = smsNotes;
 		if (lexPrompt !== undefined) caseItem.lexPrompt = lexPrompt;
 		if (reviewerInfo) caseItem.reviewerInfo = reviewerInfo;
-		if (selectedDocuments !== undefined) caseItem.selectedDocuments = selectedDocuments;
+		if (selectedDocuments !== undefined)
+			caseItem.selectedDocuments = selectedDocuments;
 
 		await caseItem.save();
 
@@ -706,10 +715,14 @@ app.post("/api/cases/:id/review", async (req, res) => {
 				status: caseItem.status,
 				category: caseItem.category || caseItem.caseVertical || "MSME",
 				caseVertical: caseItem.caseVertical || caseItem.category || "MSME",
-				caseCategory: caseItem.caseCategory || caseItem.caseKeywords || "Deputation Related",
+				caseCategory:
+					caseItem.caseCategory ||
+					caseItem.caseKeywords ||
+					"Deputation Related",
 				summary: caseItem.summary || "",
 				details: caseItem.details || "",
-				selectedDocuments: caseItem.selectedDocuments || selectedDocuments || [],
+				selectedDocuments:
+					caseItem.selectedDocuments || selectedDocuments || [],
 				smsNotes: caseItem.smsNotes,
 				lexPrompt: caseItem.lexPrompt,
 				reviewerInfo: caseItem.reviewerInfo,
@@ -717,7 +730,11 @@ app.post("/api/cases/:id/review", async (req, res) => {
 			read: false,
 		});
 
-		return res.json({ success: true, case: normalizeCase(caseItem), alert: newAlert });
+		return res.json({
+			success: true,
+			case: normalizeCase(caseItem),
+			alert: newAlert,
+		});
 	} catch (err) {
 		console.error("Case review error:", err);
 		return res.status(500).json({ error: "Failed to review case." });
@@ -784,18 +801,22 @@ app.post("/api/cases/:id/final-review", async (req, res) => {
 			read: false,
 		});
 
-		return res.json({ success: true, case: normalizeCase(caseItem), alert: newAlert });
+		return res.json({
+			success: true,
+			case: normalizeCase(caseItem),
+			alert: newAlert,
+		});
 	} catch (err) {
 		console.error("Final review error:", err);
 		return res.status(500).json({ error: "Failed to submit final review." });
 	}
 });
 
-// Chat Endpoint (CMS & SMS)
+// Chat Endpoint (CMS & SMS) - Two-Phase Review Chat
 app.post("/api/cases/:id/chat", async (req, res) => {
 	try {
 		const { id } = req.params;
-		const { sender, text, documents } = req.body;
+		const { sender, text, documents, phase } = req.body;
 
 		const caseItem = await Case.findOne({ id });
 		if (!caseItem) {
@@ -805,10 +826,13 @@ app.post("/api/cases/:id/chat", async (req, res) => {
 		// Process attached documents to EBS storage
 		const processedDocs = processDocuments(documents || []);
 
+		const currentPhase = phase || caseItem.reviewPhase || "review1";
+
 		const newMessage = {
 			sender,
 			text: text || "",
 			documents: processedDocs,
+			phase: currentPhase,
 			readByCms: sender === "cms",
 			readBySms: sender === "sms",
 			timestamp: new Date().toISOString(),
@@ -817,34 +841,263 @@ app.post("/api/cases/:id/chat", async (req, res) => {
 		caseItem.chats.push(newMessage);
 		await caseItem.save();
 
-		// If sender is SMS, generate a real-time notification alert for CMS
+		// Generate notification alert for the receiving party
+		const alertCount = await Alert.countDocuments();
+		const phaseLabel = currentPhase === "review2" ? "Review 2" : "Review 1";
+
 		if (sender === "sms") {
-			const alertCount = await Alert.countDocuments();
 			await Alert.create({
 				id: `ALT-${Date.now().toString().slice(-4)}${alertCount + 1}`,
 				caseId: id,
-				title: `SMS Reply on ${id}: ${caseItem.status === "Approved" ? "Under Review" : caseItem.status}`,
+				title: `SMS Reply on ${id} (${phaseLabel})`,
 				message:
 					text ||
 					(processedDocs.length > 0
 						? `Sent ${processedDocs.length} attachment(s)`
-						: "New reply from specialist"),
+						: `New ${phaseLabel} response from specialist`),
 				structuredData: {
 					caseId: id,
 					clientName: caseItem.clientName,
 					status: caseItem.status,
 					category: caseItem.category,
 					smsNotes: text,
+					reviewPhase: currentPhase,
 					reviewerInfo: caseItem.reviewerInfo,
+				},
+				read: false,
+			});
+		} else if (sender === "cms") {
+			await Alert.create({
+				id: `ALT-${Date.now().toString().slice(-4)}${alertCount + 1}`,
+				caseId: id,
+				title: `CMS Submission on ${id} (${phaseLabel})`,
+				message:
+					text ||
+					(processedDocs.length > 0
+						? `Sent ${processedDocs.length} document(s)`
+						: `New ${phaseLabel} details from client`),
+				structuredData: {
+					caseId: id,
+					clientName: caseItem.clientName,
+					status: caseItem.status,
+					category: caseItem.category,
+					reviewPhase: currentPhase,
 				},
 				read: false,
 			});
 		}
 
-		return res.json({ success: true, case: normalizeCase(caseItem), message: newMessage });
+		return res.json({
+			success: true,
+			case: normalizeCase(caseItem),
+			message: newMessage,
+		});
 	} catch (err) {
 		console.error("Send chat error:", err);
 		return res.status(500).json({ error: "Failed to send chat message." });
+	}
+});
+
+// Edit Chat Message Endpoint (Edit message in Phase 1 or Phase 2 or Initial)
+app.put("/api/cases/:id/chat", async (req, res) => {
+	try {
+		const { id } = req.params;
+		const { phase, sender, text, documents } = req.body;
+
+		const caseItem = await Case.findOne({ id });
+		if (!caseItem) {
+			return res.status(404).json({ error: "Case not found." });
+		}
+
+		if (phase === "initial") {
+			if (sender === "sms") {
+				if (text !== undefined) caseItem.smsNotes = text;
+			} else {
+				if (text !== undefined) caseItem.details = text;
+			}
+			caseItem.updatedAt = new Date();
+			await caseItem.save();
+			return res.json({
+				success: true,
+				case: normalizeCase(caseItem),
+			});
+		}
+
+		// Find the matching message by phase and sender
+		let msg = (caseItem.chats || []).find(
+			(c) => c.phase === phase && c.sender === sender,
+		);
+
+		// Fallback for legacy messages
+		if (!msg) {
+			msg = (caseItem.chats || []).find((c) => c.sender === sender);
+		}
+
+		if (!msg) {
+			const processedDocs = processDocuments(documents || []);
+			msg = {
+				sender,
+				text: text || "",
+				documents: processedDocs,
+				phase: phase || "review1",
+				readByCms: sender === "cms",
+				readBySms: sender === "sms",
+				editedAt: new Date().toISOString(),
+				timestamp: new Date().toISOString(),
+			};
+			caseItem.chats.push(msg);
+		} else {
+			if (text !== undefined) msg.text = text;
+			if (documents !== undefined) {
+				msg.documents = processDocuments(documents);
+			}
+			msg.editedAt = new Date().toISOString();
+			msg.readByCms = sender === "cms";
+			msg.readBySms = sender === "sms";
+		}
+
+		caseItem.updatedAt = new Date();
+		await caseItem.save();
+
+		// Generate an Alert so the other person receives a notification
+		try {
+			const alertCount = await Alert.countDocuments();
+			const phaseLabel = phase === "review2" ? "Review 2" : "Review 1";
+			const docCount = (msg.documents || []).length;
+			const docNote = docCount > 0 ? ` (${docCount} file${docCount > 1 ? "s" : ""})` : "";
+			if (sender === "sms") {
+				await Alert.create({
+					id: `ALT-${Date.now().toString().slice(-4)}${alertCount + 1}`,
+					caseId: id,
+					title: `Specialist Edited ${phaseLabel} on ${id}`,
+					message:
+						text ||
+						(docCount > 0
+							? `Specialist updated attachments${docNote}`
+							: `Specialist updated ${phaseLabel} response`),
+					structuredData: {
+						caseId: id,
+						clientName: caseItem.clientName,
+						status: caseItem.status,
+						category: caseItem.category,
+						reviewPhase: phase,
+						isEdit: true,
+						sender: "sms",
+					},
+					read: false,
+				});
+			} else if (sender === "cms") {
+				await Alert.create({
+					id: `ALT-${Date.now().toString().slice(-4)}${alertCount + 1}`,
+					caseId: id,
+					title: `Client Edited ${phaseLabel} on ${id}`,
+					message:
+						text ||
+						(docCount > 0
+							? `Client updated attachments${docNote}`
+							: `Client updated ${phaseLabel} message`),
+					structuredData: {
+						caseId: id,
+						clientName: caseItem.clientName,
+						status: caseItem.status,
+						category: caseItem.category,
+						reviewPhase: phase,
+						isEdit: true,
+						sender: "cms",
+					},
+					read: false,
+				});
+			}
+		} catch (alertErr) {
+			console.error("Error creating edit alert:", alertErr);
+		}
+
+		return res.json({
+			success: true,
+			case: normalizeCase(caseItem),
+			message: msg,
+		});
+	} catch (err) {
+		console.error("Edit chat error:", err);
+		return res.status(500).json({ error: "Failed to edit chat message." });
+	}
+});
+
+// Review Action Endpoint (Proceed to Review 2 or End Case with Review 1)
+app.post("/api/cases/:id/review-action", async (req, res) => {
+	try {
+		const { id } = req.params;
+		const { action, sender, note } = req.body;
+
+		const caseItem = await Case.findOne({ id });
+		if (!caseItem) {
+			return res.status(404).json({ error: "Case not found." });
+		}
+
+		const senderLabel = sender === "sms" ? "SMS Specialist" : "CMS Client";
+		const alertCount = await Alert.countDocuments();
+
+		if (action === "proceed_review2") {
+			caseItem.reviewPhase = "review2";
+			caseItem.chats.push({
+				sender: "system",
+				text: `${senderLabel} has initiated the optional Review 2 phase.`,
+				phase: "review2",
+				readByCms: sender === "cms",
+				readBySms: sender === "sms",
+				timestamp: new Date().toISOString(),
+			});
+
+			await Alert.create({
+				id: `ALT-${Date.now().toString().slice(-4)}${alertCount + 1}`,
+				caseId: id,
+				title: `Review 2 Initiated on ${id}`,
+				message:
+					note || `${senderLabel} initiated the optional Review 2 phase.`,
+				structuredData: {
+					caseId: id,
+					clientName: caseItem.clientName,
+					status: caseItem.status,
+					reviewPhase: "review2",
+				},
+				read: false,
+			});
+		} else if (action === "end_case") {
+			caseItem.status = "Completed";
+			caseItem.reviewPhase = "completed";
+			const concludedPhase =
+				caseItem.reviewPhase === "review2" ? "Review 2" : "Review 1";
+			caseItem.chats.push({
+				sender: "system",
+				text: `Case concluded and marked Completed after ${concludedPhase} by ${senderLabel}.`,
+				phase: caseItem.reviewPhase || "review1",
+				readByCms: sender === "cms",
+				readBySms: sender === "sms",
+				timestamp: new Date().toISOString(),
+			});
+
+			await Alert.create({
+				id: `ALT-${Date.now().toString().slice(-4)}${alertCount + 1}`,
+				caseId: id,
+				title: `Case ${id} Completed`,
+				message:
+					note ||
+					`Case concluded and marked Completed after ${concludedPhase}.`,
+				structuredData: {
+					caseId: id,
+					clientName: caseItem.clientName,
+					status: "Completed",
+					reviewPhase: "completed",
+				},
+				read: false,
+			});
+		}
+
+		await caseItem.save();
+		return res.json({ success: true, case: normalizeCase(caseItem) });
+	} catch (err) {
+		console.error("Review action error:", err);
+		return res.status(500).json({ error: "Failed to perform review action." });
 	}
 });
 

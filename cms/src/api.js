@@ -85,15 +85,40 @@ export const api = {
 		return data;
 	},
 
-	async addChatMessage(caseId, sender, text, documents) {
+	async addChatMessage(caseId, sender, text, documents, phase) {
 		const API_BASE = getApiBase();
 		const res = await fetch(`${API_BASE}/cases/${caseId}/chat`, {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({ sender, text, documents }),
+			body: JSON.stringify({ sender, text, documents, phase }),
 		});
 		const data = await res.json();
 		if (!res.ok) throw new Error(data.error || "Failed to send chat message");
+		return data;
+	},
+
+	async editChatMessage(caseId, phase, sender, text, documents) {
+		const API_BASE = getApiBase();
+		const res = await fetch(`${API_BASE}/cases/${caseId}/chat`, {
+			method: "PUT",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({ phase, sender, text, documents }),
+		});
+		const data = await res.json();
+		if (!res.ok) throw new Error(data.error || "Failed to edit chat message");
+		return data;
+	},
+
+	async handleReviewAction(caseId, action, sender, note) {
+		const API_BASE = getApiBase();
+		const res = await fetch(`${API_BASE}/cases/${caseId}/review-action`, {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({ action, sender, note }),
+		});
+		const data = await res.json();
+		if (!res.ok)
+			throw new Error(data.error || "Failed to process review action");
 		return data;
 	},
 
