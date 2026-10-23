@@ -105,9 +105,9 @@ const authLimiter = rateLimit({
 	legacyHeaders: false,
 });
 
-// Parse JSON and urlencoded bodies (reduced from 200MB to 25MB for safety against memory exhaustion DoS)
-app.use(express.json({ limit: "25mb" }));
-app.use(express.urlencoded({ extended: true, limit: "25mb" }));
+// Parse JSON and urlencoded bodies (increased to 100MB for legal documents & evidence)
+app.use(express.json({ limit: "100mb" }));
+app.use(express.urlencoded({ extended: true, limit: "100mb" }));
 
 // Static file server for EBS uploaded media files
 app.use("/api/uploads", express.static(UPLOAD_DIR));
