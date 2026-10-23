@@ -455,8 +455,8 @@ const normalizeCase = (c) => {
 	const doc = c.toObject ? c.toObject() : { ...c };
 	doc.clientType = doc.clientType || "Individual";
 	doc.title = doc.title || (doc.clientType === "Individual" ? "Mr." : "");
-	doc.caseVertical = doc.caseVertical || doc.category || "MSME";
-	doc.category = doc.caseVertical || doc.category || "MSME";
+	doc.caseVertical = doc.caseVertical || doc.category || "MSME/A&C related";
+	doc.category = doc.caseVertical || doc.category || "MSME/A&C related";
 	doc.caseCategory =
 		doc.caseCategory || doc.caseKeywords || "Deputation Related";
 	doc.caseKeywords =
@@ -564,7 +564,7 @@ app.post("/api/cases", async (req, res) => {
 		const resolvedType =
 			clientType === "Institute" ? "Institute" : "Individual";
 		const resolvedTitle = resolvedType === "Individual" ? title || "Mr." : "";
-		const resolvedVertical = category || caseVertical || "MSME";
+		const resolvedVertical = category || caseVertical || "MSME/A&C related";
 		const resolvedCategory =
 			caseCategory || caseKeywords || "Deputation Related";
 		const resolvedSummary = summary || "";
@@ -713,8 +713,8 @@ app.post("/api/cases/:id/review", async (req, res) => {
 				title: caseItem.title || "",
 				clientType: caseItem.clientType || "Individual",
 				status: caseItem.status,
-				category: caseItem.category || caseItem.caseVertical || "MSME",
-				caseVertical: caseItem.caseVertical || caseItem.category || "MSME",
+				category: caseItem.category || caseItem.caseVertical || "MSME/A&C related",
+				caseVertical: caseItem.caseVertical || caseItem.category || "MSME/A&C related",
 				caseCategory:
 					caseItem.caseCategory ||
 					caseItem.caseKeywords ||

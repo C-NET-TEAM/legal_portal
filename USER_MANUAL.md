@@ -205,7 +205,7 @@ sequenceDiagram
    - **Applicant / Entity Type**: Choose between **Individual** (with title/salutation: Mr., Ms., Mrs., Dr., Adv., Prof., CA) or **Institute** (Organization name).
    - **Full Name / Institute Name**: Legal name of the petitioner, applicant, or institution.
    - **City & State**: Geographical jurisdiction.
-   - **Case Vertical**: Select vertical (**MSME**, **A&C Related**).
+   - **Case Vertical**: Select vertical (**MSME/A&C related**, **Service Matter related**).
    - **Case Category**: Select category (**Deputation Related**, **Pension Issues**, **Promotion Disputes**, **Departmental Matters and Inquiries**, **Disciplinary Actions**).
    - **Case Brief**: 1–2 lines describing the main issue.
    - **Case Summary (Optional)**: Detailed factual background, dispute timeline, or full case narrative.

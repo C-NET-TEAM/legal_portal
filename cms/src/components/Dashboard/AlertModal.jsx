@@ -75,13 +75,13 @@ export default function AlertModal({
 			rawData.category ||
 			caseItem?.caseVertical ||
 			caseItem?.category ||
-			"MSME",
+			"MSME/A&C related",
 		category:
 			rawData.category ||
 			rawData.caseVertical ||
 			caseItem?.category ||
 			caseItem?.caseVertical ||
-			"MSME",
+			"MSME/A&C related",
 		caseCategory:
 			(rawData.caseCategory && rawData.caseCategory !== "N/A"
 				? rawData.caseCategory
@@ -307,7 +307,7 @@ export default function AlertModal({
 									color: "var(--text-main)",
 								}}
 							>
-								{data.caseVertical || data.category || "MSME"}
+								{data.caseVertical || data.category || "MSME/A&C related"}
 							</div>
 							<div style={{ fontSize: "0.8rem", color: "var(--text-dim)", marginTop: "0.2rem" }}>
 								Category: {data.caseCategory || data.caseKeywords || "Deputation Related"}

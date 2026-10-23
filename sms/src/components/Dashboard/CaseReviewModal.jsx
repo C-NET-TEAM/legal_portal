@@ -307,7 +307,7 @@ export default function CaseReviewModal({
 								Case Type / Vertical
 							</div>
 							<div style={{ fontWeight: 600, color: "var(--text-main)" }}>
-								{caseItem.caseVertical || caseItem.category || "MSME"}
+								{caseItem.caseVertical || caseItem.category || "MSME/A&C related"}
 							</div>
 						</div>
 						<div>

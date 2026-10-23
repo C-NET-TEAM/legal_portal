@@ -746,8 +746,8 @@ export default function CMSDashboard({
 										<option value="" disabled>
 											Select Vertical
 										</option>
-										<option value="MSME">MSME</option>
-										<option value="A&C Related">A&C Related</option>
+										<option value="MSME/A&C related">MSME/A&C related</option>
+										<option value="Service Matter related">Service Matter related</option>
 									</select>
 								</div>
 
