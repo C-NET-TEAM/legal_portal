@@ -85,6 +85,21 @@ export const api = {
 		return data;
 	},
 
+	async deleteCase(caseId, clientId) {
+		const API_BASE = getApiBase();
+		const headers = { "Content-Type": "application/json" };
+		if (clientId) {
+			headers["x-client-id"] = clientId;
+		}
+		const res = await fetch(`${API_BASE}/cases/${caseId}`, {
+			method: "DELETE",
+			headers,
+		});
+		const data = await res.json();
+		if (!res.ok) throw new Error(data.error || "Failed to delete case");
+		return data;
+	},
+
 	async addChatMessage(caseId, sender, text, documents, phase) {
 		const API_BASE = getApiBase();
 		const res = await fetch(`${API_BASE}/cases/${caseId}/chat`, {

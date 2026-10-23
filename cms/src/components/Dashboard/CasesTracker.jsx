@@ -82,6 +82,34 @@ export default function CasesTracker({ user }) {
 		}
 	};
 
+	const [deletingCaseId, setDeletingCaseId] = useState(null);
+
+	const handleDeleteCase = async (caseItem, e) => {
+		if (e) e.stopPropagation();
+		if (!caseItem?.id) return;
+
+		const confirmed = window.confirm(
+			`Are you sure you want to delete this case?\n\nCase ID: ${caseItem.id}\nClient: ${caseItem.clientName || "N/A"}\n\nThis action cannot be undone.`,
+		);
+
+		if (!confirmed) return;
+
+		try {
+			setDeletingCaseId(caseItem.id);
+			await api.deleteCase(caseItem.id, user?.clientId);
+			setCases((prev) => prev.filter((c) => c.id !== caseItem.id));
+			setAlerts((prev) => prev.filter((a) => a.caseId !== caseItem.id));
+			if (viewTimelineCase && viewTimelineCase.id === caseItem.id) {
+				setViewTimelineCase(null);
+			}
+		} catch (err) {
+			console.error("Error deleting case:", err);
+			alert(`Failed to delete case: ${err.message}`);
+		} finally {
+			setDeletingCaseId(null);
+		}
+	};
+
 	const formatDateDMY = (dateStr) => {
 		if (!dateStr) return "";
 		const d = new Date(dateStr);
@@ -325,11 +353,17 @@ export default function CasesTracker({ user }) {
 						style={{ display: "flex", flexDirection: "column", gap: "1rem" }}
 					>
 						{filteredCases.map((c) => (
-							<button
-								type="button"
+							<div
 								key={c.id}
 								className="glass-box"
 								onClick={() => handleOpenCase(c)}
+								role="button"
+								tabIndex={0}
+								onKeyDown={(e) => {
+									if (e.key === "Enter" || e.key === " ") {
+										handleOpenCase(c);
+									}
+								}}
 								style={{
 									display: "flex",
 									flexDirection: "column",
@@ -481,6 +515,56 @@ export default function CasesTracker({ user }) {
 													? "SMS Review Pending"
 													: c.status}
 										</span>
+
+										<button
+											type="button"
+											onClick={(e) => handleDeleteCase(c, e)}
+											disabled={deletingCaseId === c.id}
+											title={`Delete Case ${c.id}`}
+											style={{
+												background: "rgba(239, 68, 68, 0.08)",
+												border: "1px solid rgba(239, 68, 68, 0.25)",
+												color: "#ef4444",
+												borderRadius: "5px",
+												padding: "0.2rem 0.55rem",
+												fontSize: "0.72rem",
+												fontWeight: 600,
+												display: "inline-flex",
+												alignItems: "center",
+												gap: "0.3rem",
+												cursor: deletingCaseId === c.id ? "not-allowed" : "pointer",
+												transition: "all 0.15s ease",
+											}}
+											onMouseEnter={(e) => {
+												if (deletingCaseId !== c.id) {
+													e.currentTarget.style.background = "#ef4444";
+													e.currentTarget.style.color = "#ffffff";
+												}
+											}}
+											onMouseLeave={(e) => {
+												if (deletingCaseId !== c.id) {
+													e.currentTarget.style.background = "rgba(239, 68, 68, 0.08)";
+													e.currentTarget.style.color = "#ef4444";
+												}
+											}}
+										>
+											<svg
+												width="12"
+												height="12"
+												viewBox="0 0 24 24"
+												fill="none"
+												stroke="currentColor"
+												strokeWidth="2"
+												strokeLinecap="round"
+												strokeLinejoin="round"
+											>
+												<polyline points="3 6 5 6 21 6"></polyline>
+												<path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+												<line x1="10" y1="11" x2="10" y2="17"></line>
+												<line x1="14" y1="11" x2="14" y2="17"></line>
+											</svg>
+											{deletingCaseId === c.id ? "Deleting..." : "Delete"}
+										</button>
 									</div>
 								</div>
 
@@ -633,7 +717,7 @@ export default function CasesTracker({ user }) {
 										</div>
 									)}
 								</div>
-							</button>
+							</div>
 						))}
 					</div>
 				)}
@@ -647,6 +731,7 @@ export default function CasesTracker({ user }) {
 					currentUser={user}
 					onRefresh={loadData}
 					onClose={() => setViewTimelineCase(null)}
+					onDeleteCase={handleDeleteCase}
 				/>
 			)}
 		</div>

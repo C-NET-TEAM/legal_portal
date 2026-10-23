@@ -222,6 +222,9 @@ sequenceDiagram
 3. **Alerts Bell Icon**:
    - Whenever a specialist submits notes, responds in chat, or reviews your draft, a red notification badge will appear.
    - Click the bell icon to open the **Alerts Modal** and review the structured feedback.
+4. **Deleting Cases**:
+   - To delete a case, click the red **Delete** button on the case card or inside the case view header.
+   - A confirmation prompt (*"Are you sure you want to delete this case?..."*) will appear to prevent accidental deletions. Upon confirmation, the case and its linked alerts are removed.
 
 #### 4. Interactive Timeline & Specialist Chat
 1. Click **"View Timeline"** on any case card.
