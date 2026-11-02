@@ -1753,7 +1753,7 @@ export default function CaseTimelineModal({
 								flexDirection: "column",
 								justifyContent: "space-between",
 								gap: "0.55rem",
-								overflowY: showAllDocs ? "auto" : "hidden",
+								overflowY: "auto",
 								paddingRight: "2px",
 							}}
 						>
@@ -1854,330 +1854,363 @@ export default function CaseTimelineModal({
 									)}
 								</div>
 
-								{/* 2. Document Table */}
-								<div>
-									<div
-										style={{
-											display: "flex",
-											justifyContent: "space-between",
-											alignItems: "center",
-											marginBottom: "0.45rem",
-											flexWrap: "wrap",
-											gap: "0.4rem",
-										}}
-									>
-										<div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-											<span style={{ fontSize: "0.76rem", fontWeight: 700, color: "#0f172a", textTransform: "uppercase", letterSpacing: "0.03em" }}>
-												Documents ({clientUploadedDocs.length})
-											</span>
-										</div>
-
-										{/* Counter Pills & Select All Button */}
-										<div style={{ display: "flex", gap: "0.4rem", alignItems: "center", flexWrap: "wrap" }}>
-											<span style={{ fontSize: "0.68rem", padding: "1px 7px", borderRadius: "4px", background: "#ecfdf5", color: "#059669", border: "1px solid #a7f3d0", fontWeight: 600 }}>
-												✓ Retained: {selectedDocIndices.length}
-											</span>
-											{clientUploadedDocs.length - selectedDocIndices.length > 0 && (
-												<span style={{ fontSize: "0.68rem", padding: "1px 7px", borderRadius: "4px", background: "#fef2f2", color: "#b91c1c", border: "1px solid #fecaca", fontWeight: 600 }}>
-													⊖ Excluded: {clientUploadedDocs.length - selectedDocIndices.length}
-												</span>
-											)}
-											{!isCaseCompleted && clientUploadedDocs.length > 0 && (
-												<button
-													type="button"
-													onClick={handleSelectAllDocs}
-													style={{
-														background: "#f1f5f9",
-														border: "1px solid #cbd5e1",
-														borderRadius: "4px",
-														padding: "1px 7px",
-														fontSize: "0.68rem",
-														color: "#059669",
-														fontWeight: 600,
-														cursor: "pointer",
-													}}
-												>
-													{selectedDocIndices.length === clientUploadedDocs.length ? "Deselect All" : "Select All"}
-												</button>
-											)}
-										</div>
-									</div>
-
-									{/* Document Table */}
-									<div
-										style={{
-											border: "1px solid #e2e8f0",
-											borderRadius: "6px",
-											overflow: "hidden",
-											background: "#ffffff",
-										}}
-									>
-										{clientUploadedDocs.length === 0 ? (
-											<div style={{ padding: "0.75rem", textAlign: "center", color: "#94a3b8", fontSize: "0.76rem" }}>
-												No documents uploaded by client.
-											</div>
-										) : (
-											<table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.76rem", textAlign: "left" }}>
-												<thead>
-													<tr style={{ background: "#f8fafc", borderBottom: "1px solid #e2e8f0", color: "#475569", fontSize: "0.71rem", textTransform: "uppercase", letterSpacing: "0.04em" }}>
-														<th style={{ padding: "0.4rem 0.75rem", width: "45px", textAlign: "center" }}>Select</th>
-														<th style={{ padding: "0.4rem 0.75rem", width: "40px" }}>#</th>
-														<th style={{ padding: "0.4rem 0.75rem" }}>Document Name</th>
-														<th style={{ padding: "0.4rem 0.75rem", width: "85px" }}>Size</th>
-														<th style={{ padding: "0.4rem 0.75rem", width: "160px" }}>Status</th>
-														<th style={{ padding: "0.4rem 0.75rem", width: "80px", textAlign: "right" }}>Action</th>
-													</tr>
-												</thead>
-												<tbody>
-													{clientUploadedDocs.map((doc, idx) => {
-														if (!showAllDocs && idx >= 2) return null;
-														const ext = getFileExt(doc.name);
-														const extStyle = getExtBadgeStyle(ext);
-														const isSelected = selectedDocIndices.includes(idx);
-
-														return (
-															<tr
-																key={`${doc.name}-${idx}`}
-																onClick={() => !isCaseCompleted && handleToggleDoc(idx)}
-																style={{
-																	borderBottom: "1px solid #f1f5f9",
-																	background: isSelected ? "#ffffff" : "#fafafa",
-																	opacity: isSelected ? 1 : 0.42,
-																	cursor: isCaseCompleted ? "default" : "pointer",
-																	transition: "all 0.15s ease",
-																}}
-															>
-																<td style={{ padding: "0.4rem 0.75rem", textAlign: "center" }} onClick={(e) => e.stopPropagation()}>
-																	<input
-																		type="checkbox"
-																		checked={isSelected}
-																		disabled={isCaseCompleted}
-																		onChange={() => handleToggleDoc(idx)}
-																		style={{ accentColor: "#059669", cursor: isCaseCompleted ? "default" : "pointer" }}
-																	/>
-																</td>
-																<td style={{ padding: "0.4rem 0.75rem", color: isSelected ? "#64748b" : "#94a3b8" }}>
-																	{idx + 1}
-																</td>
-																<td style={{ padding: "0.4rem 0.75rem", fontWeight: isSelected ? 600 : 400, color: isSelected ? "#0f172a" : "#64748b" }}>
-																	<span
-																		style={{
-																			fontSize: "0.62rem",
-																			padding: "1px 5px",
-																			borderRadius: "4px",
-																			marginRight: "6px",
-																			fontWeight: 700,
-																			background: isSelected ? extStyle.bg : "#f1f5f9",
-																			color: isSelected ? extStyle.color : "#94a3b8",
-																			border: isSelected ? extStyle.border : "1px solid #e2e8f0",
-																		}}
-																	>
-																		{ext}
-																	</span>
-																	<span style={{ textDecoration: isSelected ? "none" : "line-through" }}>
-																		{doc.name}
-																	</span>
-																</td>
-																<td style={{ padding: "0.4rem 0.75rem", color: isSelected ? "#64748b" : "#94a3b8" }}>
-																	{doc.size || "-"}
-																</td>
-																<td style={{ padding: "0.4rem 0.75rem" }}>
-																	{isSelected ? (
-																		<span style={{ fontSize: "0.66rem", fontWeight: 600, padding: "2px 7px", borderRadius: "4px", background: "#ecfdf5", color: "#059669", border: "1px solid #a7f3d0" }}>
-																			✓ Retained
-																		</span>
-																	) : (
-																		<span style={{ fontSize: "0.66rem", fontWeight: 600, padding: "2px 7px", borderRadius: "4px", background: "#fef2f2", color: "#b91c1c", border: "1px solid #fecaca" }}>
-																			⊖ Excluded
-																		</span>
-																	)}
-																</td>
-																<td style={{ padding: "0.4rem 0.75rem", textAlign: "right" }} onClick={(e) => e.stopPropagation()}>
-																	<div style={{ display: "inline-flex", alignItems: "center", justifyContent: "flex-end", gap: "0.55rem" }}>
-																		<a
-																			onClick={(e) => handleOpenDocument(e, doc.url)}
-																			href={doc.url || "#"}
-																			style={{
-																				fontSize: "0.74rem",
-																				color: "#059669",
-																				fontWeight: 600,
-																				textDecoration: "none",
-																				cursor: "pointer",
-																				display: "inline-flex",
-																				alignItems: "center",
-																				gap: "0.2rem",
-																			}}
-																			title="View document in new tab"
-																		>
-																			<span>View</span>
-																			<Icons.ExternalLink />
-																		</a>
-																		<button
-																			type="button"
-																			onClick={(e) => handleDownloadDocument(e, doc.url, doc.name)}
-																			style={{
-																				background: "#f1f5f9",
-																				border: "1px solid #cbd5e1",
-																				color: "#0f172a",
-																				padding: "2px 7px",
-																				borderRadius: "4px",
-																				fontSize: "0.72rem",
-																				fontWeight: 600,
-																				cursor: "pointer",
-																				display: "inline-flex",
-																				alignItems: "center",
-																				gap: "0.25rem",
-																				transition: "all 0.15s ease",
-																			}}
-																			title="Download document"
-																		>
-																			<Icons.Download />
-																			<span>Download</span>
-																		</button>
-																	</div>
-																</td>
-															</tr>
-														);
-													})}
-												</tbody>
-											</table>
-										)}
-										{clientUploadedDocs.length > 2 && (
-											<div
-												style={{
-													display: "flex",
-													justifyContent: "center",
-													alignItems: "center",
-													padding: "0.35rem 0.6rem",
-													background: "#f8fafc",
-													borderTop: "1px solid #e2e8f0",
-												}}
-											>
-												<button
-													type="button"
-													onClick={() => setShowAllDocs(!showAllDocs)}
-													style={{
-														background: "#ffffff",
-														border: "1px solid #cbd5e1",
-														borderRadius: "4px",
-														padding: "2px 10px",
-														fontSize: "0.72rem",
-														fontWeight: 600,
-														color: "#059669",
-														cursor: "pointer",
-														display: "inline-flex",
-														alignItems: "center",
-														gap: "0.3rem",
-														transition: "all 0.15s ease",
-													}}
-												>
-													<span>
-														{showAllDocs
-															? `▲ Show Less (2 of ${clientUploadedDocs.length})`
-															: `▼ Show More (${clientUploadedDocs.length - 2} more)`}
-													</span>
-												</button>
-											</div>
-										)}
-									</div>
-								</div>
-
-								{/* 3. SME Prompt: Box */}
+								{/* Split Section: Files (Left) & SME Prompt (Right) */}
 								<div
 									style={{
-										background: "#ffffff",
-										border: "1.5px solid #10b981",
-										borderLeft: "5px solid #059669",
-										borderRadius: "6px",
-										padding: "0.75rem 1rem",
-										boxShadow: "0 1px 4px rgba(16, 185, 129, 0.08)",
-										display: "flex",
-										flexDirection: "column",
-										gap: "0.5rem",
+										display: "grid",
+										gridTemplateColumns: "repeat(auto-fit, minmax(360px, 1fr))",
+										gap: "0.85rem",
+										alignItems: "stretch",
 									}}
 								>
+									{/* 2. Left Column: Document Table */}
 									<div
 										style={{
 											display: "flex",
-											justifyContent: "space-between",
-											alignItems: "center",
+											flexDirection: "column",
+											gap: "0.45rem",
+											minWidth: 0,
 										}}
 									>
-										<span
+										<div
 											style={{
-												fontSize: "0.82rem",
-												fontWeight: 700,
-												color: "#065f46",
-												textTransform: "uppercase",
-												letterSpacing: "0.04em",
-												display: "inline-flex",
+												display: "flex",
+												justifyContent: "space-between",
 												alignItems: "center",
-												gap: "0.35rem",
+												marginBottom: "0.15rem",
+												flexWrap: "wrap",
+												gap: "0.4rem",
 											}}
 										>
-											<Icons.ClipboardCheck /> SME Prompt:
-										</span>
-									</div>
+											<div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+												<span style={{ fontSize: "0.76rem", fontWeight: 700, color: "#0f172a", textTransform: "uppercase", letterSpacing: "0.03em" }}>
+													Documents ({clientUploadedDocs.length})
+												</span>
+											</div>
 
-									<textarea
-										value={smsAssignmentNotes}
-										onChange={(e) => setSmsAssignmentNotes(e.target.value)}
-										disabled={isCaseCompleted}
-										placeholder="Enter SME prompt here... e.g. Please add bank statement for Q2 and subtract duplicate invoice #12."
-										rows={3}
-										style={{
-											width: "100%",
-											padding: "0.45rem 0.75rem",
-											borderRadius: "6px",
-											border: "1px solid #cbd5e1",
-											background: "#f8fafc",
-											color: "#0f172a",
-											fontSize: "0.86rem",
-											fontFamily: "inherit",
-											resize: "none",
-											height: "4.5em",
-											maxHeight: "4.5em",
-											lineHeight: 1.5,
-											overflowY: "auto",
-											outline: "none",
-											boxSizing: "border-box",
-										}}
-									/>
-
-									{/* Save Button & Status */}
-									{!isCaseCompleted && (
-										<div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-											<div>
-												{assignSavedSuccess && (
-													<span style={{ fontSize: "0.72rem", color: "#059669", fontWeight: 600, display: "inline-flex", alignItems: "center", gap: "0.3rem" }}>
-														<Icons.Check /> Saved successfully
+											{/* Counter Pills & Select All Button */}
+											<div style={{ display: "flex", gap: "0.4rem", alignItems: "center", flexWrap: "wrap" }}>
+												<span style={{ fontSize: "0.68rem", padding: "1px 7px", borderRadius: "4px", background: "#ecfdf5", color: "#059669", border: "1px solid #a7f3d0", fontWeight: 600 }}>
+													✓ Retained: {selectedDocIndices.length}
+												</span>
+												{clientUploadedDocs.length - selectedDocIndices.length > 0 && (
+													<span style={{ fontSize: "0.68rem", padding: "1px 7px", borderRadius: "4px", background: "#fef2f2", color: "#b91c1c", border: "1px solid #fecaca", fontWeight: 600 }}>
+														⊖ Excluded: {clientUploadedDocs.length - selectedDocIndices.length}
 													</span>
 												)}
+												{!isCaseCompleted && clientUploadedDocs.length > 0 && (
+													<button
+														type="button"
+														onClick={handleSelectAllDocs}
+														style={{
+															background: "#f1f5f9",
+															border: "1px solid #cbd5e1",
+															borderRadius: "4px",
+															padding: "1px 7px",
+															fontSize: "0.68rem",
+															color: "#059669",
+															fontWeight: 600,
+															cursor: "pointer",
+														}}
+													>
+														{selectedDocIndices.length === clientUploadedDocs.length ? "Deselect All" : "Select All"}
+													</button>
+												)}
 											</div>
-											<button
-												type="button"
-												onClick={handleSaveDocumentAssignment}
-												disabled={isSavingAssign}
+										</div>
+
+										{/* Document Table */}
+										<div
+											style={{
+												border: "1px solid #e2e8f0",
+												borderRadius: "6px",
+												overflow: "hidden",
+												background: "#ffffff",
+												display: "flex",
+												flexDirection: "column",
+												flex: 1,
+											}}
+										>
+											{clientUploadedDocs.length === 0 ? (
+												<div style={{ padding: "0.75rem", textAlign: "center", color: "#94a3b8", fontSize: "0.76rem" }}>
+													No documents uploaded by client.
+												</div>
+											) : (
+												<div style={{ overflowX: "auto", flex: 1 }}>
+													<table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.76rem", textAlign: "left" }}>
+														<thead>
+															<tr style={{ background: "#f8fafc", borderBottom: "1px solid #e2e8f0", color: "#475569", fontSize: "0.71rem", textTransform: "uppercase", letterSpacing: "0.04em" }}>
+																<th style={{ padding: "0.4rem 0.65rem", width: "42px", textAlign: "center" }}>Select</th>
+																<th style={{ padding: "0.4rem 0.65rem", width: "35px" }}>#</th>
+																<th style={{ padding: "0.4rem 0.65rem" }}>Document Name</th>
+																<th style={{ padding: "0.4rem 0.65rem", width: "75px" }}>Size</th>
+																<th style={{ padding: "0.4rem 0.65rem", width: "120px" }}>Status</th>
+																<th style={{ padding: "0.4rem 0.65rem", width: "80px", textAlign: "right" }}>Action</th>
+															</tr>
+														</thead>
+														<tbody>
+															{(showAllDocs ? clientUploadedDocs : clientUploadedDocs.slice(0, 2)).map((doc, idx) => {
+																const ext = getFileExt(doc.name);
+																const extStyle = getExtStyle(ext);
+																const isSelected = selectedDocIndices.includes(idx);
+
+																return (
+																	<tr
+																		key={`${doc.name}-${idx}`}
+																		style={{
+																			borderBottom: "1px solid #f1f5f9",
+																			background: isSelected ? "#ffffff" : "#fafafa",
+																			opacity: isSelected ? 1 : 0.45,
+																			transition: "all 0.15s ease",
+																		}}
+																	>
+																		<td style={{ padding: "0.4rem 0.65rem", textAlign: "center" }}>
+																			<input
+																				type="checkbox"
+																				checked={isSelected}
+																				onChange={() => handleToggleDocSelect(idx)}
+																				disabled={isCaseCompleted}
+																				style={{
+																					cursor: isCaseCompleted ? "not-allowed" : "pointer",
+																					accentColor: "#059669",
+																					width: "15px",
+																					height: "15px",
+																				}}
+																			/>
+																		</td>
+																		<td style={{ padding: "0.4rem 0.65rem", color: isSelected ? "#64748b" : "#94a3b8" }}>
+																			{idx + 1}
+																		</td>
+																		<td
+																			style={{
+																				padding: "0.4rem 0.65rem",
+																				fontWeight: 500,
+																				color: isSelected ? "#0f172a" : "#94a3b8",
+																			}}
+																		>
+																			<span
+																				style={{
+																					fontSize: "0.62rem",
+																					padding: "1px 5px",
+																					borderRadius: "4px",
+																					marginRight: "6px",
+																					fontWeight: 700,
+																					background: isSelected ? extStyle.bg : "#f1f5f9",
+																					color: isSelected ? extStyle.color : "#94a3b8",
+																					border: isSelected ? extStyle.border : "1px solid #e2e8f0",
+																				}}
+																			>
+																				{ext}
+																			</span>
+																			<span style={{ textDecoration: isSelected ? "none" : "line-through" }}>
+																				{doc.name}
+																			</span>
+																		</td>
+																		<td style={{ padding: "0.4rem 0.65rem", color: isSelected ? "#64748b" : "#94a3b8" }}>
+																			{doc.size || "-"}
+																		</td>
+																		<td style={{ padding: "0.4rem 0.65rem" }}>
+																			{isSelected ? (
+																				<span style={{ fontSize: "0.66rem", fontWeight: 600, padding: "2px 7px", borderRadius: "4px", background: "#ecfdf5", color: "#059669", border: "1px solid #a7f3d0" }}>
+																					✓ Retained
+																				</span>
+																			) : (
+																				<span style={{ fontSize: "0.66rem", fontWeight: 600, padding: "2px 7px", borderRadius: "4px", background: "#fef2f2", color: "#b91c1c", border: "1px solid #fecaca" }}>
+																					⊖ Excluded
+																				</span>
+																			)}
+																		</td>
+																		<td style={{ padding: "0.4rem 0.65rem", textAlign: "right" }}>
+																			<div style={{ display: "inline-flex", alignItems: "center", justifyContent: "flex-end", gap: "0.55rem" }}>
+																				<a
+																					onClick={(e) => handleOpenDocument(e, doc.url)}
+																					href={doc.url || "#"}
+																					style={{
+																						fontSize: "0.74rem",
+																						color: "#0d6efd",
+																						fontWeight: 600,
+																						textDecoration: "none",
+																						cursor: "pointer",
+																						display: "inline-flex",
+																						alignItems: "center",
+																						gap: "0.2rem",
+																					}}
+																					title="View document in new tab"
+																				>
+																					<span>View</span>
+																					<Icons.ExternalLink />
+																				</a>
+																				<button
+																					type="button"
+																					onClick={(e) => handleDownloadDocument(e, doc.url, doc.name)}
+																					style={{
+																						background: "#f1f5f9",
+																						border: "1px solid #cbd5e1",
+																						color: "#0f172a",
+																						padding: "2px 7px",
+																						borderRadius: "4px",
+																						fontSize: "0.72rem",
+																						fontWeight: 600,
+																						cursor: "pointer",
+																						display: "inline-flex",
+																						alignItems: "center",
+																						gap: "0.25rem",
+																						transition: "all 0.15s ease",
+																					}}
+																					title="Download document"
+																				>
+																					<Icons.Download />
+																					<span>Download</span>
+																				</button>
+																			</div>
+																		</td>
+																	</tr>
+																);
+															})}
+														</tbody>
+													</table>
+												</div>
+											)}
+											{clientUploadedDocs.length > 2 && (
+												<div
+													style={{
+														display: "flex",
+														justifyContent: "center",
+														alignItems: "center",
+														padding: "0.35rem 0.6rem",
+														background: "#f8fafc",
+														borderTop: "1px solid #e2e8f0",
+													}}
+												>
+													<button
+														type="button"
+														onClick={() => setShowAllDocs(!showAllDocs)}
+														style={{
+															background: "#ffffff",
+															border: "1px solid #cbd5e1",
+															borderRadius: "4px",
+															padding: "2px 10px",
+															fontSize: "0.72rem",
+															fontWeight: 600,
+															color: "#059669",
+															cursor: "pointer",
+															display: "inline-flex",
+															alignItems: "center",
+															gap: "0.3rem",
+															transition: "all 0.15s ease",
+														}}
+													>
+														<span>
+															{showAllDocs
+																? `▲ Show Less (2 of ${clientUploadedDocs.length})`
+																: `▼ Show More (${clientUploadedDocs.length - 2} more)`}
+														</span>
+													</button>
+												</div>
+											)}
+										</div>
+									</div>
+
+									{/* 3. Right Column: SME Prompt Box */}
+									<div
+										style={{
+											background: "#ffffff",
+											border: "1.5px solid #10b981",
+											borderLeft: "5px solid #059669",
+											borderRadius: "6px",
+											padding: "0.75rem 1rem",
+											boxShadow: "0 1px 4px rgba(16, 185, 129, 0.08)",
+											display: "flex",
+											flexDirection: "column",
+											gap: "0.5rem",
+											minWidth: 0,
+											height: "100%",
+											boxSizing: "border-box",
+										}}
+									>
+										<div
+											style={{
+												display: "flex",
+												justifyContent: "space-between",
+												alignItems: "center",
+											}}
+										>
+											<span
 												style={{
-													background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
-													color: "#ffffff",
-													border: "none",
-													borderRadius: "5px",
-													padding: "0.4rem 1rem",
-													fontSize: "0.76rem",
-													fontWeight: 600,
-													cursor: isSavingAssign ? "not-allowed" : "pointer",
+													fontSize: "0.82rem",
+													fontWeight: 700,
+													color: "#065f46",
+													textTransform: "uppercase",
+													letterSpacing: "0.04em",
 													display: "inline-flex",
 													alignItems: "center",
 													gap: "0.35rem",
-													boxShadow: "0 1px 3px rgba(16, 185, 129, 0.25)",
 												}}
 											>
-												<Icons.Check />
-												<span>{isSavingAssign ? "Saving..." : "Save Prompt"}</span>
-											</button>
+												<Icons.ClipboardCheck /> SME Prompt:
+											</span>
 										</div>
-									)}
+
+										<textarea
+											value={smsAssignmentNotes}
+											onChange={(e) => setSmsAssignmentNotes(e.target.value)}
+											disabled={isCaseCompleted}
+											placeholder="Enter SME prompt here... e.g. Please add bank statement for Q2 and subtract duplicate invoice #12."
+											rows={4}
+											style={{
+												width: "100%",
+												flex: 1,
+												minHeight: "120px",
+												padding: "0.55rem 0.75rem",
+												borderRadius: "6px",
+												border: "1px solid #cbd5e1",
+												background: "#f8fafc",
+												color: "#0f172a",
+												fontSize: "0.86rem",
+												fontFamily: "inherit",
+												resize: "vertical",
+												lineHeight: 1.5,
+												overflowY: "auto",
+												outline: "none",
+												boxSizing: "border-box",
+											}}
+										/>
+
+										{/* Save Button & Status */}
+										{!isCaseCompleted && (
+											<div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "auto", paddingTop: "0.2rem" }}>
+												<div>
+													{assignSavedSuccess && (
+														<span style={{ fontSize: "0.72rem", color: "#059669", fontWeight: 600, display: "inline-flex", alignItems: "center", gap: "0.3rem" }}>
+															<Icons.Check /> Saved successfully
+														</span>
+													)}
+												</div>
+												<button
+													type="button"
+													onClick={handleSaveDocumentAssignment}
+													disabled={isSavingAssign}
+													style={{
+														background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+														color: "#ffffff",
+														border: "none",
+														borderRadius: "5px",
+														padding: "0.45rem 1.1rem",
+														fontSize: "0.78rem",
+														fontWeight: 600,
+														cursor: isSavingAssign ? "not-allowed" : "pointer",
+														display: "inline-flex",
+														alignItems: "center",
+														gap: "0.35rem",
+														boxShadow: "0 1px 3px rgba(16, 185, 129, 0.25)",
+													}}
+												>
+													<Icons.Check />
+													<span>{isSavingAssign ? "Saving..." : "Save Prompt"}</span>
+												</button>
+											</div>
+										)}
+									</div>
 								</div>
 							</div>
 

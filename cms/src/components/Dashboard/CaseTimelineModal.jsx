@@ -1558,7 +1558,7 @@ export default function CaseTimelineModal({
 								flexDirection: "column",
 								justifyContent: "space-between",
 								gap: "0.55rem",
-								overflowY: showAllDocs ? "auto" : "hidden",
+								overflowY: "auto",
 								paddingRight: "2px",
 							}}
 						>
@@ -1732,318 +1732,346 @@ export default function CaseTimelineModal({
 							)}
 						</div>
 
-						{/* 2. Document Table */}
-						<div>
+						{/* Split Section: Files (Left) & SME Prompt (Right) */}
+						<div
+							style={{
+								display: "grid",
+								gridTemplateColumns: "repeat(auto-fit, minmax(360px, 1fr))",
+								gap: "0.85rem",
+								alignItems: "stretch",
+							}}
+						>
+							{/* 2. Left Column: Document Table */}
 							<div
 								style={{
 									display: "flex",
-									justifyContent: "space-between",
-									alignItems: "center",
-									marginBottom: "0.45rem",
-									flexWrap: "wrap",
-									gap: "0.4rem",
+									flexDirection: "column",
+									gap: "0.45rem",
+									minWidth: 0,
 								}}
 							>
-								<div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-									<span style={{ fontSize: "0.76rem", fontWeight: 700, color: "#0f172a", textTransform: "uppercase", letterSpacing: "0.03em" }}>
-										Documents ({clientUploadedDocs.length})
-									</span>
+								<div
+									style={{
+										display: "flex",
+										justifyContent: "space-between",
+										alignItems: "center",
+										marginBottom: "0.15rem",
+										flexWrap: "wrap",
+										gap: "0.4rem",
+									}}
+								>
+									<div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+										<span style={{ fontSize: "0.76rem", fontWeight: 700, color: "#0f172a", textTransform: "uppercase", letterSpacing: "0.03em" }}>
+											Documents ({clientUploadedDocs.length})
+										</span>
+									</div>
+
+									{/* Retained vs Excluded Pills */}
+									{verifiedDocs.length > 0 && (
+										<div style={{ display: "flex", gap: "0.35rem", flexWrap: "wrap" }}>
+											<span style={{ fontSize: "0.68rem", padding: "1px 7px", borderRadius: "4px", background: "#ecfdf5", color: "#059669", border: "1px solid #a7f3d0", fontWeight: 600 }}>
+												✓ Retained: {verifiedDocs.length}
+											</span>
+											{excludedDocs.length > 0 && (
+												<span style={{ fontSize: "0.68rem", padding: "1px 7px", borderRadius: "4px", background: "#fef2f2", color: "#b91c1c", border: "1px solid #fecaca", fontWeight: 600 }}>
+													⊖ Excluded: {excludedDocs.length}
+												</span>
+											)}
+										</div>
+									)}
 								</div>
 
-								{/* Retained vs Excluded Pills */}
-								{verifiedDocs.length > 0 && (
-									<div style={{ display: "flex", gap: "0.35rem", flexWrap: "wrap" }}>
-										<span style={{ fontSize: "0.68rem", padding: "1px 7px", borderRadius: "4px", background: "#ecfdf5", color: "#059669", border: "1px solid #a7f3d0", fontWeight: 600 }}>
-											✓ Retained: {verifiedDocs.length}
-										</span>
-										{excludedDocs.length > 0 && (
-											<span style={{ fontSize: "0.68rem", padding: "1px 7px", borderRadius: "4px", background: "#fef2f2", color: "#b91c1c", border: "1px solid #fecaca", fontWeight: 600 }}>
-												⊖ Excluded: {excludedDocs.length}
-											</span>
-										)}
-									</div>
-								)}
-							</div>
+								{/* Document Table */}
+								<div
+									style={{
+										border: "1px solid #e2e8f0",
+										borderRadius: "6px",
+										overflow: "hidden",
+										background: "#ffffff",
+										display: "flex",
+										flexDirection: "column",
+										flex: 1,
+									}}
+								>
+									{clientUploadedDocs.length === 0 ? (
+										<div style={{ padding: "0.75rem", textAlign: "center", color: "#94a3b8", fontSize: "0.76rem" }}>
+											No documents uploaded for this case.
+										</div>
+									) : (
+										<div style={{ overflowX: "auto", flex: 1 }}>
+											<table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.76rem", textAlign: "left" }}>
+												<thead>
+													<tr style={{ background: "#f8fafc", borderBottom: "1px solid #e2e8f0", color: "#475569", fontSize: "0.71rem", textTransform: "uppercase", letterSpacing: "0.04em" }}>
+														<th style={{ padding: "0.4rem 0.65rem", width: "35px" }}>#</th>
+														<th style={{ padding: "0.4rem 0.65rem" }}>Document Name</th>
+														<th style={{ padding: "0.4rem 0.65rem", width: "75px" }}>Size</th>
+														<th style={{ padding: "0.4rem 0.65rem", width: "120px" }}>Status</th>
+														<th style={{ padding: "0.4rem 0.65rem", width: "80px", textAlign: "right" }}>Action</th>
+													</tr>
+												</thead>
+												<tbody>
+													{(showAllDocs ? clientUploadedDocs : clientUploadedDocs.slice(0, 2)).map((doc, idx) => {
+														const ext = getFileExt(doc.name);
+														const extStyle = getExtStyle(ext);
+														const hasSmeSelected = verifiedDocs.length > 0;
+														const isSelected = !hasSmeSelected || verifiedDocs.some((vd) => (vd.url && vd.url === doc.url) || vd.name === doc.name);
+														const isFaded = hasSmeSelected && !isSelected;
 
-							{/* Document Table */}
-							<div
-								style={{
-									border: "1px solid #e2e8f0",
-									borderRadius: "6px",
-									overflow: "hidden",
-									background: "#ffffff",
-								}}
-							>
-								{clientUploadedDocs.length === 0 ? (
-									<div style={{ padding: "0.75rem", textAlign: "center", color: "#94a3b8", fontSize: "0.76rem" }}>
-										No documents uploaded for this case.
-									</div>
-								) : (
-									<table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.76rem", textAlign: "left" }}>
-										<thead>
-											<tr style={{ background: "#f8fafc", borderBottom: "1px solid #e2e8f0", color: "#475569", fontSize: "0.71rem", textTransform: "uppercase", letterSpacing: "0.04em" }}>
-												<th style={{ padding: "0.4rem 0.75rem", width: "40px" }}>#</th>
-												<th style={{ padding: "0.4rem 0.75rem" }}>Document Name</th>
-												<th style={{ padding: "0.4rem 0.75rem", width: "85px" }}>Size</th>
-												<th style={{ padding: "0.4rem 0.75rem", width: "160px" }}>Status</th>
-												<th style={{ padding: "0.4rem 0.75rem", width: "80px", textAlign: "right" }}>Action</th>
-											</tr>
-										</thead>
-										<tbody>
-											{(showAllDocs ? clientUploadedDocs : clientUploadedDocs.slice(0, 2)).map((doc, idx) => {
-												const ext = getFileExt(doc.name);
-												const extStyle = getExtStyle(ext);
-												const hasSmeSelected = verifiedDocs.length > 0;
-												const isSelected = !hasSmeSelected || verifiedDocs.some((vd) => (vd.url && vd.url === doc.url) || vd.name === doc.name);
-												const isFaded = hasSmeSelected && !isSelected;
-
-												return (
-													<tr
-														key={`${doc.name}-${idx}`}
-														style={{
-															borderBottom: "1px solid #f1f5f9",
-															background: isFaded ? "#fafafa" : "#ffffff",
-															opacity: isFaded ? 0.38 : 1,
-															transition: "all 0.15s ease",
-															cursor: isFaded ? "not-allowed" : "default",
-														}}
-													>
-														<td style={{ padding: "0.4rem 0.75rem", color: isFaded ? "#94a3b8" : "#64748b" }}>
-															{idx + 1}
-														</td>
-														<td
-															style={{
-																padding: "0.4rem 0.75rem",
-																fontWeight: 500,
-																color: isFaded ? "#94a3b8" : "#0f172a",
-															}}
-														>
-															<span
+														return (
+															<tr
+																key={`${doc.name}-${idx}`}
 																style={{
-																	fontSize: "0.62rem",
-																	padding: "1px 5px",
-																	borderRadius: "4px",
-																	marginRight: "6px",
-																	fontWeight: 700,
-																	background: isFaded ? "#f1f5f9" : extStyle.bg,
-																	color: isFaded ? "#94a3b8" : extStyle.color,
-																	border: isFaded ? "1px solid #e2e8f0" : extStyle.border,
+																	borderBottom: "1px solid #f1f5f9",
+																	background: isFaded ? "#fafafa" : "#ffffff",
+																	opacity: isFaded ? 0.38 : 1,
+																	transition: "all 0.15s ease",
+																	cursor: isFaded ? "not-allowed" : "default",
 																}}
 															>
-																{ext}
-															</span>
-															<span style={{ textDecoration: isFaded ? "line-through" : "none" }}>
-																{doc.name}
-															</span>
-														</td>
-														<td style={{ padding: "0.4rem 0.75rem", color: isFaded ? "#94a3b8" : "#64748b" }}>
-															{doc.size || "-"}
-														</td>
-														<td style={{ padding: "0.4rem 0.75rem" }}>
-															{hasSmeSelected ? (
-																isSelected ? (
-																	<span style={{ fontSize: "0.66rem", fontWeight: 600, padding: "2px 7px", borderRadius: "4px", background: "#ecfdf5", color: "#059669", border: "1px solid #a7f3d0" }}>
-																		✓ Selected
-																	</span>
-																) : (
-																	<span style={{ fontSize: "0.66rem", fontWeight: 600, padding: "2px 7px", borderRadius: "4px", background: "#fef2f2", color: "#b91c1c", border: "1px solid #fecaca" }}>
-																		⊖ Excluded
-																	</span>
-																)
-															) : (
-																<span style={{ fontSize: "0.66rem", fontWeight: 600, padding: "2px 7px", borderRadius: "4px", background: "#f1f5f9", color: "#475569", border: "1px solid #e2e8f0" }}>
-																	Pending SME
-																</span>
-															)}
-														</td>
-														<td style={{ padding: "0.4rem 0.75rem", textAlign: "right" }}>
-															{isFaded ? (
-																<span
-																	title="Not selected by SME"
+																<td style={{ padding: "0.4rem 0.65rem", color: isFaded ? "#94a3b8" : "#64748b" }}>
+																	{idx + 1}
+																</td>
+																<td
 																	style={{
-																		fontSize: "0.72rem",
-																		color: "#94a3b8",
-																		fontStyle: "italic",
-																		cursor: "not-allowed",
-																		userSelect: "none",
+																		padding: "0.4rem 0.65rem",
+																		fontWeight: 500,
+																		color: isFaded ? "#94a3b8" : "#0f172a",
 																	}}
 																>
-																	Disabled
-																</span>
-															) : (
-																<div style={{ display: "inline-flex", alignItems: "center", justifyContent: "flex-end", gap: "0.55rem" }}>
-																	<a
-																		onClick={(e) => handleOpenDocument(e, doc.url)}
-																		href={doc.url || "#"}
+																	<span
 																		style={{
-																			fontSize: "0.74rem",
-																			color: "#0d6efd",
-																			fontWeight: 600,
-																			textDecoration: "none",
-																			cursor: "pointer",
-																			display: "inline-flex",
-																			alignItems: "center",
-																			gap: "0.2rem",
-																		}}
-																		title="View document in new tab"
-																	>
-																		<span>View</span>
-																		<Icons.ExternalLink />
-																	</a>
-																	<button
-																		type="button"
-																		onClick={(e) => handleDownloadDocument(e, doc.url, doc.name)}
-																		style={{
-																			background: "#f1f5f9",
-																			border: "1px solid #cbd5e1",
-																			color: "#0f172a",
-																			padding: "2px 7px",
+																			fontSize: "0.62rem",
+																			padding: "1px 5px",
 																			borderRadius: "4px",
-																			fontSize: "0.72rem",
-																			fontWeight: 600,
-																			cursor: "pointer",
-																			display: "inline-flex",
-																			alignItems: "center",
-																			gap: "0.25rem",
-																			transition: "all 0.15s ease",
+																			marginRight: "6px",
+																			fontWeight: 700,
+																			background: isFaded ? "#f1f5f9" : extStyle.bg,
+																			color: isFaded ? "#94a3b8" : extStyle.color,
+																			border: isFaded ? "1px solid #e2e8f0" : extStyle.border,
 																		}}
-																		title="Download document"
 																	>
-																		<Icons.Download />
-																		<span>Download</span>
-																	</button>
-																</div>
-															)}
-														</td>
-													</tr>
-												);
-											})}
-										</tbody>
-									</table>
-								)}
-								{clientUploadedDocs.length > 2 && (
-									<div
+																		{ext}
+																	</span>
+																	<span style={{ textDecoration: isFaded ? "line-through" : "none" }}>
+																		{doc.name}
+																	</span>
+																</td>
+																<td style={{ padding: "0.4rem 0.65rem", color: isFaded ? "#94a3b8" : "#64748b" }}>
+																	{doc.size || "-"}
+																</td>
+																<td style={{ padding: "0.4rem 0.65rem" }}>
+																	{hasSmeSelected ? (
+																		isSelected ? (
+																			<span style={{ fontSize: "0.66rem", fontWeight: 600, padding: "2px 7px", borderRadius: "4px", background: "#ecfdf5", color: "#059669", border: "1px solid #a7f3d0" }}>
+																				✓ Selected
+																			</span>
+																		) : (
+																			<span style={{ fontSize: "0.66rem", fontWeight: 600, padding: "2px 7px", borderRadius: "4px", background: "#fef2f2", color: "#b91c1c", border: "1px solid #fecaca" }}>
+																				⊖ Excluded
+																			</span>
+																		)
+																	) : (
+																		<span style={{ fontSize: "0.66rem", fontWeight: 600, padding: "2px 7px", borderRadius: "4px", background: "#f1f5f9", color: "#475569", border: "1px solid #e2e8f0" }}>
+																			Pending SME
+																		</span>
+																	)}
+																</td>
+																<td style={{ padding: "0.4rem 0.65rem", textAlign: "right" }}>
+																	{isFaded ? (
+																		<span
+																			title="Not selected by SME"
+																			style={{
+																				fontSize: "0.72rem",
+																				color: "#94a3b8",
+																				fontStyle: "italic",
+																				cursor: "not-allowed",
+																				userSelect: "none",
+																			}}
+																		>
+																			Disabled
+																		</span>
+																	) : (
+																		<div style={{ display: "inline-flex", alignItems: "center", justifyContent: "flex-end", gap: "0.55rem" }}>
+																			<a
+																				onClick={(e) => handleOpenDocument(e, doc.url)}
+																				href={doc.url || "#"}
+																				style={{
+																					fontSize: "0.74rem",
+																					color: "#0d6efd",
+																					fontWeight: 600,
+																					textDecoration: "none",
+																					cursor: "pointer",
+																					display: "inline-flex",
+																					alignItems: "center",
+																					gap: "0.2rem",
+																				}}
+																				title="View document in new tab"
+																			>
+																				<span>View</span>
+																				<Icons.ExternalLink />
+																			</a>
+																			<button
+																				type="button"
+																				onClick={(e) => handleDownloadDocument(e, doc.url, doc.name)}
+																				style={{
+																					background: "#f1f5f9",
+																					border: "1px solid #cbd5e1",
+																					color: "#0f172a",
+																					padding: "2px 7px",
+																					borderRadius: "4px",
+																					fontSize: "0.72rem",
+																					fontWeight: 600,
+																					cursor: "pointer",
+																					display: "inline-flex",
+																					alignItems: "center",
+																					gap: "0.25rem",
+																					transition: "all 0.15s ease",
+																				}}
+																				title="Download document"
+																			>
+																				<Icons.Download />
+																				<span>Download</span>
+																			</button>
+																		</div>
+																	)}
+																</td>
+															</tr>
+														);
+													})}
+												</tbody>
+											</table>
+										</div>
+									)}
+									{clientUploadedDocs.length > 2 && (
+										<div
+											style={{
+												display: "flex",
+												justifyContent: "center",
+												alignItems: "center",
+												padding: "0.35rem 0.6rem",
+												background: "#f8fafc",
+												borderTop: "1px solid #e2e8f0",
+											}}
+										>
+											<button
+												type="button"
+												onClick={() => setShowAllDocs(!showAllDocs)}
+												style={{
+													background: "#ffffff",
+													border: "1px solid #cbd5e1",
+													borderRadius: "4px",
+													padding: "2px 10px",
+													fontSize: "0.72rem",
+													fontWeight: 600,
+													color: "#059669",
+													cursor: "pointer",
+													display: "inline-flex",
+													alignItems: "center",
+													gap: "0.3rem",
+													transition: "all 0.15s ease",
+												}}
+											>
+												<span>
+													{showAllDocs
+														? `▲ Show Less (2 of ${clientUploadedDocs.length})`
+														: `▼ Show More (${clientUploadedDocs.length - 2} more)`}
+												</span>
+											</button>
+										</div>
+									)}
+								</div>
+							</div>
+
+							{/* 3. Right Column: SME Prompt Box */}
+							<div
+								style={{
+									background: "#f8fafc",
+									border: "1.5px solid #10b981",
+									borderLeft: "5px solid #059669",
+									borderRadius: "6px",
+									padding: "0.75rem 1rem",
+									boxShadow: "0 1px 4px rgba(16, 185, 129, 0.08)",
+									display: "flex",
+									flexDirection: "column",
+									gap: "0.5rem",
+									minWidth: 0,
+									height: "100%",
+									boxSizing: "border-box",
+								}}
+							>
+								<div
+									style={{
+										display: "flex",
+										justifyContent: "space-between",
+										alignItems: "center",
+									}}
+								>
+									<span
 										style={{
-											display: "flex",
-											justifyContent: "center",
+											fontSize: "0.82rem",
+											fontWeight: 700,
+											color: "#065f46",
+											textTransform: "uppercase",
+											letterSpacing: "0.04em",
+											display: "inline-flex",
 											alignItems: "center",
-											padding: "0.35rem 0.6rem",
-											background: "#f8fafc",
-											borderTop: "1px solid #e2e8f0",
+											gap: "0.35rem",
 										}}
 									>
+										<Icons.ClipboardCheck /> SME Prompt:
+									</span>
+									{caseItem.smsNotes && (
 										<button
 											type="button"
-											onClick={() => setShowAllDocs(!showAllDocs)}
+											onClick={handleCopySmePrompt}
 											style={{
-												background: "#ffffff",
-												border: "1px solid #cbd5e1",
+												background: copiedPrompt ? "#ecfdf5" : "#ffffff",
+												border: copiedPrompt ? "1px solid #a7f3d0" : "1px solid #cbd5e1",
+												color: copiedPrompt ? "#059669" : "#1e293b",
+												padding: "2px 8px",
 												borderRadius: "4px",
-												padding: "2px 10px",
 												fontSize: "0.72rem",
 												fontWeight: 600,
-												color: "#059669",
 												cursor: "pointer",
 												display: "inline-flex",
 												alignItems: "center",
 												gap: "0.3rem",
 												transition: "all 0.15s ease",
+												boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
 											}}
+											title="Copy SME prompt to clipboard"
 										>
-											<span>
-												{showAllDocs
-													? `▲ Show Less (2 of ${clientUploadedDocs.length})`
-													: `▼ Show More (${clientUploadedDocs.length - 2} more)`}
-											</span>
+											{copiedPrompt ? <Icons.Check /> : <Icons.Copy />}
+											<span>{copiedPrompt ? "Copied!" : "Copy Prompt"}</span>
 										</button>
-									</div>
-								)}
-							</div>
-						</div>
+									)}
+								</div>
 
-						{/* 3. SME Prompt: Box (3 lines max with inner scroll) */}
-						<div
-							style={{
-								background: "#f8fafc",
-								border: "1.5px solid #10b981",
-								borderLeft: "6px solid #059669",
-								borderRadius: "6px",
-								padding: "0.55rem 0.85rem",
-								boxShadow: "0 1px 4px rgba(16, 185, 129, 0.08)",
-							}}
-						>
-							<div
-								style={{
-									display: "flex",
-									justifyContent: "space-between",
-									alignItems: "center",
-									marginBottom: "0.35rem",
-								}}
-							>
-								<span
+								<div
 									style={{
-										fontSize: "0.82rem",
-										fontWeight: 700,
-										color: "#065f46",
-										textTransform: "uppercase",
-										letterSpacing: "0.04em",
-										display: "inline-flex",
-										alignItems: "center",
-										gap: "0.35rem",
+										fontSize: "0.86rem",
+										color: "#0f172a",
+										lineHeight: 1.5,
+										whiteSpace: "pre-wrap",
+										fontWeight: 500,
+										flex: 1,
+										minHeight: "120px",
+										overflowY: "auto",
+										background: "#ffffff",
+										border: "1px solid #e2e8f0",
+										borderRadius: "5px",
+										padding: "0.55rem 0.75rem",
+										boxSizing: "border-box",
 									}}
 								>
-									<Icons.ClipboardCheck /> SME Prompt:
-								</span>
-								{caseItem.smsNotes && (
-									<button
-										type="button"
-										onClick={handleCopySmePrompt}
-										style={{
-											background: copiedPrompt ? "#ecfdf5" : "#ffffff",
-											border: copiedPrompt ? "1px solid #a7f3d0" : "1px solid #cbd5e1",
-											color: copiedPrompt ? "#059669" : "#1e293b",
-											padding: "2px 8px",
-											borderRadius: "4px",
-											fontSize: "0.72rem",
-											fontWeight: 600,
-											cursor: "pointer",
-											display: "inline-flex",
-											alignItems: "center",
-											gap: "0.3rem",
-											transition: "all 0.15s ease",
-											boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
-										}}
-										title="Copy SME prompt to clipboard"
-									>
-										{copiedPrompt ? <Icons.Check /> : <Icons.Copy />}
-										<span>{copiedPrompt ? "Copied!" : "Copy Prompt"}</span>
-									</button>
-								)}
-							</div>
-
-							<div
-								style={{
-									fontSize: "0.86rem",
-									color: "#0f172a",
-									lineHeight: 1.5,
-									whiteSpace: "pre-wrap",
-									fontWeight: 500,
-									maxHeight: "4.5em",
-									overflowY: "auto",
-									background: "#ffffff",
-									border: "1px solid #e2e8f0",
-									borderRadius: "5px",
-									padding: "0.45rem 0.75rem",
-									boxSizing: "border-box",
-								}}
-							>
-								{caseItem.smsNotes ? (
-									caseItem.smsNotes
-								) : (
-									<span style={{ color: "#94a3b8", fontStyle: "italic", fontSize: "0.84rem" }}>
-										Awaiting SME prompt...
-									</span>
-								)}
+									{caseItem.smsNotes ? (
+										caseItem.smsNotes
+									) : (
+										<span style={{ color: "#94a3b8", fontStyle: "italic", fontSize: "0.84rem" }}>
+											Awaiting SME prompt...
+										</span>
+									)}
+								</div>
 							</div>
 						</div>
 					</div>
