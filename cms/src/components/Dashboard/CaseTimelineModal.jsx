@@ -1572,6 +1572,8 @@ export default function CaseTimelineModal({
 									display: "flex",
 									flexDirection: "column",
 									gap: "0.55rem",
+									flex: 1,
+									minHeight: 0,
 								}}
 							>
 						{/* Phase 1 Header */}
@@ -1739,6 +1741,8 @@ export default function CaseTimelineModal({
 								gridTemplateColumns: "repeat(auto-fit, minmax(360px, 1fr))",
 								gap: "0.85rem",
 								alignItems: "stretch",
+								flex: 1,
+								minHeight: 0,
 							}}
 						>
 							{/* 2. Left Column: Document Table */}
@@ -1748,6 +1752,7 @@ export default function CaseTimelineModal({
 									flexDirection: "column",
 									gap: "0.45rem",
 									minWidth: 0,
+									height: "100%",
 								}}
 							>
 								<div
@@ -1798,7 +1803,7 @@ export default function CaseTimelineModal({
 											No documents uploaded for this case.
 										</div>
 									) : (
-										<div style={{ overflowX: "auto", flex: 1 }}>
+										<div style={{ overflowX: "auto", overflowY: "auto", flex: 1, minHeight: 0 }}>
 											<table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.76rem", textAlign: "left" }}>
 												<thead>
 													<tr style={{ background: "#f8fafc", borderBottom: "1px solid #e2e8f0", color: "#475569", fontSize: "0.71rem", textTransform: "uppercase", letterSpacing: "0.04em" }}>
@@ -1997,6 +2002,7 @@ export default function CaseTimelineModal({
 									minWidth: 0,
 									height: "100%",
 									boxSizing: "border-box",
+									flex: 1,
 								}}
 							>
 								<div
