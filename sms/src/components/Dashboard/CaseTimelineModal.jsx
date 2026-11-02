@@ -2187,11 +2187,11 @@ export default function CaseTimelineModal({
 									display: "flex",
 									justifyContent: "space-between",
 									alignItems: "center",
-									padding: "0.55rem 0.2rem 0",
+									padding: "0.75rem 0.2rem 0",
 									borderTop: "1px solid #e2e8f0",
 								}}
 							>
-								<span style={{ fontSize: "0.74rem", color: "#64748b" }}>
+								<span style={{ fontSize: "0.85rem", color: "#64748b", fontWeight: 500 }}>
 									Step 1 of 4
 								</span>
 								<button
@@ -2201,15 +2201,15 @@ export default function CaseTimelineModal({
 										background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
 										color: "#ffffff",
 										border: "none",
-										padding: "0.45rem 1rem",
-										borderRadius: "5px",
-										fontSize: "0.78rem",
+										padding: "0.6rem 1.35rem",
+										borderRadius: "6px",
+										fontSize: "0.92rem",
 										fontWeight: 600,
 										cursor: "pointer",
 										display: "inline-flex",
 										alignItems: "center",
-										gap: "0.4rem",
-										boxShadow: "0 1px 3px rgba(16, 185, 129, 0.25)",
+										gap: "0.45rem",
+										boxShadow: "0 2px 4px rgba(16, 185, 129, 0.25)",
 									}}
 								>
 									<span>Next</span>
@@ -2551,7 +2551,7 @@ export default function CaseTimelineModal({
 									display: "flex",
 									justifyContent: "space-between",
 									alignItems: "center",
-									padding: "0.55rem 0.2rem 0",
+									padding: "0.75rem 0.2rem 0",
 									borderTop: "1px solid #e2e8f0",
 								}}
 							>
@@ -2562,20 +2562,20 @@ export default function CaseTimelineModal({
 										background: "#f1f5f9",
 										color: "#334155",
 										border: "1px solid #cbd5e1",
-										padding: "0.4rem 0.9rem",
-										borderRadius: "5px",
-										fontSize: "0.76rem",
+										padding: "0.6rem 1.35rem",
+										borderRadius: "6px",
+										fontSize: "0.92rem",
 										fontWeight: 600,
 										cursor: "pointer",
 										display: "inline-flex",
 										alignItems: "center",
-										gap: "0.35rem",
+										gap: "0.45rem",
 									}}
 								>
 									<span>← Back</span>
 								</button>
 
-								<span style={{ fontSize: "0.74rem", color: "#64748b" }}>
+								<span style={{ fontSize: "0.85rem", color: "#64748b", fontWeight: 500 }}>
 									Step 2 of 4
 								</span>
 
@@ -2586,15 +2586,15 @@ export default function CaseTimelineModal({
 										background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
 										color: "#ffffff",
 										border: "none",
-										padding: "0.45rem 1rem",
-										borderRadius: "5px",
-										fontSize: "0.78rem",
+										padding: "0.6rem 1.35rem",
+										borderRadius: "6px",
+										fontSize: "0.92rem",
 										fontWeight: 600,
 										cursor: "pointer",
 										display: "inline-flex",
 										alignItems: "center",
-										gap: "0.4rem",
-										boxShadow: "0 1px 3px rgba(16, 185, 129, 0.25)",
+										gap: "0.45rem",
+										boxShadow: "0 2px 4px rgba(16, 185, 129, 0.25)",
 									}}
 								>
 									<span>Next</span>
@@ -2967,7 +2967,7 @@ export default function CaseTimelineModal({
 									display: "flex",
 									justifyContent: "space-between",
 									alignItems: "center",
-									padding: "0.55rem 0.2rem 0",
+									padding: "0.75rem 0.2rem 0",
 									borderTop: "1px solid #e2e8f0",
 								}}
 							>
@@ -2978,20 +2978,20 @@ export default function CaseTimelineModal({
 										background: "#f1f5f9",
 										color: "#334155",
 										border: "1px solid #cbd5e1",
-										padding: "0.4rem 0.9rem",
-										borderRadius: "5px",
-										fontSize: "0.76rem",
+										padding: "0.6rem 1.35rem",
+										borderRadius: "6px",
+										fontSize: "0.92rem",
 										fontWeight: 600,
 										cursor: "pointer",
 										display: "inline-flex",
 										alignItems: "center",
-										gap: "0.35rem",
+										gap: "0.45rem",
 									}}
 								>
 									<span>← Back</span>
 								</button>
 
-								<span style={{ fontSize: "0.74rem", color: "#64748b" }}>
+								<span style={{ fontSize: "0.85rem", color: "#64748b", fontWeight: 500 }}>
 									Step 3 of 4
 								</span>
 
@@ -3002,15 +3002,15 @@ export default function CaseTimelineModal({
 										background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
 										color: "#ffffff",
 										border: "none",
-										padding: "0.45rem 1rem",
-										borderRadius: "5px",
-										fontSize: "0.78rem",
+										padding: "0.6rem 1.35rem",
+										borderRadius: "6px",
+										fontSize: "0.92rem",
 										fontWeight: 600,
 										cursor: "pointer",
 										display: "inline-flex",
 										alignItems: "center",
-										gap: "0.4rem",
-										boxShadow: "0 1px 3px rgba(16, 185, 129, 0.25)",
+										gap: "0.45rem",
+										boxShadow: "0 2px 4px rgba(16, 185, 129, 0.25)",
 									}}
 								>
 									<span>Next</span>
@@ -3236,7 +3236,7 @@ export default function CaseTimelineModal({
 									display: "flex",
 									justifyContent: "space-between",
 									alignItems: "center",
-									padding: "0.6rem 0.2rem 0",
+									padding: "0.75rem 0.2rem 0",
 									borderTop: "1px solid #e2e8f0",
 								}}
 							>
@@ -3247,20 +3247,20 @@ export default function CaseTimelineModal({
 										background: "#f1f5f9",
 										color: "#334155",
 										border: "1px solid #cbd5e1",
-										padding: "0.4rem 0.9rem",
-										borderRadius: "5px",
-										fontSize: "0.76rem",
+										padding: "0.6rem 1.35rem",
+										borderRadius: "6px",
+										fontSize: "0.92rem",
 										fontWeight: 600,
 										cursor: "pointer",
 										display: "inline-flex",
 										alignItems: "center",
-										gap: "0.35rem",
+										gap: "0.45rem",
 									}}
 								>
 									<span>← Back</span>
 								</button>
 
-								<span style={{ fontSize: "0.74rem", color: "#059669", fontWeight: 600 }}>
+								<span style={{ fontSize: "0.85rem", color: "#059669", fontWeight: 600 }}>
 									Step 4 of 4
 								</span>
 							</div>
