@@ -482,6 +482,8 @@ export default function CaseTimelineModal({
 		return { bg: "rgba(245, 158, 11, 0.12)", color: "#f59e0b", border: "1px solid rgba(245, 158, 11, 0.25)" };
 	};
 
+	const getExtStyle = getExtBadgeStyle;
+
 	const categorizeReviewChats = (chats = []) => {
 		const r1Chats = chats.filter((c) => c.phase === "review1" && c.sender !== "system");
 		const r2Chats = chats.filter((c) => c.phase === "review2" && c.sender !== "system");
@@ -1951,7 +1953,7 @@ export default function CaseTimelineModal({
 														<tbody>
 															{(showAllDocs ? clientUploadedDocs : clientUploadedDocs.slice(0, 2)).map((doc, idx) => {
 																const ext = getFileExt(doc.name);
-																const extStyle = getExtStyle(ext);
+																const extStyle = getExtBadgeStyle(ext);
 																const isSelected = selectedDocIndices.includes(idx);
 
 																return (
